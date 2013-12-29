@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b0f92917-a5f2-4940-875c-2c010cf0262b" name="Default" comment="" />
+    <ignored path="lizardsAndMeerkat.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="client.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/client.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="34" column="40" selection-start="1141" selection-end="1141" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="level1_heights.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/levels/level1_heights.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="11" selection-start="11" selection-end="11" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ClientNetworkEvents.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gameClasses/ClientNetworkEvents.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="95" column="5" selection-start="3879" selection-end="3879" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="physi.js" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/physi.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="907" column="6" selection-start="27096" selection-end="27096" vertical-scroll-proportion="0.7132867">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Player.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gameClasses/Player.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="91" column="36" selection-start="2985" selection-end="2985" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#226#2258#0" expanded="false" />
+                <element signature="e#3032#4903#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="physijs_worker.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/physijs_worker.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="1380" column="47" selection-start="50444" selection-end="50444" vertical-scroll-proportion="-14.28">
+              <folding>
+                <element signature="e#2550#2695#0" expanded="true" />
+                <element signature="e#2748#2800#0" expanded="true" />
+                <element signature="e#2844#8612#0" expanded="true" />
+                <element signature="e#8662#11584#0" expanded="true" />
+                <element signature="e#11651#11710#0" expanded="true" />
+                <element signature="e#11779#11831#0" expanded="true" />
+                <element signature="e#11898#11942#0" expanded="true" />
+                <element signature="e#12003#12156#0" expanded="true" />
+                <element signature="e#12216#15178#0" expanded="true" />
+                <element signature="e#15239#16143#0" expanded="true" />
+                <element signature="e#16206#16257#0" expanded="true" />
+                <element signature="e#16316#18208#0" expanded="true" />
+                <element signature="e#18266#18423#0" expanded="true" />
+                <element signature="e#18477#18623#0" expanded="true" />
+                <element signature="e#18685#18839#0" expanded="true" />
+                <element signature="e#18898#19634#0" expanded="true" />
+                <element signature="e#19696#20337#0" expanded="true" />
+                <element signature="e#20394#20841#0" expanded="true" />
+                <element signature="e#20908#21116#0" expanded="true" />
+                <element signature="e#21176#21544#0" expanded="true" />
+                <element signature="e#21609#21815#0" expanded="true" />
+                <element signature="e#21873#22239#0" expanded="true" />
+                <element signature="e#22305#22534#0" expanded="true" />
+                <element signature="e#22599#22827#0" expanded="true" />
+                <element signature="e#22891#23077#0" expanded="true" />
+                <element signature="e#23140#23325#0" expanded="true" />
+                <element signature="e#23383#23466#0" expanded="true" />
+                <element signature="e#23535#23615#0" expanded="true" />
+                <element signature="e#23686#23765#0" expanded="true" />
+                <element signature="e#23826#32105#0" expanded="true" />
+                <element signature="e#32168#32409#0" expanded="true" />
+                <element signature="e#32494#32678#0" expanded="true" />
+                <element signature="e#32741#34028#0" expanded="true" />
+                <element signature="e#34118#34253#0" expanded="true" />
+                <element signature="e#34322#34626#0" expanded="true" />
+                <element signature="e#34689#34865#0" expanded="true" />
+                <element signature="e#34927#35243#0" expanded="true" />
+                <element signature="e#35309#35497#0" expanded="true" />
+                <element signature="e#35566#35958#0" expanded="true" />
+                <element signature="e#36028#36248#0" expanded="true" />
+                <element signature="e#36318#36712#0" expanded="true" />
+                <element signature="e#36783#37050#0" expanded="true" />
+                <element signature="e#37114#37218#0" expanded="true" />
+                <element signature="e#37284#37485#0" expanded="true" />
+                <element signature="e#37558#37780#0" expanded="true" />
+                <element signature="e#37849#38175#0" expanded="true" />
+                <element signature="e#38242#38444#0" expanded="true" />
+                <element signature="e#38513#38880#0" expanded="true" />
+                <element signature="e#38948#39315#0" expanded="true" />
+                <element signature="e#39384#39752#0" expanded="true" />
+                <element signature="e#39821#40189#0" expanded="true" />
+                <element signature="e#40256#40590#0" expanded="true" />
+                <element signature="e#40660#41163#0" expanded="true" />
+                <element signature="e#41231#41566#0" expanded="true" />
+                <element signature="e#41598#44139#0" expanded="true" />
+                <element signature="e#44176#46128#0" expanded="true" />
+                <element signature="e#46163#48264#0" expanded="true" />
+                <element signature="e#48302#50054#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ServerConfig.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ServerConfig.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="16" column="63" selection-start="752" selection-end="752" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="false" />
+    </FindUsagesManager>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/ServerConfig.js" />
+        <option value="$PROJECT_DIR$/physi.js" />
+        <option value="$PROJECT_DIR$/three.min.js" />
+        <option value="$PROJECT_DIR$/levels/LevelObjects/Rock1.js" />
+        <option value="$PROJECT_DIR$/levels/LevelObjects/RockGold1.js" />
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/ClientConfig.js" />
+        <option value="$PROJECT_DIR$/gameClasses/ClientNetworkEvents.js" />
+        <option value="$PROJECT_DIR$/client.js" />
+        <option value="$PROJECT_DIR$/server.js" />
+        <option value="$PROJECT_DIR$/models/modelLizard.js" />
+        <option value="$PROJECT_DIR$/gameClasses/ServerNetworkEvents.js" />
+        <option value="$PROJECT_DIR$/gameClasses/Player.js" />
+        <option value="$PROJECT_DIR$/levels/level1.js" />
+        <option value="$PROJECT_DIR$/levels/level1_heights.js" />
+        <option value="$PROJECT_DIR$/physijs_worker.js" />
+      </list>
+    </option>
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents ProjectPane="true" />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lizardsAndMeerkat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lizardsAndMeerkat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lizardsAndMeerkat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="options.lastSelected" value="preferences.externalResources" />
+    <property name="recentsLimit" value="5" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../battlesystem" />
+    <property name="restartRequiresConfirmation" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Roman\Desktop\isogenic\lizardsAndMeerkat" />
+      <recent name="C:\Users\Roman\Desktop\isogenic\lizardsAndMeerkat\levels\LevelObjects" />
+      <recent name="C:\Users\Roman\Desktop\isogenic\lizardsAndMeerkat\assets\textures" />
+      <recent name="C:\Users\Roman\Desktop\isogenic\lizardsAndMeerkat\shaders" />
+      <recent name="C:\Users\Roman\Desktop\isogenic\lizardsAndMeerkat\models" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Roman\Desktop\isogenic\lizardsAndMeerkat\assets\textures" />
+      <recent name="C:\Users\Roman\Desktop\isogenic\lizardsAndMeerkat\assets" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Node.js.ige.js">
+    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner />
+      <method />
+    </configuration>
+    <configuration default="true" type="NodeJSConfigurationType" factoryName="Node.js" working-dir="$PROJECT_DIR$" coffeescript-run="false">
+      <method />
+    </configuration>
+    <configuration default="false" name="ige.js" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="C:/nodejs/node" path-to-js-file="$PROJECT_DIR$/../ige/server/ige.js" application-parameters="-g ../lizardsAndMeerkat" working-dir="$PROJECT_DIR$" coffeescript-run="false">
+      <RunnerSettings RunnerId="NodeJS.debug" />
+      <RunnerSettings RunnerId="NodeJS.run" />
+      <ConfigurationWrapper RunnerId="NodeJS.debug" />
+      <ConfigurationWrapper RunnerId="NodeJS.run" />
+      <method />
+    </configuration>
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="Node.js.ige.js" />
+    </list>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="false">
+    <option name="USER" value="" />
+    <option name="PASSWORD" value="" />
+    <option name="mySSHConnectionTimeout" value="30000" />
+    <option name="mySSHReadTimeout" value="30000" />
+    <option name="LAST_MERGED_REVISION" />
+    <option name="MERGE_DRY_RUN" value="false" />
+    <option name="MERGE_DIFF_USE_ANCESTRY" value="true" />
+    <option name="UPDATE_LOCK_ON_DEMAND" value="false" />
+    <option name="IGNORE_SPACES_IN_MERGE" value="false" />
+    <option name="DETECT_NESTED_COPIES" value="true" />
+    <option name="CHECK_NESTED_FOR_QUICK_MERGE" value="false" />
+    <option name="IGNORE_SPACES_IN_ANNOTATE" value="true" />
+    <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
+    <option name="FORCE_UPDATE" value="false" />
+    <option name="IGNORE_EXTERNALS" value="false" />
+    <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b0f92917-a5f2-4940-875c-2c010cf0262b" name="Default" comment="" />
+      <created>1369235214047</created>
+      <updated>1369235214047</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
+    <editor active="false" />
+    <layout>
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2915129" sideWeight="0.76004463" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4160584" sideWeight="0.52836305" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298217" sideWeight="0.76428574" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.49756888" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23995535" sideWeight="0.5113452" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.49675852" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.67070216" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="CHECK_NEW_TODO" value="true" />
+    <option name="myTodoPanelSettings">
+      <value>
+        <are-packages-shown value="false" />
+        <are-modules-shown value="false" />
+        <flatten-packages value="false" />
+        <is-autoscroll-to-source value="false" />
+      </value>
+    </option>
+    <option name="PERFORM_UPDATE_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_COMMIT_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_EDIT_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_CHECKOUT_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_ROLLBACK_IN_BACKGROUND" value="false" />
+    <option name="CHECK_LOCALLY_CHANGED_CONFLICTS_IN_BACKGROUND" value="false" />
+    <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
+    <option name="SHOW_ONLY_CHANGED_IN_SELECTION_DIFF" value="true" />
+    <option name="CHECK_COMMIT_MESSAGE_SPELLING" value="true" />
+    <option name="DEFAULT_PATCH_EXTENSION" value="patch" />
+    <option name="SHORT_DIFF_HORISONTALLY" value="true" />
+    <option name="SHORT_DIFF_EXTRA_LINES" value="2" />
+    <option name="SOFT_WRAPS_IN_SHORT_DIFF" value="true" />
+    <option name="INCLUDE_TEXT_INTO_PATCH" value="false" />
+    <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
+    <option name="SHOW_FILE_HISTORY_DETAILS" value="true" />
+    <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
+    <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
+    <option name="LAST_COMMIT_MESSAGE" />
+    <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
+    <option name="FILE_HISTORY_DIALOG_COMMENTS_SPLITTER_PROPORTION" value="0.8" />
+    <option name="FILE_HISTORY_DIALOG_SPLITTER_PROPORTION" value="0.5" />
+    <option name="ACTIVE_VCS_NAME" />
+    <option name="UPDATE_GROUP_BY_PACKAGES" value="false" />
+    <option name="UPDATE_GROUP_BY_CHANGELIST" value="false" />
+    <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
+    <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/webworker/websocket-client.js</url>
+          <line>205</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="61" />
+    </breakpoint-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/levels/LevelObjects/Rock1.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="47" column="52" selection-start="1304" selection-end="1304" vertical-scroll-proportion="0.5443886" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ige/engine/components/network/net.io/net.io-client/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="100" column="17" selection-start="2367" selection-end="2367" vertical-scroll-proportion="1.019449" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ige/engine/components/network/socket.io/IgeSocketIoServer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="138" column="16" selection-start="3902" selection-end="3902" vertical-scroll-proportion="1.2128801" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="178" column="13" selection-start="5214" selection-end="5214" vertical-scroll-proportion="0.36851212" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ClientConfig.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="20" selection-start="312" selection-end="312" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gameClasses/ClientNetworkEvents.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="95" column="5" selection-start="3879" selection-end="3879" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/modelLizard.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="56" column="20" selection-start="202243" selection-end="202243" vertical-scroll-proportion="1.6819788" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gameClasses/ServerNetworkEvents.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="55" column="8" selection-start="1765" selection-end="1765" vertical-scroll-proportion="0.59385663" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/levels/level1_heights.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="11" selection-start="11" selection-end="11" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/levels/level1.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="15" selection-start="1546" selection-end="1546" vertical-scroll-proportion="0.86734694" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="90" column="38" selection-start="4072" selection-end="4072" vertical-scroll-proportion="0.41454083" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="40" selection-start="1141" selection-end="1141" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ServerConfig.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="63" selection-start="752" selection-end="752" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gameClasses/Player.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="91" column="36" selection-start="2985" selection-end="2985" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#226#2258#0" expanded="false" />
+            <element signature="e#3032#4903#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/physijs_worker.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1380" column="47" selection-start="50444" selection-end="50444" vertical-scroll-proportion="-14.28">
+          <folding>
+            <element signature="e#2550#2695#0" expanded="true" />
+            <element signature="e#2748#2800#0" expanded="true" />
+            <element signature="e#2844#8612#0" expanded="true" />
+            <element signature="e#8662#11584#0" expanded="true" />
+            <element signature="e#11651#11710#0" expanded="true" />
+            <element signature="e#11779#11831#0" expanded="true" />
+            <element signature="e#11898#11942#0" expanded="true" />
+            <element signature="e#12003#12156#0" expanded="true" />
+            <element signature="e#12216#15178#0" expanded="true" />
+            <element signature="e#15239#16143#0" expanded="true" />
+            <element signature="e#16206#16257#0" expanded="true" />
+            <element signature="e#16316#18208#0" expanded="true" />
+            <element signature="e#18266#18423#0" expanded="true" />
+            <element signature="e#18477#18623#0" expanded="true" />
+            <element signature="e#18685#18839#0" expanded="true" />
+            <element signature="e#18898#19634#0" expanded="true" />
+            <element signature="e#19696#20337#0" expanded="true" />
+            <element signature="e#20394#20841#0" expanded="true" />
+            <element signature="e#20908#21116#0" expanded="true" />
+            <element signature="e#21176#21544#0" expanded="true" />
+            <element signature="e#21609#21815#0" expanded="true" />
+            <element signature="e#21873#22239#0" expanded="true" />
+            <element signature="e#22305#22534#0" expanded="true" />
+            <element signature="e#22599#22827#0" expanded="true" />
+            <element signature="e#22891#23077#0" expanded="true" />
+            <element signature="e#23140#23325#0" expanded="true" />
+            <element signature="e#23383#23466#0" expanded="true" />
+            <element signature="e#23535#23615#0" expanded="true" />
+            <element signature="e#23686#23765#0" expanded="true" />
+            <element signature="e#23826#32105#0" expanded="true" />
+            <element signature="e#32168#32409#0" expanded="true" />
+            <element signature="e#32494#32678#0" expanded="true" />
+            <element signature="e#32741#34028#0" expanded="true" />
+            <element signature="e#34118#34253#0" expanded="true" />
+            <element signature="e#34322#34626#0" expanded="true" />
+            <element signature="e#34689#34865#0" expanded="true" />
+            <element signature="e#34927#35243#0" expanded="true" />
+            <element signature="e#35309#35497#0" expanded="true" />
+            <element signature="e#35566#35958#0" expanded="true" />
+            <element signature="e#36028#36248#0" expanded="true" />
+            <element signature="e#36318#36712#0" expanded="true" />
+            <element signature="e#36783#37050#0" expanded="true" />
+            <element signature="e#37114#37218#0" expanded="true" />
+            <element signature="e#37284#37485#0" expanded="true" />
+            <element signature="e#37558#37780#0" expanded="true" />
+            <element signature="e#37849#38175#0" expanded="true" />
+            <element signature="e#38242#38444#0" expanded="true" />
+            <element signature="e#38513#38880#0" expanded="true" />
+            <element signature="e#38948#39315#0" expanded="true" />
+            <element signature="e#39384#39752#0" expanded="true" />
+            <element signature="e#39821#40189#0" expanded="true" />
+            <element signature="e#40256#40590#0" expanded="true" />
+            <element signature="e#40660#41163#0" expanded="true" />
+            <element signature="e#41231#41566#0" expanded="true" />
+            <element signature="e#41598#44139#0" expanded="true" />
+            <element signature="e#44176#46128#0" expanded="true" />
+            <element signature="e#46163#48264#0" expanded="true" />
+            <element signature="e#48302#50054#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/physi.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="907" column="6" selection-start="27096" selection-end="27096" vertical-scroll-proportion="0.7132867">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
+
