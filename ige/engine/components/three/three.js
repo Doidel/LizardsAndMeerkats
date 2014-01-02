@@ -6,6 +6,8 @@
 
 var THREE = { REVISION: '64' };
 
+var self=self||this;
+
 self.console = self.console || {
 
     info: function () {},
