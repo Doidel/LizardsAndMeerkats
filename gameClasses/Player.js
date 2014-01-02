@@ -308,7 +308,8 @@ var Player = IgeEntity.extend({
 
             // Convert velocity to world coordinates
             var quat = new THREE.Quaternion();
-            quat.setFromEuler({x:self._rotate.x, y:self._rotate.y, z:0},"XYZ");
+            //deprecated -- quat.setFromEuler({x:self._rotate.x, y:self._rotate.y, z:0},"XYZ");
+            quat.setFromEuler(new THREE.Euler( self._rotate.x, self._rotate.y, 0 ));
             inputVelocity.applyQuaternion(quat);
 
             var currentVelocity = this._threeObj.getLinearVelocity();

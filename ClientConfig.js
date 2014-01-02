@@ -16,6 +16,7 @@ var igeClientConfig = {
         './levels/LevelObjects/Plant1.js',
         './levels/LevelObjects/Rock1.js',
         './levels/LevelObjects/RockGold1.js',
+        './levels/LevelObjects/water-material.js',
 
 		/* 3d filters */
 		/*'../ige/engine/components/three/EffectComposer.js',

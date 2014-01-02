@@ -100,7 +100,8 @@ var Server = IgeClass.extend({
 
                         // World details
                         ige.gameWorld = {
-                            level: self.level1()
+                            //level: self.level1()
+                            level: self.level2()
                         };
 					}
 				});
