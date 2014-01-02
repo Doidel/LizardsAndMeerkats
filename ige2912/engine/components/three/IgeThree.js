@@ -88,7 +88,7 @@ var IgeThree = IgeEventingClass.extend({
 		}
 
 		this._threeObj.position.x = this._translate.x;
-		this._threeObj.position.y = -this._translate.y;
+		this._threeObj.position.y = this._translate.y;
 		this._threeObj.position.z = this._translate.z;
 
 		this._threeObj.rotation.x = this._rotate.x;
@@ -262,7 +262,7 @@ var IgeThree = IgeEventingClass.extend({
 			// Update the translate, rotate and scale of the mesh
 			if (m.position) {
 				m.position.x = this._translate.x;
-				m.position.y = -this._translate.y;
+				m.position.y = this._translate.y;
 				m.position.z = this._translate.z;
 			}
 
@@ -291,15 +291,15 @@ var IgeThree = IgeEventingClass.extend({
 
 	IgeEntity_model: function(model) {
 		if (model !== undefined) {
-			ige.three._geometryLoader.path = './models';
+			//ige.three._geometryLoader.path = './models';
+			var parsedModel = ige.three._loader.parse(model);
 			this._threeObj = new THREE.Mesh(
-				ige.three._geometryLoader.parse(model),
+				parsedModel.geometry,//ige.three._geometryLoader.parse(model),
 				this._material || new THREE.MeshFaceMaterial()
 			);
 
 			this._threeObj.receiveShadow = true;
 			this._threeObj.castShadow = true;
-			return this;
 		}
 
 		return this._threeObj;
