@@ -14,7 +14,8 @@ var Player = IgeEntity.extend({
 
 		if (!ige.isServer) {
             var mat = new THREE.MeshLambertMaterial({
-                color: new THREE.Color('#FF0000'),
+                //color: new THREE.Color('#FF0000'),
+                map: THREE.ImageUtils.loadTexture( './assets/textures/meerkat/MeerkatzTexture256BackV4.png' ),
                 skinning: true
             });
 
@@ -589,8 +590,6 @@ var Player = IgeEntity.extend({
                     this._checkResetAnimation('standing', 1);
                     //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 830, 831, 1, true, ige.client.legBones);
                     this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 830, 870, 1, true, ige.client.legBones);
-                    //console.log(this._threeObj.animation.hierarchy[10].rotation);
-                    //debugger;
                 }
             }
 
