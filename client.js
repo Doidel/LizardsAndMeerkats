@@ -82,7 +82,7 @@ var Client = IgeClass.extend({
                         console.log(self.vp1.camera._threeObj.near, self.vp1.camera._threeObj.far);*/
 
 						self.vp1.camera.translateTo(0, 2, 2);
-                        self.vp1.camera._threeObj.eulerOrder = "YXZ";
+                        self.vp1.camera._threeObj.rotation.order = "YXZ";
 
                         ige._threeRenderer.shadowMapEnabled = true;
                         ige._threeRenderer.shadowMapSoft = true;

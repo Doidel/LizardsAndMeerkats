@@ -18,7 +18,8 @@ var Player = IgeEntity.extend({
                 skinning: true
             });
 
-            var parsedModel = ige.three._loader.parse(modelLizard);
+            //var parsedModel = ige.three._loader.parse(modelLizard);
+            var parsedModel = ige.three._loader.parse(modelMeerkat);
             this._threeObj = new THREE.SkinnedMesh(
                 parsedModel.geometry,
                 mat,
@@ -586,7 +587,10 @@ var Player = IgeEntity.extend({
                 } else {
                     //standing
                     this._checkResetAnimation('standing', 1);
-                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 830, 831, 1, true, ige.client.legBones);
+                    //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 830, 831, 1, true, ige.client.legBones);
+                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 830, 870, 1, true, ige.client.legBones);
+                    //console.log(this._threeObj.animation.hierarchy[10].rotation);
+                    //debugger;
                 }
             }
 
