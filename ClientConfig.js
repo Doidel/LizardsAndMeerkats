@@ -12,7 +12,7 @@ var igeClientConfig = {
 		/* Models */
 		//'./models/modelSpaceFrigate6.js',
 		//'./models/modelTurret.js',
-        //'./models/modelLizard.js',
+        './models/modelLizard.js',
         './models/modelMeerkat.js',
         './levels/LevelObjects/Plant1.js',
         './levels/LevelObjects/Rock1.js',

@@ -406,15 +406,12 @@ var Client = IgeClass.extend({
                                             }
 
                                         } else {
-
                                             //find a next key which is above the unlooped current time
                                             do {
-
                                                 prevKey = nextKey;
                                                 nextKey = this.getNextKeyWith(type, h, nextKey.index + 1);
 
                                             } while (nextKey.time < currentTime)
-
                                         }
 
                                         animationCache.prevKey[ type ] = prevKey;
@@ -422,7 +419,6 @@ var Client = IgeClass.extend({
                                         //console.log('prev', prevKey, 'next', nextKey);
 
                                     }
-
 
                                     object.matrixAutoUpdate = true;
                                     object.matrixWorldNeedsUpdate = true;
@@ -435,7 +431,7 @@ var Client = IgeClass.extend({
                                     // check scale error
 
                                     if (scale < 0 || scale > 1) {
-                                        console.log(currentTime, prevKey.time, nextKey.time);
+                                        console.log(currentTime, nextKey.time, prevKey.time);
                                         console.warn("THREE.Animation.update: Warning! Scale out of bounds:" + scale + " on bone " + h);
                                         scale = scale < 0 ? 0 : 1;
                                     }

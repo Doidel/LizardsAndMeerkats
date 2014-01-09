@@ -19,6 +19,7 @@ var Player = IgeEntity.extend({
                 skinning: true
             });
 
+
             //var parsedModel = ige.three._loader.parse(modelLizard);
             var parsedModel = ige.three._loader.parse(modelMeerkat);
             this._threeObj = new THREE.SkinnedMesh(
@@ -513,7 +514,7 @@ var Player = IgeEntity.extend({
                     var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 290, 400, 0, false, ige.client.armBones);
                     if (frame >= 400) this.states.isJumping = false;
                 } else if (this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right) {
-                    var direction = 1, start = 1, end = 160;;
+                    var direction = 1, start = 1, end = 160;
                     if (this.controls.left && !this.controls.right) {
                         direction = 2; start = 900; end = 1059;
                     } else if (this.controls.right && !this.controls.left) {
@@ -560,14 +561,19 @@ var Player = IgeEntity.extend({
                     if (this.states.currentBlockFrame < 210) {
                         if (this.states.currentBlockFrame == 190) this._resetAnimation(1);
                         this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 190, 210, 1, false, ige.client.legBones);
+                        console.log('firstBlock', this.states.currentBlockFrame);
                     }
                 } else if (this.states.currentBlockFrame > 190) {
-                    if (this.states.currentBlockFrame == 240) this._resetAnimation(1);
+                    //if (this.states.currentBlockFrame == 240) this._resetAnimation(1);
+                    if (this.states.currentBlockFrame < 240) this._resetAnimation(1);
                     //lower-block animation
                     this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 240, 260, 1, false, ige.client.legBones);
+                    console.log('middleBlock', this.states.currentBlockFrame);
                     if (this.states.currentBlockFrame >= 260) {
                         //reset animation
                         this.states.currentBlockFrame = 190;
+                        this._resetAnimation(1);
+                        console.log('lastBlock', this.states.currentBlockFrame);
                     }
                 } else if (this.states.isScratching) {
                     this._checkResetAnimation('scratching', 1);
@@ -577,7 +583,7 @@ var Player = IgeEntity.extend({
                     this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 290, 400, 1, false, ige.client.legBones);
                 } else if (this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right) {
                     //running
-                    var direction = 1, start = 1, end = 160;;
+                    var direction = 1, start = 1, end = 160;
                     if (this.controls.left && !this.controls.right) {
                         direction = 2; start = 900; end = 1059;
                     } else if (this.controls.right && !this.controls.left) {
@@ -590,6 +596,7 @@ var Player = IgeEntity.extend({
                     this._checkResetAnimation('standing', 1);
                     //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 830, 831, 1, true, ige.client.legBones);
                     this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 830, 870, 1, true, ige.client.legBones);
+
                 }
             }
 
