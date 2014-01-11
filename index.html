@@ -109,11 +109,13 @@
             text-shadow: 0.05em 0.05em 0.1em rgb(122, 91, 24);
         }
     </style>
-
-	<!-- Isogenic Loader -->
-	<script type="text/javascript">var igeRoot = './ige/engine/';</script>
-	<script type="text/javascript" src="ige/engine/loader.js"></script>
-    <script type="text/javascript" src="mootools-core-1.4.5.js"></script>
+    <!-- Isogenic Loader -->
+    <!-- <script type="text/javascript">var igeRoot = './ige/engine/';</script>
+     <script type="text/javascript" src="./ige/engine/loader.js"></script>-->
+     <script type="text/javascript">var igeRoot = './ige2912/engine/';</script>
+     <script type="text/javascript" src="./ige2912/engine/loader.js"></script>
+    <!--<script type="text/javascript" src="mootools-core-1.4.5.js"></script>-->
+    <script type="text/javascript" src="jquery-2.0.3.js"></script>
 </head>
 <body>
     <div class="igeLoading loadingFloat">
@@ -162,29 +164,29 @@
 <script type="text/javascript">
     var UI = {
         blockBar: {
-            el: $('blockbar'),
+            el: $('#blockbar'),
             currentWidth: 126,
             setPercent: function(percent) {
                 if (percent < 100) {
-                    this.el.setStyle('opacity', 0.6);
+                    this.el.css('opacity', 0.6);
                     if (this.opacityCounter) clearTimeout(this.opacityCounter);
                 } else if(!this.opacityCounter && this.currentWidth != 126) {
-                    this.opacityCounter = (function() {
-                        this.el.setStyle('opacity', 0);
+                    this.opacityCounter = setTimeout(function() {
+                        this.el.css('opacity', 0);
                         this.opacityCounter = undefined;
-                    }).delay(500, this);
+                    }.bind(this), 500);
                 }
                 this.currentWidth = 126/100*percent;
-                $('blockbarInner').setStyle('width', this.currentWidth);
+                $('#blockbarInner').css('width', this.currentWidth);
             }
         },
         notifications: {
-            harvestFx: new Fx.Morph($('goldHarvestElement'), {
+            /*harvestFx: new Fx.Morph($('#goldHarvestElement'), {
                 duration: 200,
                 link: 'chain'
-            }),
+            }),*/
             displayHarvest: function(amount) {
-                $('goldHarvestElement')
+               /* $('goldHarvestElement')
                         .set('text', amount)
                         .setStyle('opacity', 1);
                 (function() {
@@ -196,15 +198,15 @@
                             'padding-top': 40
                         })
                     });
-                }).delay(200, this);
+                }).delay(200, this);*/
             }
         },
         healthBar: {
             //health will be sent with commands, not streamed. Health regen is done by periodicals both on server and client. Only heals and dmgs are sent and informed about.
-            el: $('healthbarInner'),
+            el: $('#healthbarInner'),
             maxvalue: 300,
             setValue: function(value) {
-                this.el.setStyle('width', 240/this.maxvalue*value).set('text', Math.round(value));
+                this.el.css('width', 240/this.maxvalue*value).set('text', Math.round(value));
             }
         }
     };
