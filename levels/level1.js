@@ -92,7 +92,7 @@ var Levels = {
         new RockGold1(new THREE.Vector3(5.0, -2, -4.5), 2);
     },
     // Level 2 with height map
-    level2: function(sunlight) {
+    level2: function() {
         if (ige.isServer) {
             var hMapUrl = "./assets/heightmaps/hMapV3.png";
             // count of image borderlines - only used for lod
@@ -130,7 +130,7 @@ var Levels = {
                     shape, pMat, 0
                 );
                 pGround.rotation.x = -Math.PI / 2;
-                pGround.position.set(0,-50,0);
+                pGround.position.set(0,0,0);
                 ige.server.scene1._threeObj.add(pGround);
             });
             new Rock1(new THREE.Vector3(28, -50, 0), 3);
@@ -151,8 +151,10 @@ var Levels = {
                 var size = 64;
                 var faces = 256;
                 var shape = new THREE.PlaneGeometry(size, size, faces, faces);
-                var floorTexture = new THREE.ImageUtils.loadTexture('./assets/textures/grass1.jpg');
-                var cover = new THREE.MeshLambertMaterial({map: floorTexture, side: 2});
+                var grass = THREE.ImageUtils.loadTexture( './assets/textures/grass1.jpg' );
+                grass.wrapS = grass.wrapT = THREE.RepeatWrapping;
+                grass.repeat.set( 8, 8 );
+                var cover = new THREE.MeshLambertMaterial({map: grass, side: 2});
 
                 var vAmountX = faces+1;
                 var vAmountY = faces+1;
@@ -174,8 +176,8 @@ var Levels = {
                 var ground = new THREE.Mesh(shape, cover);
                 ground.rotation.x = -Math.PI / 2;
                 ground.receiveShadow = true;
-                ground.castShadow = true;
-                ground.position.set(0,-50,0);
+                //ground.castShadow = true;
+                ground.position.set(0,0,0);
                 ige.client.scene1._threeObj.add(ground);
 
                 // water
@@ -223,11 +225,11 @@ var Levels = {
                 */
             });
         }
-        new Rock1(new THREE.Vector3(28, -50, 0), 3);
-        new Rock1(new THREE.Vector3(22.2, -0.5, 1.2), 0.5);
-        new Rock1(new THREE.Vector3(22.0, -0.25, -0.5), 0.25);
+        new Rock1(new THREE.Vector3(28, -14, 0), 3);
+        //new Rock1(new THREE.Vector3(22.2, -0.5, 1.2), 0.5);
+        //new Rock1(new THREE.Vector3(22.0, -0.25, -0.5), 0.25);
 
-        new RockGold1(new THREE.Vector3(5.0, -50, -4.5), 2);
+        //new RockGold1(new THREE.Vector3(5.0, 0, -4.5), 2);
     },
     // load a shader file
     loadShader: function(url){

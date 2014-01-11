@@ -85,52 +85,28 @@ var Client = IgeClass.extend({
                         self.vp1.camera._threeObj.rotation.order = "YXZ";
 
                         ige._threeRenderer.shadowMapEnabled = true;
-                        ige._threeRenderer.shadowMapSoft = true;
+                        //ige._threeRenderer.shadowMapSoft = true;
 
                         self.scene1._threeObj.remove(self.scene1._threeObj._defaultLight);
 
-                        var sunlight = new THREE.DirectionalLight();
-                        sunlight.intensity = 0.5;
-                        sunlight.position.set(100, 300, 100);
-                        sunlight.castShadow = true;
-                        //sunlight.shadowBias = -0.0001;
-                        sunlight.shadowMapWidth = 1024;
-                        sunlight.shadowMapHeight = 1024;
-                        sunlight.shadowMapDarkness = 0.95;
 
-                        var d = 250;
-                        sunlight.shadowCameraLeft = -d;
-                        sunlight.shadowCameraRight = d;
-                        sunlight.shadowCameraTop = d;
-                        sunlight.shadowCameraBottom = -d;
-                        sunlight.shadowCameraNear = 200;
-                        sunlight.shadowCameraFar = 800;
-
-                        sunlight.shadowDarkness = 0.6;
-                        sunlight.shadowBias = 0.000065;
-
-                        /*sunlight.shadowCascade = true;
-                        sunlight.shadowCascadeCount = 3;
-                        sunlight.shadowCascadeNearZ = [ -1.000, 0.995, 0.998 ];
-                        sunlight.shadowCascadeFarZ  = [  0.995, 0.998, 1.000 ];
-                        sunlight.shadowCascadeWidth = [ 1024, 1024, 1024 ];
-                        sunlight.shadowCascadeHeight = [ 1024, 1024, 1024 ];*/
-
-                        sunlight.shadowCascadeOffset.set( 0, 0, -10 );
-
-                        self.scene1._threeObj.add( sunlight );
-                        sunlight.lookAt(new THREE.Vector3(0,0,0));
-
-                        self.scene1._threeObj._defaultLight = sunlight;
-
-
-
-                        ige._threeRenderer.gammaInput = true;
+                        /*ige._threeRenderer.gammaInput = true;
                         ige._threeRenderer.gammaOutput = true;
                         ige._threeRenderer.shadowMapEnabled = true;
 
                         ige._threeRenderer.shadowMapCascade = true;
-                        ige._threeRenderer.shadowMapType = THREE.PCFSoftShadowMap;
+                        ige._threeRenderer.shadowMapType = THREE.PCFSoftShadowMap;*/
+                        ige._threeRenderer.shadowMapEnabled = true;
+                        ige._threeRenderer.shadowMapSoft = true;
+
+                        ige._threeRenderer.shadowCameraNear = 3;
+                        ige._threeRenderer.shadowCameraFar = 50;
+                        ige._threeRenderer.shadowCameraFov = 50;
+
+                        ige._threeRenderer.shadowMapBias = 0.0039;
+                        ige._threeRenderer.shadowMapDarkness = 0.5;
+                        ige._threeRenderer.shadowMapWidth = 2048;
+                        ige._threeRenderer.shadowMapHeight = 2048;
 
 
 
@@ -141,7 +117,7 @@ var Client = IgeClass.extend({
                         // World details
                         ige.gameWorld = {
                             //level: self.level1()
-                            level: self.level2(sunlight)
+                            level: self.level2()
                         };
 
 

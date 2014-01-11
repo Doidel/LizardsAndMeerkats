@@ -133,7 +133,7 @@ var IgeThree = IgeEventingClass.extend({
 		var ambient = new THREE.AmbientLight(0x242424);
 		this._threeObj.add(ambient);
 
-		var light = new THREE.SpotLight(0xd6e2ff, 1, 0, Math.PI, 1);
+		/*var light = new THREE.SpotLight(0xd6e2ff, 1, 0, Math.PI, 1);
 		light.position.set(600, 400, 1000);
 		light.target.position.set(0, 0, 0);
 
@@ -149,7 +149,7 @@ var IgeThree = IgeEventingClass.extend({
 		light.shadowMapWidth = 2048;
 		light.shadowMapHeight = 2048;
 		light.shadowMapSoft = true;
-		this._threeObj.add(light);
+		this._threeObj.add(light);*/
 
 		/*var specLight = new THREE.PointLight( 0x058ee4, 0.2, 0, Math.PI, 1 );
 		 ////flameLight.position.set( 600, 400, 1000 );

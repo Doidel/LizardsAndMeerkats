@@ -28,7 +28,7 @@ var Player = IgeEntity.extend({
                 false
             );
             this._threeObj.castShadow = true;
-            this._threeObj.receiveShadow = true;
+            this._threeObj.receiveShadow = false;
 
             //animation
 
@@ -80,7 +80,7 @@ var Player = IgeEntity.extend({
             var playerMaterial = Physijs.createMaterial(
                 new THREE.MeshBasicMaterial(),
                 0, // friction
-                .1 // restitution
+                0 // restitution
             );
 
             this._threeObj = new Physijs.CapsuleMesh(
@@ -89,74 +89,17 @@ var Player = IgeEntity.extend({
                 5 //mass
             );
             this._threeObj.geometry.dynamic = false;
+            this._threeObj.position.set(0,50,0);
 
-            var contactNormal = new THREE.Vector3(); // Normal in the contact, pointing *out* of whatever the player touched
             var upAxis = new THREE.Vector3(0,1,0);
-            this._threeObj.addEventListener('collision', function(other, vel, rot) {
-                   /* var contact = e.contact;
-
-                    // contact.bi and contact.bj are the colliding bodies, and contact.ni is the collision normal.
-                    // We do not yet know which one is which! Let's check.
-                    if(contact.bi.id == self._cannonBody.id)  // bi is the player body, flip the contact normal
-                        contact.ni.negate(contactNormal);
-                    else
-                        contact.ni.copy(contactNormal); // bi is something else. Keep the normal as it is
-
-                    // If contactNormal.dot(upAxis) is between 0 and 1, we know that the contact normal is somewhat in the up direction.
-                    if(contactNormal.dot(upAxis) > 0.5) // Use a "good" threshold value between 0 and 1 here!
-                        self.states.canJump = true;*/
-
-                /*if (this.dead) return;
-                if (other.items) {
-                    for (var i in other.items) {
-                        if (pl[i] !== undefined) {
-                            if (typeof(other.items[i]) === "number") pl[i] += other.items[i];
-                            else pl[i] = other.items[i];
-                        }
-                    }
-                    soundManager.play("pick-up");
-                    displayMinorMessage("Picked up " + other.itemName);
-                    updateHUD();
-                    other.items = undefined;
-                    other.visible = false;
-                    other.parent.remove(other);
-                }
-                if (other.damage && other.position.y > 0.3 && pl.faction != other.faction) {
-                    this.hp -= other.damage;
-                    updateHUD();
-                    // Death is checked in render loop
-                    // TODO: Hit sound?
-                    // TODO: Screen effect?
-                }*/
+            this._threeObj.addEventListener('collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
+                contact_normal.negate();
+                if(contact_normal.dot(upAxis) > 0.5) // Use a "good" threshold value between 0 and 1 here!
+                    self.states.canJump = true;
             });
             this._threeObj.setAngularFactor({ x: 0, y: 0, z: 0 });
             ige.server.scene1._threeObj.add( this._threeObj );
-            //this._threeObj.useQuaternion = true;
-
-            /*
-            var contactNormal = new CANNON.Vec3(); // Normal in the contact, pointing *out* of whatever the player touched
-            var upAxis = new CANNON.Vec3(0,1,0);
-            self._cannonBody.addEventListener("collide",function(e){
-                var contact = e.contact;
-
-                // contact.bi and contact.bj are the colliding bodies, and contact.ni is the collision normal.
-                // We do not yet know which one is which! Let's check.
-                if(contact.bi.id == self._cannonBody.id)  // bi is the player body, flip the contact normal
-                    contact.ni.negate(contactNormal);
-                else
-                    contact.ni.copy(contactNormal); // bi is something else. Keep the normal as it is
-
-                // If contactNormal.dot(upAxis) is between 0 and 1, we know that the contact normal is somewhat in the up direction.
-                if(contactNormal.dot(upAxis) > 0.5) // Use a "good" threshold value between 0 and 1 here!
-                    self.states.canJump = true;
-            });
-             */
         }
-
-        //only initial
-        this._threeObj.position.set(0,5,0);
-        this.translateTo(0,5,0);
-        //this.scaleTo(0.01,0.01,0.01);
 
 
         this.states = {
@@ -171,7 +114,8 @@ var Player = IgeEntity.extend({
             standingStage: 0,
             nextStandingAnim: 0,
             isDying: false,
-            noAnimation: false
+            noAnimation: false,
+            isCharging: false
         };
 
 		this.controls = {
@@ -238,11 +182,10 @@ var Player = IgeEntity.extend({
         var self = this;
 		/* CEXCLUDE */
 		if (ige.isServer) {
-            this.states.canJump = this._touchesGround();
 
             var inputVelocity = new THREE.Vector3(0,0,0);
             var velocity = new THREE.Vector3(0,0,0);
-            var velocityFactor = 0.1;
+            var velocityFactor = 0.2;
 
 			/*if (this.controls.left) {
 				//this.rotateBy(0, Math.radians(0.2 * ige._tickDelta), 0);
@@ -282,11 +225,13 @@ var Player = IgeEntity.extend({
             this.controls.rotation = 0;
 
 
+
             if (this.controls.chargeLeap) {
                 //switch between charge and leap mode
                 if (false && this.states.canJump) {
                     //leap
                     this.states.canJump = false;
+                    this.states.isCharging = false;
                     this.controls.chargeLeap = false;
                     this.states.isLeaping = true;
                     velocity.y = 5;
@@ -295,8 +240,15 @@ var Player = IgeEntity.extend({
                     }, 200);
                 } else if (true) {
                     //charge
-                    inputVelocity.z *= 2.5;
-                    inputVelocity.x *= 2.5;
+                    this.states.isCharging = true;
+                }
+            } else {
+                //if we can't jump it means we're already in air. If so the previous charge still applies
+                if (!this.states.canJump && this.states.isCharging) {
+                    //still charging
+                    this.states.isCharging = true;
+                } else {
+                    this.states.isCharging = false;
                 }
             }
 
@@ -307,6 +259,11 @@ var Player = IgeEntity.extend({
                 impulse.applyQuaternion(quatLeap);*/
                 inputVelocity.x *= 5;
                 inputVelocity.z *= 5;
+            }
+
+            if (this.states.isCharging) {
+                inputVelocity.z *= 2.5;
+                inputVelocity.x *= 2.5;
             }
 
             // Convert velocity to world coordinates

@@ -17,7 +17,7 @@ var PlayerCommander = Player.extend({
         var hatMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color('#FF0000')});
         var hat = new THREE.Mesh(hatGeometry, hatMaterial);
         hat.position.y = 1.0;
-        this._threeObj.add(hat);
+        //this._threeObj.add(hat);
     },
     /**
      * Called every frame by the engine when this entity is mounted to the
