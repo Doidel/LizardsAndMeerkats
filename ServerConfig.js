@@ -2,6 +2,7 @@ var config = {
 	include: [
 		{name: 'ServerNetworkEvents', path: './gameClasses/ServerNetworkEvents'},
 		{name: 'Player', path: './gameClasses/Player'},
+        {name: 'PlayerCommander', path: './gameClasses/PlayerCommander'},
         {name: 'THREE', path: './ige2912/engine/components/three/three.min'},
         {name: 'modelLizard', path: './models/modelLizard'},
        // {name: 'CANNON', path: './ige2912/engine/components/physics/cannon/lib_cannon'},

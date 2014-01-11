@@ -2,7 +2,8 @@ var igeClientConfig = {
 	include: [
 		/* Your custom game JS scripts */
 		'./gameClasses/ClientNetworkEvents.js',
-		'./gameClasses/Player.js',
+        './gameClasses/Player.js',
+        './gameClasses/PlayerCommander.js',
         './levels/level1.js',
 		//'./gameClasses/TurretMouseAim.js',
         //'./Sparks.js',

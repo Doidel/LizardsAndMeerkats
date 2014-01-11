@@ -133,6 +133,11 @@ var Levels = {
                 pGround.position.set(0,-50,0);
                 ige.server.scene1._threeObj.add(pGround);
             });
+            new Rock1(new THREE.Vector3(28, -50, 0), 3);
+            new Rock1(new THREE.Vector3(22.2, -0.5, 1.2), 0.5);
+            new Rock1(new THREE.Vector3(22.0, -0.25, -0.5), 0.25);
+
+            new RockGold1(new THREE.Vector3(5.0, -50, -4.5), 2);
         } else {
             // FLOOR
 
@@ -218,11 +223,11 @@ var Levels = {
                 */
             });
         }
-        new Rock1(new THREE.Vector3(28, -3, 0), 3);
+        new Rock1(new THREE.Vector3(28, -50, 0), 3);
         new Rock1(new THREE.Vector3(22.2, -0.5, 1.2), 0.5);
         new Rock1(new THREE.Vector3(22.0, -0.25, -0.5), 0.25);
 
-        new RockGold1(new THREE.Vector3(5.0, -2, -4.5), 2);
+        new RockGold1(new THREE.Vector3(5.0, -50, -4.5), 2);
     },
     // load a shader file
     loadShader: function(url){

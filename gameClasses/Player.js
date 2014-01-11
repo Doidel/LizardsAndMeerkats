@@ -19,9 +19,9 @@ var Player = IgeEntity.extend({
                 skinning: true
             });
 
-
-            //var parsedModel = ige.three._loader.parse(modelLizard);
-            var parsedModel = ige.three._loader.parse(modelMeerkat);
+            var isCommander = true;
+            var parsedModel = ige.three._loader.parse(modelLizard);
+            //var parsedModel = ige.three._loader.parse(modelMeerkat);
             this._threeObj = new THREE.SkinnedMesh(
                 parsedModel.geometry,
                 mat,
@@ -131,7 +131,7 @@ var Player = IgeEntity.extend({
             });
             this._threeObj.setAngularFactor({ x: 0, y: 0, z: 0 });
             ige.server.scene1._threeObj.add( this._threeObj );
-            this._threeObj.useQuaternion = true;
+            //this._threeObj.useQuaternion = true;
 
             /*
             var contactNormal = new CANNON.Vec3(); // Normal in the contact, pointing *out* of whatever the player touched
@@ -600,7 +600,7 @@ var Player = IgeEntity.extend({
                 }
             }
 
-            //start block: 190-210
+            //start block: 190 - 210
             //end block: 240 - 260
             //jump: 290 - 400
             //hit: 430 - 480, 510 - 580, 610 - 680
