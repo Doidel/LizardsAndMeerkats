@@ -220,9 +220,10 @@ var Levels = {
                 */
             });
         }
+
         new Rock1(new THREE.Vector3(28, -2, 0), 3);
-        //new Rock1(new THREE.Vector3(22.2, -0.5, 1.2), 0.5);
-        //new Rock1(new THREE.Vector3(22.0, -0.25, -0.5), 0.25);
+
+        //new MainBuildingLizards('mainBuildingLizards', new THREE.Vector3(5, 10, 6));
 
         new RockGold1(new THREE.Vector3(5, -2, 6), 4);
     },

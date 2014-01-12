@@ -37,14 +37,11 @@ var Building = IgeEntity.extend({
         if (this.values.health < this.values.maxhealth) {
             var diff = (this.values.healthregeneration*ige._tickDelta);
             this.values.health = Math.min(this.values.health + diff, this.values.maxhealth);
-            this._updateHealth(this.values.health);
+            //this._updateHealth(this.values.health);
         }
 
         // Call the IgeEntity (super-class) tick() method
         IgeEntity.prototype.tick.call(this, ctx);
-
-        //update entity translations. needed for streaming.
-        this.translateTo(this._threeObj.position.x, this._threeObj.position.y, this._threeObj.position.z); // - this._geometry.z2
     },
     /**
      * A player enters the building
