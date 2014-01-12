@@ -1,8 +1,8 @@
-var MainBuildingLizards = IgeEntity.extend({
+var MainBuildingLizards = Building.extend({
     classId: 'MainBuildingLizards',
 
     init: function (id, position) {
-        IgeEntity.prototype.init.call(this, id);
+        Building.prototype.init.call(this, id);
 
         if (!ige.isServer) {
 
