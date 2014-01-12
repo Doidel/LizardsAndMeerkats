@@ -27,6 +27,8 @@ var ClientNetworkEvents = {
 
                     ige.client.vp1.camera.mount(entity);
 
+                    ige.client.vp1.camera.radius = 3;
+                    ige.client.vp1.camera.currentAngle = Math.PI / 4;
                     ige.client.vp1.camera.rotateTo(-30*(Math.PI/180),0,0); //180*(Math.PI/180)
 
                     var onMouseMove = function ( event ) {
@@ -34,9 +36,19 @@ var ClientNetworkEvents = {
                         if (!ige.client.controls.enabled) return;
 
                         var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-                        //var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+                        var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
-                        //ige.client.vp1.camera.rotateBy(0,movementY * 0.002,0); //movementX * -0.002
+                        //for y, rotate with the camera around the player
+                        var previousAngle = ige.client.vp1.camera.currentAngle;
+                        var newAngle = previousAngle + movementY * 0.001;
+                        console.log(newAngle);
+                        var radius = ige.client.vp1.camera.radius;
+                        if (newAngle >= 0.5 && newAngle <= 1.4) {
+
+                            ige.client.vp1.camera.translateTo(0, radius * Math.cos(newAngle), radius * Math.sin(newAngle));
+                            ige.client.vp1.camera.rotateBy(movementY * 0.001,0,0); //movementX * -0.002
+                            ige.client.vp1.camera.currentAngle = newAngle;
+                        }
 
                         ige.network.send('playerControlRotation', {movementX: movementX * -0.008});
                         /*yawObject.rotation.y -= movementX * 0.002;
@@ -56,6 +68,7 @@ var ClientNetworkEvents = {
                         ige.client.vp1.camera._translate.x *= modifierY;
                         ige.client.vp1.camera._translate.y *= modifierY;
                         ige.client.vp1.camera._translate.z *= modifierY;
+                        ige.client.vp1.camera.radius *= modifierY;
                     }, false );
 
                     //directional light

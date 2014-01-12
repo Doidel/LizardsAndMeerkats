@@ -27,6 +27,15 @@ var Player = IgeEntity.extend({
                 mat,
                 false
             );
+            /*var physicalGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.0);
+            physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
+            this._threeObj.add(
+                new THREE.Mesh(
+                    physicalGeometry,
+                    new THREE.MeshBasicMaterial({color: 0x0000ff}),
+                    false
+                )
+            );*/
             this._threeObj.castShadow = true;
             this._threeObj.receiveShadow = false;
 
@@ -83,6 +92,11 @@ var Player = IgeEntity.extend({
                 0 // restitution
             );
 
+            /*var physicalGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.0);
+            //physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
+            physicalGeometry.computeBoundingBox();
+            physicalGeometry.boundingBox.max.y += physicalGeometry.boundingBox.min.y;
+            physicalGeometry.boundingBox.min.y = 0;*/
             this._threeObj = new Physijs.CapsuleMesh(
                 new THREE.CylinderGeometry(0.3, 0.3, 1.0),
                 playerMaterial,
