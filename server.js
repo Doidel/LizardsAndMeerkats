@@ -108,6 +108,7 @@ var Server = IgeClass.extend({
 			});
 	},
     physibehaviour: function (ctx) {
+        //TODO: tick relativity to get constant physics calculations without fluctuation
         ige.server.scene1._threeObj.simulate(); //1 / 60     0.001 * ige._tickDelta
     }
 });
