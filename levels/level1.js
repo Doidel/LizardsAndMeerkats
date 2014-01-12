@@ -223,7 +223,7 @@ var Levels = {
 
         new Rock1(new THREE.Vector3(28, -2, 0), 3);
 
-        //new MainBuildingLizards('mainBuildingLizards', new THREE.Vector3(5, 10, 6));
+        new MainBuildingLizards('mainBuildingLizards', new THREE.Vector3(-20, 2, 20));
 
         new RockGold1(new THREE.Vector3(5, -2, 6), 4);
     },

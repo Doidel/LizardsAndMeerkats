@@ -4,16 +4,18 @@ var MainBuildingLizards = Building.extend({
     init: function (id, position) {
         Building.prototype.init.call(this, id);
 
+        var geom = new THREE.CubeGeometry(4, 4, 4);
+
         if (!ige.isServer) {
 
             var mat = new THREE.MeshLambertMaterial({
                 map: THREE.ImageUtils.loadTexture( './assets/textures/rock1.jpg' )
+                //color: new THREE.Color('#FF0000')
             });
 
             this._threeObj = new THREE.Mesh(
-                new THREE.CubeGeometry(8, 8, 8),
-                mat,
-                false
+                geom,
+                mat
             );
 
             this._threeObj.receiveShadow = true;
@@ -31,16 +33,19 @@ var MainBuildingLizards = Building.extend({
             );
 
             this._threeObj = new Physijs.BoxMesh(
-                new THREE.CubeGeometry(8, 8, 8),
+                geom,
                 stoneMaterial,
                 0 //mass
             );
             //this._threeObj.geometry.dynamic = false;
             this._threeObj.position = position;
 
-            ige.server.scene1._threeObj.add( this._threeObj);
+            ige.server.scene1._threeObj.add( this._threeObj );
 
         }
+
+        this._threeObj.position = position;
+        this.translateTo(position.x, position.y, position.z);
     }
 });
 

@@ -28,7 +28,7 @@ var Player = IgeEntity.extend({
                 false
             );
             /*var physicalGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.0);
-            physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
+            //physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
             this._threeObj.add(
                 new THREE.Mesh(
                     physicalGeometry,
@@ -169,12 +169,12 @@ var Player = IgeEntity.extend({
             physicalGeometry.boundingBox.max.y += physicalGeometry.boundingBox.min.y;
             physicalGeometry.boundingBox.min.y = 0;*/
             this._threeObj = new Physijs.CapsuleMesh(
-                new THREE.CylinderGeometry(0.3, 0.3, 1.0),
+                new THREE.CylinderGeometry(0.6, 0.3, 0.1),
                 playerMaterial,
                 5 //mass
             );
             this._threeObj.geometry.dynamic = false;
-            this._threeObj.position.set(0,50,0);
+            this._threeObj.position.set(0,10,0);
 
             var upAxis = new THREE.Vector3(0,1,0);
             this._threeObj.addEventListener('collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
