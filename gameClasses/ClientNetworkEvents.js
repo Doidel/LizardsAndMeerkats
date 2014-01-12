@@ -41,7 +41,6 @@ var ClientNetworkEvents = {
                         //for y, rotate with the camera around the player
                         var previousAngle = ige.client.vp1.camera.currentAngle;
                         var newAngle = previousAngle + movementY * 0.001;
-                        console.log(newAngle);
                         var radius = ige.client.vp1.camera.radius;
                         if (newAngle >= 0.5 && newAngle <= 1.4) {
 

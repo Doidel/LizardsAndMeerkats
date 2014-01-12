@@ -80,6 +80,77 @@ var Player = IgeEntity.extend({
             };
             this.visuals.hitColor.setRGB(0.3,0.3,0);
             this._materialAmbientBackup = this._threeObj.material.ambient;
+
+
+            //events
+            window.addEventListener('mousedown', function(event){
+                if(ige.client.controls.enabled==true) {
+                    if (event.which == 1) {
+                        //attack
+                        if (!self.controls.attack) {
+                            // Record the new state
+                            self.controls.attack = true;
+
+                            // Tell the server about our control change
+                            ige.network.send('playerControlAttackDown');
+                        }
+                    } else if (event.which == 2) {
+                        //block
+                        if (!self.controls.block) {
+                            // Record the new state
+                            self.controls.block = true;
+
+                            // Tell the server about our control change
+                            ige.network.send('playerControlBlockDown');
+                        }
+                    } else if (event.which == 3) {
+                        //chargeLeap
+                        if (!self.controls.chargeLeap) {
+                            // Record the new state
+                            self.controls.chargeLeap = true;
+
+                            self._threeObj.chargeElements.opacity = 0.7;
+
+                            // Tell the server about our control change
+                            ige.network.send('playerControlChargeLeapDown');
+                        }
+                    }
+
+                }
+            });
+
+            window.addEventListener('mouseup', function(event){
+                if (event.which == 1) {
+                    //attack
+                    if (self.controls.attack) {
+
+                        // Record the new state
+                        self.controls.attack = false;
+                    }
+                } else if (event.which == 2) {
+                    //block
+                    if (self.controls.block) {
+
+                        // Record the new state
+                        self.controls.block = false;
+
+                        // Tell the server about our control change
+                        ige.network.send('playerControlBlockUp');
+                    }
+
+                } else if (event.which == 3) {
+                    //chargeLeap
+                    if (self.controls.chargeLeap) {
+                        // Record the new state
+                        self.controls.chargeLeap = false;
+
+                        self._threeObj.chargeElements.opacity = 0;
+
+                        // Tell the server about our control change
+                        ige.network.send('playerControlChargeLeapUp');
+                    }
+                }
+            });
 		}
 
         if (ige.isServer) {
@@ -404,75 +475,6 @@ var Player = IgeEntity.extend({
                         ige.network.send('playerControlJumpUp');
                     }
                 }
-
-                window.addEventListener('mousedown', function(event){
-                    if(ige.client.controls.enabled==true) {
-                        if (event.which == 1) {
-                            //attack
-                            if (!self.controls.attack) {
-                                // Record the new state
-                                self.controls.attack = true;
-
-                                // Tell the server about our control change
-                                ige.network.send('playerControlAttackDown');
-                            }
-                        } else if (event.which == 2) {
-                            //block
-                            if (!self.controls.block) {
-                                // Record the new state
-                                self.controls.block = true;
-
-                                // Tell the server about our control change
-                                ige.network.send('playerControlBlockDown');
-                            }
-                        } else if (event.which == 3) {
-                            //chargeLeap
-                            if (!self.controls.chargeLeap) {
-                                // Record the new state
-                                self.controls.chargeLeap = true;
-
-                                self._threeObj.chargeElements.opacity = 0.7;
-
-                                // Tell the server about our control change
-                                ige.network.send('playerControlChargeLeapDown');
-                            }
-                        }
-
-                    }
-                });
-
-                window.addEventListener('mouseup', function(event){
-                    if (event.which == 1) {
-                        //attack
-                        if (self.controls.attack) {
-
-                            // Record the new state
-                            self.controls.attack = false;
-                        }
-                    } else if (event.which == 2) {
-                        //block
-                        if (self.controls.block) {
-
-                            // Record the new state
-                            self.controls.block = false;
-
-                            // Tell the server about our control change
-                            ige.network.send('playerControlBlockUp');
-                        }
-
-                    } else if (event.which == 3) {
-                        //chargeLeap
-                        if (self.controls.chargeLeap) {
-                            // Record the new state
-                            self.controls.chargeLeap = false;
-
-                            self._threeObj.chargeElements.opacity = 0;
-
-                            // Tell the server about our control change
-                            ige.network.send('playerControlChargeLeapUp');
-                        }
-                    }
-                });
             }
 
             if (!this.states.noAnimation) {
@@ -801,18 +803,6 @@ var Player = IgeEntity.extend({
         this._previousAnimation[layer] = selectedAnimation;
     },
     /* CEXCLUDE */
-    _touchesGround: function() {
-        return true;
-        //if we barely have vertical speed and one of the touched elements is below us we're probably standing
-        if (Math.abs(this._threeObj.getLinearVelocity().y) < 0.5)
-        var touched = this._threeObj._physijs.touches;
-        for (var x = 0; x < this._threeObj._physijs.touches.length; x++) {
-            if (this._findPhysijsObjectById(this._threeObj._physijs.touches[x]).position.y <= this._threeObj.position.y) {
-                return true;
-            }
-        }
-        return false;
-    },
     _findPhysijsObjectById: function(id) {
         var obj;
         var list = ige.server.scene1._threeObj._objects;
