@@ -20,8 +20,8 @@ var Player = IgeEntity.extend({
             });
 
             var isCommander = true;
-            var parsedModel = ige.three._loader.parse(modelLizard);
-            //var parsedModel = ige.three._loader.parse(modelMeerkat);
+            //var parsedModel = ige.three._loader.parse(modelLizard);
+            var parsedModel = ige.three._loader.parse(modelMeerkat);
             this._threeObj = new THREE.SkinnedMesh(
                 parsedModel.geometry,
                 mat,
@@ -270,7 +270,7 @@ var Player = IgeEntity.extend({
 
             var inputVelocity = new THREE.Vector3(0,0,0);
             var velocity = new THREE.Vector3(0,0,0);
-            var velocityFactor = 0.1;
+            var velocityFactor = 0.2;
 
 			/*if (this.controls.left) {
 				//this.rotateBy(0, Math.radians(0.2 * ige._tickDelta), 0);
@@ -301,8 +301,8 @@ var Player = IgeEntity.extend({
 
             //regulate the speed so you can't profit from double speed by going both directions
             if (Math.abs(inputVelocity.x) > 0 && Math.abs(inputVelocity.z) > 0) {
-                inputVelocity.x /= 2;
-                inputVelocity.z /= 2;
+                inputVelocity.x /= 1.4142;
+                inputVelocity.z /= 1.4142;
             }
 
 
@@ -521,11 +521,11 @@ var Player = IgeEntity.extend({
                     }
                 } else if (this.states.isAttacking) {
                     this._checkResetAnimation('attack' + this.states.attackType, 1);
-                    var start = 430, end = 480, speedUp = 1.2;
+                    var start = 430, end = 480, speedUp = 2.4;
                     if (this.states.attackType == 1) {
-                            start = 510; end = 580; speedUp = 2;
+                            start = 510; end = 580; speedUp = 4;
                     } else if (this.states.attackType == 2) {
-                            start = 610; end = 680; speedUp = 2;
+                            start = 610; end = 680; speedUp = 3;
                     }
                     var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 1, false, ige.client.legBones);
                     if (frame >= end) this.states.isAttacking = false;
@@ -689,9 +689,9 @@ var Player = IgeEntity.extend({
             self._forwardAttribute('states', 'attackType', self.states.attackType, true);
             self._forwardAttribute('states', 'isAttacking', true, true);
             //pause langer before the third hit from above
-            var attackPause = 1000;
-            if (self.states.attackType == 2) attackPause = 1500;
-            if (self.states.attackType == 3) attackPause = 2000;
+            var attackPause = 500;
+            if (self.states.attackType == 2) attackPause = 750;
+            if (self.states.attackType == 3) attackPause = 1000;
             self.states.nextPossibleAttack = ige._currentTime + attackPause;
             //next attack type
             self.states.attackType = (self.states.attackType + 1) % 3;

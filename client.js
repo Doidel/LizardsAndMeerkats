@@ -2,7 +2,6 @@ var Client = IgeClass.extend({
 	classId: 'Client',
 
 	init: function () {
-		ige.showStats(1);
         ige.setFps(60);
 
 		// Setup three.js interaction
