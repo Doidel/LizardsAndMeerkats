@@ -11,7 +11,7 @@ var Levels = {
             var groundmat = Physijs.createMaterial(
                 new THREE.MeshBasicMaterial(),
                 0, // high friction
-                .4 // low restitution
+                0 // low restitution
             );
 
             var geometry = new THREE.PlaneGeometry( 300, 300, 50, 50 );
@@ -125,9 +125,13 @@ var Levels = {
 
                 shape.computeFaceNormals();
                 shape.computeVertexNormals();
-                var pMat = new THREE.MeshBasicMaterial();
+                var groundmat = Physijs.createMaterial(
+                    new THREE.MeshBasicMaterial(),
+                    0, // high friction
+                    0 // low restitution
+                );
                 var pGround = new Physijs.HeightfieldMesh(
-                    shape, pMat, 0
+                    shape, groundmat, 0
                 );
                 pGround.rotation.x = -Math.PI / 2;
                 pGround.position.set(0,0,0);

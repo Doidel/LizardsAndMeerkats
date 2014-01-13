@@ -64,12 +64,12 @@ var Player = IgeEntity.extend({
             var chargeGeometry = new THREE.PlaneGeometry( 1, 0.5, 1, 1 );
 
             var chargeMesh1 = new THREE.Mesh(chargeGeometry, chargeMat);
-            chargeMesh1.position = new THREE.Vector3(0.2,0.3,0.3);
+            chargeMesh1.position = new THREE.Vector3(0.2,-0.3,0.3);
             chargeMesh1.rotation.y = - Math.PI / 2.5;
             this._threeObj.add(chargeMesh1);
 
             var chargeMesh2 = new THREE.Mesh(chargeGeometry, chargeMat);
-            chargeMesh2.position = new THREE.Vector3(-0.2,0.3,0.3);
+            chargeMesh2.position = new THREE.Vector3(-0.2,-0.3,0.3);
             chargeMesh2.rotation.y = - Math.PI / 1.7;
             this._threeObj.add(chargeMesh2);
             this._threeObj.chargeElements = chargeMat;
@@ -270,7 +270,7 @@ var Player = IgeEntity.extend({
 
             var inputVelocity = new THREE.Vector3(0,0,0);
             var velocity = new THREE.Vector3(0,0,0);
-            var velocityFactor = 0.2;
+            var velocityFactor = 0.1;
 
 			/*if (this.controls.left) {
 				//this.rotateBy(0, Math.radians(0.2 * ige._tickDelta), 0);
@@ -281,7 +281,7 @@ var Player = IgeEntity.extend({
             if (this.controls.jump && this.states.canJump) {
                 this.states.canJump = false;
                 //this._cannonBody.applyImpulse(new CANNON.Vec3(0,100,0), new CANNON.Vec3(0,0,0));
-                velocity.y = 10;
+                velocity.y = 20;
             }
 
 
@@ -310,6 +310,8 @@ var Player = IgeEntity.extend({
             this.controls.rotation = 0;
 
 
+            var wasCharging = this.states.isCharging;
+            this.states.isCharging = false;
 
             if (this.controls.chargeLeap) {
                 //switch between charge and leap mode
@@ -325,16 +327,14 @@ var Player = IgeEntity.extend({
                     }, 200);
                 } else if (true) {
                     //charge
-                    this.states.isCharging = true;
+                    if (this.states.canJump) this.states.isCharging = true;
                 }
-            } else {
-                //if we can't jump it means we're already in air. If so the previous charge still applies
-                if (!this.states.canJump && this.states.isCharging) {
-                    //still charging
-                    this.states.isCharging = true;
-                } else {
-                    this.states.isCharging = false;
-                }
+            }
+
+            //if we can't jump it means we're already in air. If so the previous charge still applies
+            if (!this.states.canJump && wasCharging) {
+                //still charging
+                this.states.isCharging = true;
             }
 
             if (this.states.isLeaping) {

@@ -40,12 +40,12 @@ var ClientNetworkEvents = {
 
                         //for y, rotate with the camera around the player
                         var previousAngle = ige.client.vp1.camera.currentAngle;
-                        var newAngle = previousAngle + movementY * 0.001;
+                        var newAngle = previousAngle + movementY * -0.001;
                         var radius = ige.client.vp1.camera.radius;
                         if (newAngle >= 0.5 && newAngle <= 1.4) {
 
                             ige.client.vp1.camera.translateTo(0, radius * Math.cos(newAngle), radius * Math.sin(newAngle));
-                            ige.client.vp1.camera.rotateBy(movementY * 0.001,0,0); //movementX * -0.002
+                            ige.client.vp1.camera.rotateBy(movementY * -0.001,0,0); //movementX * -0.002
                             ige.client.vp1.camera.currentAngle = newAngle;
                         }
 

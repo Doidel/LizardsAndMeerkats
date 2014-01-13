@@ -79,8 +79,8 @@ var Server = IgeClass.extend({
 						self.scene1 = new IgeScene2d()
 							.id('scene1');
 
-                        self.scene1._threeObj = new Physijs.Scene({ fixedTimeStep: 1 / 120 });
-                        self.scene1._threeObj.setGravity(new THREE.Vector3(0, -30, 0));
+                        self.scene1._threeObj = new Physijs.Scene({ fixedTimeStep: 1 / 60 });
+                        self.scene1._threeObj.setGravity(new THREE.Vector3(0, -60, 0));
                         self.scene1._threeObj.fog = new THREE.FogExp2(0x000000, 0.05);
                         ige.addBehaviour('physiStep', self.physibehaviour);
 
@@ -108,8 +108,7 @@ var Server = IgeClass.extend({
 			});
 	},
     physibehaviour: function (ctx) {
-        //TODO: tick relativity to get constant physics calculations without fluctuation
-        ige.server.scene1._threeObj.simulate(); //1 / 60     0.001 * ige._tickDelta
+        ige.server.scene1._threeObj.simulate(ige._tickDelta/1000, 5); //1 / 60     0.001 * ige._tickDelta
     }
 });
 
