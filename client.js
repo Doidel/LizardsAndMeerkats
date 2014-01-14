@@ -145,6 +145,17 @@ var Client = IgeClass.extend({
 						ige.input.mapAction('forwards', ige.input.key.w);
                         ige.input.mapAction('backwards', ige.input.key.s);
                         ige.input.mapAction('jump', ige.input.key.space);
+                        ige.input.mapAction('build', ige.input.key.b);
+                        ige.input.mapAction('key1', ige.input.key[1]);
+                        ige.input.mapAction('key2', ige.input.key[2]);
+                        ige.input.mapAction('key3', ige.input.key[3]);
+                        ige.input.mapAction('key4', ige.input.key[4]);
+                        ige.input.mapAction('key5', ige.input.key[5]);
+                        ige.input.mapAction('key6', ige.input.key[6]);
+                        ige.input.mapAction('key7', ige.input.key[7]);
+                        ige.input.mapAction('key8', ige.input.key[8]);
+                        ige.input.mapAction('key9', ige.input.key[9]);
+                        ige.input.mapAction('key0', ige.input.key[0]);
                         /*ige.input.mapAction('block', ige.input.mouse.wheel);
                         ige.input.mapAction('chargeLeap', ige.input.mouse.down);*/
 

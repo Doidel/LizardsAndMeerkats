@@ -86,8 +86,12 @@ var Player = IgeEntity.extend({
             window.addEventListener('mousedown', function(event){
                 if(ige.client.controls.enabled==true) {
                     if (event.which == 1) {
+                        // build mode
+                        if(self.states.isBuilding){
+                            self.placeBuilding(event);
+                        }
                         //attack
-                        if (!self.controls.attack) {
+                        else if (!self.controls.attack) {
                             // Record the new state
                             self.controls.attack = true;
 
@@ -200,7 +204,8 @@ var Player = IgeEntity.extend({
             nextStandingAnim: 0,
             isDying: false,
             noAnimation: false,
-            isCharging: false
+            isCharging: false,
+            isBuilding: false
         };
 
 		this.controls = {
@@ -212,7 +217,18 @@ var Player = IgeEntity.extend({
             block: false,
             chargeLeap: false,
             attack: false,
-            rotation: 0
+            rotation: 0,
+            key0: false,
+            key1: false,
+            key2: false,
+            key3: false,
+            key4: false,
+            key5: false,
+            key6: false,
+            key7: false,
+            key8: false,
+            key9: false,
+            build: false
 		};
 
         this.values = {
@@ -473,6 +489,47 @@ var Player = IgeEntity.extend({
 
                         // Tell the server about our control change
                         ige.network.send('playerControlJumpUp');
+                    }
+                }
+
+                if (ige.input.actionState('build')) {
+                    if (!this.controls.build) {
+                        // Record the new state
+                        this.controls.build = true;
+
+
+                        // Tell the server about our control change
+                        //ige.network.send('playerControlBuildDown');
+                    }
+                } else {
+                    if (this.controls.build) {
+                        // Record the new state
+                        this.controls.build = false;
+                        this.states.isBuilding = true;
+
+                        // Tell the server about our control change
+                        ige.network.send('playerControlBuildUp');
+                    }
+                }
+
+                for(var i=0; i<10; ++i){
+                    if (ige.input.actionState('key' + i)) {
+                        if (!this.controls['key' + i]) {
+                            // Record the new state
+                            this.controls['key' + i] = true;
+                            //this.states.isJumping = true;
+
+
+                            // Tell the server about our control change
+                            ige.network.send('playerControlNumKeyDown', i);
+                        }
+                    } else {
+                        if (this.controls['key' + i]) {
+                            // Record the new state
+
+                            // Tell the server about our control change
+                            ige.network.send('playerControlNumKeyUp', i);
+                        }
                     }
                 }
             }

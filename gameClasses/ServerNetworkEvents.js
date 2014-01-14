@@ -119,6 +119,18 @@ var ServerNetworkEvents = {
 
     _onPlayerAttackDown: function (data, clientId) {
         ige.server.players[clientId].controls.attack = true;
+    },
+
+    _onPlayerNumKeyUp: function (data, clientId) {
+        ige.server.players[clientId].controls['key' + data] = false;
+    },
+
+    _onPlayerNumKeyDown: function (data, clientId) {
+        ige.server.players[clientId].controls['key' + data] = true;
+    },
+
+    _onPlayerBuildUp: function (data, clientId) {
+        ige.server.players[clientId].states.isBuilding = true;
     }
 };
 

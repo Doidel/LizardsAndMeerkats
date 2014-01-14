@@ -177,6 +177,7 @@ var Levels = {
                 ground.receiveShadow = true;
                 //ground.castShadow = true;
                 ground.position.set(0,0,0);
+                ground.name = "level";
                 ige.client.scene1._threeObj.add(ground);
 
                 // water

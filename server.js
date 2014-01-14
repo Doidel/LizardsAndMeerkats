@@ -47,6 +47,8 @@ var Server = IgeClass.extend({
                         ige.network.define('playerControlJumpDown', self._onPlayerJumpDown);
                         ige.network.define('playerControlBlockDown', self._onPlayerBlockDown);
                         ige.network.define('playerControlChargeLeapDown', self._onPlayerChargeLeapDown);
+                        ige.network.define('playerControlAttackDown', self._onPlayerAttackDown);
+                        ige.network.define('playerControlNumKeyDown', self._onPlayerNumKeyDown);
 
 						ige.network.define('playerControlLeftUp', self._onPlayerLeftUp);
 						ige.network.define('playerControlRightUp', self._onPlayerRightUp);
@@ -55,7 +57,8 @@ var Server = IgeClass.extend({
                         ige.network.define('playerControlJumpUp', self._onPlayerJumpUp);
                         ige.network.define('playerControlBlockUp', self._onPlayerBlockUp);
                         ige.network.define('playerControlChargeLeapUp', self._onPlayerChargeLeapUp);
-                        ige.network.define('playerControlAttackDown', self._onPlayerAttackDown);
+                        ige.network.define('playerControlNumKeyUp', self._onPlayerNumKeyUp);
+                        ige.network.define('playerControlBuildUp', self._onPlayerBuildUp);
 
                         ige.network.define('playerControlRotation', self._onPlayerRotation);
 
