@@ -811,7 +811,10 @@ var Player = IgeEntity.extend({
     _setPlayerModel: function(faction, unit) {
 
         //temp save old values and remove old model stuff
-        if (this._threeObj) this._threeObj.animation.stop();
+        if (this._threeObj) {
+            this._threeObj.animation.stop();
+            ige.client.scene1._threeObj.remove( this._threeObj );
+        }
 
         var mat = new THREE.MeshLambertMaterial({
             //color: new THREE.Color('#FF0000'),
@@ -826,11 +829,12 @@ var Player = IgeEntity.extend({
             mat,
             false
         );
+        ige.client.scene1._threeObj.add( this._threeObj );
 
 
-        if (this.__threeSunlight) {
-            this._threeObj.add( this.__threeSunlight );
+        if (this.__threeSunlight != undefined) {
             this.__threeSunlight.target = this._threeObj;
+            this._threeObj.add( this.__threeSunlight );
         }
         /*var physicalGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.0);
          //physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
