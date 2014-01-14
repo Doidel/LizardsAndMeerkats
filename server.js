@@ -22,6 +22,15 @@ var Server = IgeClass.extend({
 		// Define an object to hold references to our player entities
 		this.players = {};
 
+        this.commander = undefined; //contains clientId from the player who's commander
+
+        this.gameStates = {
+            playerCounts: {
+                lizards: 0,
+                meerkats: 0
+            }
+        };
+
         this.levelObjects = {
             goldRocks: []
         };
@@ -61,11 +70,13 @@ var Server = IgeClass.extend({
                         ige.network.define('playerControlBuildUp', self._onPlayerBuildUp);
 
                         ige.network.define('playerControlRotation', self._onPlayerRotation);
+                        ige.network.define('playerTakesCommand', self._onPlayerTakesCommand);
 
                         ige.network.define('playerUpdateHealth');
                         ige.network.define('playersTakeHit');
                         ige.network.define('playerHarvest');
                         ige.network.define('playerAttributeUpdate');
+                        ige.network.define('playerSpawn');
 
 						ige.network.on('connect', self._onPlayerConnect); // Defined in ./gameClasses/ServerNetworkEvents.js
 						ige.network.on('disconnect', self._onPlayerDisconnect); // Defined in ./gameClasses/ServerNetworkEvents.js

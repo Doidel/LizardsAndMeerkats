@@ -14,6 +14,7 @@ var ServerNetworkEvents = {
 
 	_onPlayerDisconnect: function (clientId) {
 		// Remove the player from the game
+        ige.server.gameStates.playerCounts[ige.server.players[clientId].faction]--;
 		ige.server.players[clientId].destroy();
 
 		// Remove the reference to the player entity
@@ -32,6 +33,11 @@ var ServerNetworkEvents = {
 
 			// Tell the client to track their player entity
 			ige.network.send('playerEntity', ige.server.players[clientId].id(), clientId);
+
+            setTimeout(function() {
+                //Call the spawn event which sets their model (faction + unit type) and displays an animation
+                ige.network.send('playerSpawn', {player: ige.server.players[clientId]._id, faction: ige.server.players[clientId].faction}, clientId);
+            }, 200);
 		}
 	},
 
@@ -131,6 +137,14 @@ var ServerNetworkEvents = {
 
     _onPlayerBuildUp: function (data, clientId) {
         ige.server.players[clientId].states.isBuilding = true;
+    },
+
+    _onPlayerTakesCommand: function (data, clientId) {
+        if (ige.server.commander == undefined) {
+            ige.server.commander = clientId;
+            //give player commander abilities
+            ige.server.players[clientId].states.isCommander = true;
+        }
     }
 };
 

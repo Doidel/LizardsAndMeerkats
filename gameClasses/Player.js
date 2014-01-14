@@ -13,66 +13,7 @@ var Player = IgeEntity.extend({
 		}
 
 		if (!ige.isServer) {
-            var mat = new THREE.MeshLambertMaterial({
-                //color: new THREE.Color('#FF0000'),
-                map: THREE.ImageUtils.loadTexture( './assets/textures/meerkat/MeerkatzTexture256BackV4.png' ),
-                skinning: true
-            });
-
-            var isCommander = true;
-            //var parsedModel = ige.three._loader.parse(modelLizard);
-            var parsedModel = ige.three._loader.parse(modelMeerkat);
-            this._threeObj = new THREE.SkinnedMesh(
-                parsedModel.geometry,
-                mat,
-                false
-            );
-            /*var physicalGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.0);
-            //physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
-            this._threeObj.add(
-                new THREE.Mesh(
-                    physicalGeometry,
-                    new THREE.MeshBasicMaterial({color: 0x0000ff}),
-                    false
-                )
-            );*/
-            this._threeObj.castShadow = true;
-            this._threeObj.receiveShadow = false;
-
-            //animation
-
-            THREE.AnimationHandler.add(this._threeObj.geometry.animation);
-
-            this._threeObj.animation = new THREE.Animation(this._threeObj, "ArmatureAction", THREE.AnimationHandler.CATMULLROM);
-
-            this._threeObj.animation.play();
-
-            this._threeObj.animation.currentTime = {
-                time: [0.0, 0.0]
-            };
-
-            this._previousAnimation = ['',''];
-
-            //charge
-            var chargeMat = new THREE.MeshBasicMaterial({
-                map: THREE.ImageUtils.loadTexture( './assets/textures/charge.png' ),
-                transparent: true,
-                opacity: 0,
-                side: THREE.DoubleSide
-            });
-
-            var chargeGeometry = new THREE.PlaneGeometry( 1, 0.5, 1, 1 );
-
-            var chargeMesh1 = new THREE.Mesh(chargeGeometry, chargeMat);
-            chargeMesh1.position = new THREE.Vector3(0.2,-0.3,0.3);
-            chargeMesh1.rotation.y = - Math.PI / 2.5;
-            this._threeObj.add(chargeMesh1);
-
-            var chargeMesh2 = new THREE.Mesh(chargeGeometry, chargeMat);
-            chargeMesh2.position = new THREE.Vector3(-0.2,-0.3,0.3);
-            chargeMesh2.rotation.y = - Math.PI / 1.7;
-            this._threeObj.add(chargeMesh2);
-            this._threeObj.chargeElements = chargeMat;
+            this._setPlayerModel();
 
             //Colors etc
             this.visuals = {
@@ -158,6 +99,16 @@ var Player = IgeEntity.extend({
 		}
 
         if (ige.isServer) {
+
+            //figure out the faction
+            if (ige.server.gameStates.playerCounts.lizards == ige.server.gameStates.playerCounts.meerkats) {
+                this.faction = Math.random() < 0.5 ? 'lizards' : 'meerkats';
+            } else if (ige.server.gameStates.playerCounts.lizards < ige.server.gameStates.playerCounts.meerkats) {
+                this.faction = 'lizards';
+            } else {
+                this.faction = 'meerkats';
+            }
+            ige.server.gameStates.playerCounts[this.faction]++;
 
            // var parsedModel = loader.parse(modelLizard);
 
@@ -795,6 +746,10 @@ var Player = IgeEntity.extend({
         }
         this._updateHealth(this.values.health - damage, false)
     },
+    takeCommander: function() {
+        //try to take the commander spot. If it works, replace unit (ClientNetworkEvents)
+        ige.network.send('playerTakesCommand');
+    },
     /**
      * Can be called for manually updating AND synchronizing health.
      * @param health
@@ -852,6 +807,77 @@ var Player = IgeEntity.extend({
             if (key === 'length' || !ige.server.players.hasOwnProperty(key) || (includeSelf != true && key == this._id)) continue;
             ige.network.send('playerAttributeUpdate', {player: this._id, group: group, name: name, value: value}, key);
         }
+    },
+    _setPlayerModel: function(faction, unit) {
+
+        //temp save old values and remove old model stuff
+        var sunlight = this.__threeSunlight;
+        if (this._threeObj) this._threeObj.animation.stop();
+
+        var mat = new THREE.MeshLambertMaterial({
+            //color: new THREE.Color('#FF0000'),
+            map: THREE.ImageUtils.loadTexture( './assets/textures/meerkat/MeerkatzTexture256BackV4.png' ),
+            skinning: true
+        });
+
+        //var parsedModel = ige.three._loader.parse(modelLizard);
+        var parsedModel = ige.three._loader.parse(modelMeerkat);
+        this._threeObj = new THREE.SkinnedMesh(
+            parsedModel.geometry,
+            mat,
+            false
+        );
+        /*var physicalGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.0);
+         //physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
+         this._threeObj.add(
+         new THREE.Mesh(
+         physicalGeometry,
+         new THREE.MeshBasicMaterial({color: 0x0000ff}),
+         false
+         )
+         );*/
+        this._threeObj.castShadow = true;
+        this._threeObj.receiveShadow = false;
+
+        //animation
+
+        THREE.AnimationHandler.add(this._threeObj.geometry.animation); //Overwrites existing animation
+
+        this._threeObj.animation = new THREE.Animation(this._threeObj, "ArmatureAction", THREE.AnimationHandler.CATMULLROM);
+
+        this._threeObj.animation.play();
+
+        this._threeObj.animation.currentTime = {
+            time: [0.0, 0.0]
+        };
+
+        this._previousAnimation = ['',''];
+
+        //charge
+        var chargeMat = new THREE.MeshBasicMaterial({
+            map: THREE.ImageUtils.loadTexture( './assets/textures/charge.png' ),
+            transparent: true,
+            opacity: 0,
+            side: THREE.DoubleSide
+        });
+
+        var chargeGeometry = new THREE.PlaneGeometry( 1, 0.5, 1, 1 );
+
+        var chargeMesh1 = new THREE.Mesh(chargeGeometry, chargeMat);
+        chargeMesh1.position = new THREE.Vector3(0.2,-0.3,0.3);
+        chargeMesh1.rotation.y = - Math.PI / 2.5;
+        this._threeObj.add(chargeMesh1);
+
+        var chargeMesh2 = new THREE.Mesh(chargeGeometry, chargeMat);
+        chargeMesh2.position = new THREE.Vector3(-0.2,-0.3,0.3);
+        chargeMesh2.rotation.y = - Math.PI / 1.7;
+        this._threeObj.add(chargeMesh2);
+        this._threeObj.chargeElements = chargeMat;
+
+        ige.client.vp1.camera.mount(this);
+
+        this._threeObj.add( sunlight );
+        this.__threeSunlight = sunlight;
     },
     _checkResetAnimation: function(selectedAnimation, layer) {
         if (this._previousAnimation[layer] != selectedAnimation) {

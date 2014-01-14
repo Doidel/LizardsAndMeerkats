@@ -25,7 +25,7 @@ var ClientNetworkEvents = {
 
                     ige._player = entity;
 
-                    ige.client.vp1.camera.mount(entity);
+                    //ige.client.vp1.camera.mount(entity);
 
                     ige.client.vp1.camera.radius = 3;
                     ige.client.vp1.camera.currentAngle = Math.PI / 4;
@@ -101,6 +101,7 @@ var ClientNetworkEvents = {
                     //sunlight.shadowCascadeOffset.set( 0, 0, -10 );
 
                     entity._threeObj.add( sunlight );
+                    entity.__threeSunlight = sunlight;
                     //sunlight.lookAt(new THREE.Vector3(0,0,0));
 
                     //self.scene1._threeObj._defaultLight = sunlight;
@@ -141,6 +142,15 @@ var ClientNetworkEvents = {
     _onPlayerAttributeUpdate: function (data) {
         var p = ige.$(data.player);
         p[data.group][data.name] = data.value;
+    },
+    /**
+     * Set the model (faction + unit type) and display an animation
+     */
+    _onPlayerSpawn: function(data) {
+        var p = ige.$(data.player);
+        p.faction = data.faction;
+        //data.unit
+        p._setPlayerModel(data.faction, data.unit);
     }
 };
 

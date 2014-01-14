@@ -53,6 +53,7 @@ var Client = IgeClass.extend({
                         ige.network.define('playerHarvest', self._onPlayerHarvest);
                         ige.network.define('playerAttributeUpdate', self._onPlayerAttributeUpdate);
                         ige.network.define('playerUpdateHealth', self._onPlayerUpdateHealth);
+                        ige.network.define('playerSpawn', self._onPlayerSpawn);
 
 						// Setup the network stream handler
 						ige.network.addComponent(IgeStreamComponent)
