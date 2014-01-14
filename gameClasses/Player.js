@@ -811,7 +811,6 @@ var Player = IgeEntity.extend({
     _setPlayerModel: function(faction, unit) {
 
         //temp save old values and remove old model stuff
-        var sunlight = this.__threeSunlight;
         if (this._threeObj) this._threeObj.animation.stop();
 
         var mat = new THREE.MeshLambertMaterial({
@@ -827,6 +826,12 @@ var Player = IgeEntity.extend({
             mat,
             false
         );
+
+
+        if (this.__threeSunlight) {
+            this._threeObj.add( this.__threeSunlight );
+            this.__threeSunlight.target = this._threeObj;
+        }
         /*var physicalGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.0);
          //physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
          this._threeObj.add(
@@ -875,9 +880,6 @@ var Player = IgeEntity.extend({
         this._threeObj.chargeElements = chargeMat;
 
         ige.client.vp1.camera.mount(this);
-
-        this._threeObj.add( sunlight );
-        this.__threeSunlight = sunlight;
     },
     _checkResetAnimation: function(selectedAnimation, layer) {
         if (this._previousAnimation[layer] != selectedAnimation) {
