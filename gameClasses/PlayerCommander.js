@@ -56,33 +56,38 @@ var PlayerCommander = Player.extend({
                     var hatMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color('#FF0000')});
 
                     this.buildingObject = new THREE.Mesh(hatGeometry, hatMaterial);
+                    this.buildingObject.BottomPos = 0.125;
                     ige.client.scene1._threeObj.add(this.buildingObject);
                 }
+
+                var vec = new THREE.Vector3( 0, 0, -1 );
+                vec.applyQuaternion( ige.client.vp1.camera._threeObj.quaternion );
+                var angle = vec.angleTo( this._threeObj.position );
+
+                var mouseYAddition = (3*Math.PI) / 4;
+                mouseYAddition -= angle;
+
                 // update the mouse variable
                 var currentMousePos = { x: -1, y: -1 };
                 var mouseX = window.innerWidth / 2;
                 var mouseY = -window.innerHeight / 2;
+                //var mouseY = -((window.innerHeight / 2) / (Math.PI / 2))*mouseYAddition;
 
                 // find intersections
 
                 // create a Ray with origin at the mouse position
                 //   and direction into the scene (camera direction)
                 var vector = new THREE.Vector3( mouseX, mouseY, 1 );
-
-                var position = new THREE.Vector3();
-                position.x = this._threeObj.position.x + ige.client.vp1.camera._threeObj.position.x;
-                position.y = this._threeObj.position.y + ige.client.vp1.camera._threeObj.position.y;
-                position.z = this._threeObj.position.z + ige.client.vp1.camera._threeObj.position.z;
-
                 this.projector.unprojectVector( vector, ige.client.vp1.camera._threeObj );
 
+                //vector.sub( angle ).normalize();
                 vector.sub( this._threeObj.position ).normalize();
                 //vector.sub( position ).normalize();
-                console.log(vector);
 
-                var axis = new THREE.Vector3( 0, 1, 0 );
-                var angle = Math.PI / 2;
-                var matrix = new THREE.Matrix4().makeRotationAxis( axis, angle );
+
+                var axisY = new THREE.Vector3( 0, 1, 0 );
+                var angleY = Math.PI / 2;
+                var matrix = new THREE.Matrix4().makeRotationAxis( axisY, angleY );
                 vector.applyMatrix4( matrix );
 
                 var ray = new THREE.Raycaster( this._threeObj.position, vector );
@@ -103,7 +108,8 @@ var PlayerCommander = Player.extend({
 
                 if(intersect[0]){
                     this.buildingObject.position = intersect[0].point;
-                    //console.log(ige.client.vp1.camera._threeObj.position, position);
+                    this.buildingObject.position.y += this.buildingObject.BottomPos;
+                    console.log(this.buildingObject);
                     //this.buildingObject.needsUpdate();
                 }
             }
