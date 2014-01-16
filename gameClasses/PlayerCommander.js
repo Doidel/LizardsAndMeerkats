@@ -30,8 +30,25 @@ var PlayerCommander = Player.extend({
     placeBuilding: function(event){
 
         if(!ige.isServer){
+            ige.network.send('playerControlAttackDown');
             this.isInBuildingMode = false;
         }
+
+
+        //Roman's build streaming approach
+        if (ige.isServer) {
+            //Create a streamed building entity in front of the player
+            //the newly initialized Building.js calls isBuildable each tick on the server while it's not built
+            ige.server.players[clientId] = new MainBuildingLizards(clientId)
+                .streamMode(1)
+                .mount(ige.server.scene1);
+
+        } else {
+            //register the click event (or however you do this)
+            //(On click, if buildable, send network event to the server to call Building.js: finalPlaceBuilding
+            //Do not call finalPlaceBuilding on the client yet, await the server's response)
+        }
+
     },
     /**
      * Called every frame by the engine when this entity is mounted to the
@@ -43,13 +60,12 @@ var PlayerCommander = Player.extend({
 
         Player.prototype.tick.call(this, ctx);
 
-        if(ige.isServer){
-
-        } else if(!ige.isServer){
+        if (!ige.isServer){
 
             // if he is in the building mode
             if (this.controls.build || this.isInBuildingMode) {
 
+                //create the building object when he enters building mode
                 if(!this.isInBuildingMode){
                     this.isInBuildingMode = true;
                     var hatGeometry = new THREE.CubeGeometry(0.25,0.25,0.25);
@@ -109,10 +125,18 @@ var PlayerCommander = Player.extend({
                 if(intersect[0]){
                     this.buildingObject.position = intersect[0].point;
                     this.buildingObject.position.y += this.buildingObject.BottomPos;
-                    console.log(this.buildingObject);
+                    //console.log(this.buildingObject);
                     //this.buildingObject.needsUpdate();
                 }
             }
+        }
+    },
+
+    toggleBuildingMode: function() {
+        if (!ige.isServer) {
+            //toggle buildingMenu
+            //(de)activate 0..9 key buttons to select a building
+            // (when a button is pressed while isBuilding: call placeBuilding to create the green/red building)
         }
     }
 });

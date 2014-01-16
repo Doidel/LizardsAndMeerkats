@@ -57,7 +57,7 @@ var Client = IgeClass.extend({
 
 						// Setup the network stream handler
 						ige.network.addComponent(IgeStreamComponent)
-							.stream.renderLatency(60) // Render the simulation 160 milliseconds in the past
+							.stream.renderLatency(40) // Render the simulation 160 milliseconds in the past
 							// Create a listener that will fire whenever an entity
 							// is created because of the incoming stream data
 							.stream.on('entityCreated', function (entity) {

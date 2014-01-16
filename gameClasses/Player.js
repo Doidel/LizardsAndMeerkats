@@ -156,7 +156,8 @@ var Player = IgeEntity.extend({
             isDying: false,
             noAnimation: false,
             isCharging: false,
-            isBuilding: false
+            isBuilding: false,
+            isRunning: false
         };
 
 		this.controls = {
@@ -423,6 +424,21 @@ var Player = IgeEntity.extend({
                     }
                 }
 
+                //which animation will have to be run?
+                if (this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right) {
+                    //running
+                    var direction = 1, start = 1, end = 160;
+                    if (this.controls.left && !this.controls.right) {
+                        direction = 2; start = 900; end = 1059;
+                    } else if (this.controls.right && !this.controls.left) {
+                        direction = 3; start = 1090; end = 1249;
+                    }
+
+                    setTimeout(function() {self.states.isRunnig = [direction, start, end];}, 2*ige.network._latency + 130); //latency + halfOfStreamInterval + renderLatency + 30
+                } else {
+                    setTimeout(function() {self.states.isRunnig = false;}, 2*ige.network._latency + 130); //latency + halfOfStreamInterval + renderLatency
+                }
+
                 if (ige.input.actionState('jump')) {
                     if (!this.controls.jump) {
                         // Record the new state
@@ -562,16 +578,10 @@ var Player = IgeEntity.extend({
                 } else if (this.states.isJumping) {
                     this._checkResetAnimation('jumping', 1);
                     this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 290, 400, 1, false, ige.client.legBones);
-                } else if (this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right) {
+                } else if (this.states.isRunnig != false) {
                     //running
-                    var direction = 1, start = 1, end = 160;
-                    if (this.controls.left && !this.controls.right) {
-                        direction = 2; start = 900; end = 1059;
-                    } else if (this.controls.right && !this.controls.left) {
-                        direction = 3; start = 1090; end = 1249;
-                    }
-                    this._checkResetAnimation('running' + direction, 1);
-                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 4, start, end, 1, true, ige.client.legBones);
+                    this._checkResetAnimation('running' + this.states.isRunnig[0], 1);
+                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 4, this.states.isRunnig[1], this.states.isRunnig[2], 1, true, ige.client.legBones);
                 } else {
                     //standing
                     this._checkResetAnimation('standing', 1);

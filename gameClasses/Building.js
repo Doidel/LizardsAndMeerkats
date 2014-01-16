@@ -14,6 +14,10 @@ var Building = IgeEntity.extend({
             maxhealth: 300,
             healthregeneration: 0.005
         };
+
+        this.states = {
+            isBuilt: false
+        }
     },
 
     /**
@@ -22,16 +26,13 @@ var Building = IgeEntity.extend({
      * @param ctx The canvas context to render to.
      */
     tick: function (ctx) {
-        var self = this;
         /* CEXCLUDE */
         if (ige.isServer) {
-
+            if (!this.states.isBuilt) {
+                this.isBuildable();
+            }
         }
         /* CEXCLUDE */
-
-        if (!ige.isServer) {
-
-        }
 
         //// HEALTH REGEN
         if (this.values.health < this.values.maxhealth) {
@@ -65,6 +66,17 @@ var Building = IgeEntity.extend({
         }
         this._updateHealth(this.values.health - damage, false)
     },
+    isBuildable: function(isGreen) {
+        if (ige.isServer) {
+            //(check for resources made before building selection)
+            //check for flat terrain
+            //check for collisions
+            //send client network command to execute client's "isBuildable" if "isGreen" changes
+        } else {
+            //color building red/green according to isGreen
+            //(new position is already automatically streamed to the client)
+        }
+    },
     /**
      * Can be called for manually updating AND synchronizing health.
      * @param health
@@ -90,13 +102,22 @@ var Building = IgeEntity.extend({
         /* CEXCLUDE */
     },
     /* CEXCLUDE */
-    _forwardAttribute: function(group, name, value, includeSelf) {
+    finalPlaceBuilding: function() {
+        //remove green/red fragment shader (client)
+
+        //if isBuildable
+        //remove resources
+        //activate physics
+        //activate abilities and functions
+        //sent network command to finalPlaceBuildings on clients
+    }
+    /*_forwardAttribute: function(group, name, value, includeSelf) {
         //send values to all other players
         for (var key in ige.server.players) {
             if (key === 'length' || !ige.server.players.hasOwnProperty(key) || (includeSelf != true && key == this._id)) continue;
             ige.network.send('playerAttributeUpdate', {player: this._id, group: group, name: name, value: value}, key);
         }
-    }
+    }*/
     /* CEXCLUDE */
 });
 
