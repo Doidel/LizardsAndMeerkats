@@ -16,8 +16,11 @@ var Building = IgeEntity.extend({
         };
 
         this.states = {
-            isBuilt: false
+            isBuilt: false,
+            nextBuildableCheck: 0
         }
+
+        this.streamSections(['transform']);
     },
 
     /**
@@ -35,11 +38,11 @@ var Building = IgeEntity.extend({
         /* CEXCLUDE */
 
         //// HEALTH REGEN
-        if (this.values.health < this.values.maxhealth) {
+        /*if (this.values.health < this.values.maxhealth) {
             var diff = (this.values.healthregeneration*ige._tickDelta);
             this.values.health = Math.min(this.values.health + diff, this.values.maxhealth);
-            //this._updateHealth(this.values.health);
-        }
+            this._updateHealth(this.values.health);
+        }*/
 
         // Call the IgeEntity (super-class) tick() method
         IgeEntity.prototype.tick.call(this, ctx);
@@ -66,15 +69,30 @@ var Building = IgeEntity.extend({
         }
         this._updateHealth(this.values.health - damage, false)
     },
-    isBuildable: function(isGreen) {
+    isBuildable: function(color) {
         if (ige.isServer) {
-            //(check for resources made before building selection)
-            //check for flat terrain
-            //check for collisions
-            //send client network command to execute client's "isBuildable" if "isGreen" changes
+            if (ige._currentTime > this.states.nextBuildableCheck) {
+                this.states.nextBuildableCheck = ige._currentTime + 200; //call every 200 ms
+                //(check for resources made before building selection)
+                //check for flat terrain
+                //check for collisions
+                //send client network command to execute client's "isBuildable" if "isGreen" changes
+                ige.network.send('setStreamBuildingBuildable', 1);
+            }
         } else {
             //color building red/green according to isGreen
             //(new position is already automatically streamed to the client)
+            switch (color) {
+                case 0:
+                    this._threeObj.material.emissive = new THREE.Color( 0xffffff );
+                    break;
+                case 1:
+                    this._threeObj.material.emissive = new THREE.Color( 0x00ff00 );
+                    break;
+                case 2:
+                    this._threeObj.material.emissive = new THREE.Color( 0xff0000 );
+                    break;
+            }
         }
     },
     /**

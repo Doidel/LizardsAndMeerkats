@@ -138,7 +138,7 @@ var ServerNetworkEvents = {
     },
 
     _onPlayerBuildUp: function (data, clientId) {
-        ige.server.players[clientId].states.isBuilding = true;
+        ige.server.players[clientId].toggleBuildingMode();
     },
 
     _onPlayerTakesCommand: function (data, clientId) {

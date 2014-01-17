@@ -21,7 +21,8 @@ var MainBuildingLizards = Building.extend({
             this._threeObj.receiveShadow = true;
             this._threeObj.castShadow = true;
 
-            ige.client.scene1._threeObj.add(this._threeObj);
+            //ige.client.scene1._threeObj.add(this._threeObj);
+            this.mount(ige.client.scene1);
         }
 
         if (ige.isServer) {
@@ -40,12 +41,17 @@ var MainBuildingLizards = Building.extend({
             //this._threeObj.geometry.dynamic = false;
             this._threeObj.position = position;
 
-            ige.server.scene1._threeObj.add( this._threeObj );
-
+            //ige.server.scene1._threeObj.add( this._threeObj );
+            this.mount(ige.server.scene1);
         }
 
-        this._threeObj.position = position;
-        this.translateTo(position.x, position.y, position.z);
+        if (position) {
+            //when created by stream position can be undefined
+            this._threeObj.position = position;
+            this.translateTo(position.x, position.y, position.z);
+        }
+
+        console.log('position', position, id);
     }
 });
 

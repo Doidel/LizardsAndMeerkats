@@ -472,7 +472,6 @@ var Player = IgeEntity.extend({
                     if (this.controls.build) {
                         // Record the new state
                         this.controls.build = false;
-                        this.states.isBuilding = true;
 
                         this.toggleBuildingMode();
                     }
@@ -492,6 +491,7 @@ var Player = IgeEntity.extend({
                     } else {
                         if (this.controls['key' + i]) {
                             // Record the new state
+                            this.controls['key' + i] = false;
 
                             // Tell the server about our control change
                             ige.network.send('playerControlNumKeyUp', i);

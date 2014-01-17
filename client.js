@@ -54,6 +54,7 @@ var Client = IgeClass.extend({
                         ige.network.define('playerAttributeUpdate', self._onPlayerAttributeUpdate);
                         ige.network.define('playerUpdateHealth', self._onPlayerUpdateHealth);
                         ige.network.define('playerSpawn', self._onPlayerSpawn);
+                        ige.network.define('setStreamBuildingBuildable', self._onSetStreamedBuildingBuildable);
 
 						// Setup the network stream handler
 						ige.network.addComponent(IgeStreamComponent)

@@ -34,13 +34,6 @@ var PlayerCommander = Player.extend({
     },
     // place command building
     placeBuilding: function(buildingNr){
-
-        /*if(!ige.isServer){
-            ige.network.send('playerControlAttackDown');
-            this.isInBuildingMode = false;
-        }*/
-
-
         //Roman's build streaming
 		if (buildingNr == this.states.buildingNr) {
 			//The building is already selected now he pressed the same key again ==> player wants to deselect it
@@ -56,7 +49,8 @@ var PlayerCommander = Player.extend({
 				//Select the building according to buildingNr
 				//Create a streamed building entity in front of the player
 				//the newly initialized Building.js calls isBuildable each tick on the server while it's not built
-				this.streamedBuilding = new MainBuildingLizards('lizardStreamBuilding')
+                console.log('create stream');
+				this.streamedBuilding = new MainBuildingLizards('lizardStreamBuilding', new THREE.Vector3(0, 10, 0))
 					.streamMode(1)
 					.mount(ige.server.scene1);
 
@@ -159,26 +153,29 @@ var PlayerCommander = Player.extend({
             }
         }*/
     },
-
     toggleBuildingMode: function() {
         if (!ige.isServer) {
+            this.states.isBuilding = !this.states.isBuilding;
             // toggle buildingMenu
-			
+			UI.buildingMenu.display(this.states.isBuilding);
 			// Tell the server about our control change
             ige.network.send('playerControlBuildUp');
             // 0..9 key buttons will then select a building
 			
             // (when a button is pressed while isBuilding: call placeBuilding to create the green/red building)
+        } else {
+            this.states.isBuilding = !this.states.isBuilding;
         }
-    }
+    },
 	_numKeyChanged: function(keyNr, isUp) {
 		//Define how to react to a number (0..9) pressed
 		
-        Player.prototype.tick.call(this, keyNr, isUp);
+        Player.prototype._numKeyChanged.call(this, keyNr, isUp);
 		
 		//
 		if (isUp) {
-			this.placeBuilding(1);
+            console.log('call placeBuilding');
+		    this.placeBuilding(1);
 		}
 	}
 });

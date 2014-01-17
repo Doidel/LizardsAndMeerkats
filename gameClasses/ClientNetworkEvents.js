@@ -149,8 +149,12 @@ var ClientNetworkEvents = {
     _onPlayerSpawn: function(data) {
         var p = ige.$(data.player);
         p.faction = data.faction;
-        //data.unit
+        console.log('playerSpawn');
         p._setPlayerModel(data.faction, data.unit);
+    },
+    _onSetStreamedBuildingBuildable: function(data) {
+        var streamBuilding = ige.$('lizardStreamBuilding');
+        if (streamBuilding) streamBuilding.isBuildable(data);
     }
 };
 
