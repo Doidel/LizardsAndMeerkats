@@ -71,12 +71,14 @@ var Server = IgeClass.extend({
 
                         ige.network.define('playerControlRotation', self._onPlayerRotation);
                         ige.network.define('playerTakesCommand', self._onPlayerTakesCommand);
+                        ige.network.define('playerFinalBuild', self._onPlayerFinalBuild);
 
                         ige.network.define('playerUpdateHealth');
                         ige.network.define('playersTakeHit');
                         ige.network.define('playerHarvest');
                         ige.network.define('playerAttributeUpdate');
                         ige.network.define('playerSpawn');
+                        ige.network.define('changeBuildingColor');
 
 						ige.network.on('connect', self._onPlayerConnect); // Defined in ./gameClasses/ServerNetworkEvents.js
 						ige.network.on('disconnect', self._onPlayerDisconnect); // Defined in ./gameClasses/ServerNetworkEvents.js

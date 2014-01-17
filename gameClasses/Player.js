@@ -28,8 +28,8 @@ var Player = IgeEntity.extend({
                 if(ige.client.controls.enabled==true) {
                     if (event.which == 1) {
                         // build mode
-                        if(self.states.isBuilding){
-                            self.placeBuilding(event);
+                        if(self.states.buildingNr >= 0){
+                            self.finalPlaceBuilding(true);
                         }
                         //attack
                         else if (!self.controls.attack) {
@@ -474,8 +474,7 @@ var Player = IgeEntity.extend({
                         this.controls.build = false;
                         this.states.isBuilding = true;
 
-                        // Tell the server about our control change
-                        ige.network.send('playerControlBuildUp');
+                        this.toggleBuildingMode();
                     }
                 }
 
@@ -901,6 +900,13 @@ var Player = IgeEntity.extend({
         }
         this._previousAnimation[layer] = selectedAnimation;
     },
+	_numKeyChanged: function(keyNr, isUp) {
+		//how to react to a number (0..9) pressed? Override on sub classes
+		if (!ige.isServer) {
+			//display the key press graphics
+			UI.buildingMenu.displayPressed(keyNr, isUp);
+		}
+	},
     /* CEXCLUDE */
     _findPhysijsObjectById: function(id) {
         var obj;

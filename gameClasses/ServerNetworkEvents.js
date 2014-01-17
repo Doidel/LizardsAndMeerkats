@@ -129,10 +129,12 @@ var ServerNetworkEvents = {
 
     _onPlayerNumKeyUp: function (data, clientId) {
         ige.server.players[clientId].controls['key' + data] = false;
+		ige.server.players[clientId]._numKeyChanged(data, true);
     },
 
     _onPlayerNumKeyDown: function (data, clientId) {
         ige.server.players[clientId].controls['key' + data] = true;
+		ige.server.players[clientId]._numKeyChanged(data, false);
     },
 
     _onPlayerBuildUp: function (data, clientId) {
@@ -145,7 +147,11 @@ var ServerNetworkEvents = {
             //give player commander abilities
             ige.server.players[clientId].states.isCommander = true;
         }
-    }
+    },
+	
+	_onPlayerFinalBuild: function (data, clientId) {
+        ige.server.players[clientId].finalPlaceBuilding();
+    },
 };
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = ServerNetworkEvents; }

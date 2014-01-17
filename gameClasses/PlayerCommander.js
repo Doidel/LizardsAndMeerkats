@@ -1,8 +1,6 @@
 var PlayerCommander = Player.extend({
     classId: 'PlayerCommander',
 
-    //Ask SavXR Natsu for balances
-
     init: function (id) {
         Player.prototype.init.call(this, id);
 
@@ -25,31 +23,59 @@ var PlayerCommander = Player.extend({
         // if he is in the building mode
         this.isInBuildingMode = false;
         this.buildingObject;
+		this.states.buildingNr == -1;
+		
+		
+		/*this._streamBuidlingEventListener = ige.network.stream.on('entityCreated', function (entity) {
+			if (entity.id() === 'lizardStreamBuilding') {
+				
+			}
+		});*/
     },
     // place command building
-    placeBuilding: function(event){
+    placeBuilding: function(buildingNr){
 
-        if(!ige.isServer){
+        /*if(!ige.isServer){
             ige.network.send('playerControlAttackDown');
             this.isInBuildingMode = false;
-        }
+        }*/
 
 
-        //Roman's build streaming approach
-        if (ige.isServer) {
-            //Create a streamed building entity in front of the player
-            //the newly initialized Building.js calls isBuildable each tick on the server while it's not built
-            ige.server.players[clientId] = new MainBuildingLizards(clientId)
-                .streamMode(1)
-                .mount(ige.server.scene1);
+        //Roman's build streaming
+		if (buildingNr == this.states.buildingNr) {
+			//The building is already selected now he pressed the same key again ==> player wants to deselect it
+			if (ige.isServer) {
+				//Destroy the stream object
+			} else {
+				//Deselect the key, graphical stuff, etc.
+			}
+			this.states.buildingNr = -1;
+		} else if (true) { //enough resources?
+			this.states.buildingNr = buildingNr;
+			if (ige.isServer) {
+				//Select the building according to buildingNr
+				//Create a streamed building entity in front of the player
+				//the newly initialized Building.js calls isBuildable each tick on the server while it's not built
+				this.streamedBuilding = new MainBuildingLizards('lizardStreamBuilding')
+					.streamMode(1)
+					.mount(ige.server.scene1);
 
-        } else {
-            //register the click event (or however you do this)
-            //(On click, if buildable, send network event to the server to call Building.js: finalPlaceBuilding
-            //Do not call finalPlaceBuilding on the client yet, await the server's response)
-        }
-
+			} else {
+			}
+		}
     },
+	finalPlaceBuilding: function(isClientAttempt) {
+		//finally place the building at its current position
+		if (!ige.isServer) {
+			if (isClientAttempt) {
+				//if buildable, send network event to the server to call Building.js: finalPlaceBuilding
+			} else {
+				//called by a server network command. Places it for good.
+			}
+		} else {
+			this.streamedBuilding.finalPlaceBuilding();
+		}
+	},
     /**
      * Called every frame by the engine when this entity is mounted to the
      * scenegraph.
@@ -60,7 +86,9 @@ var PlayerCommander = Player.extend({
 
         Player.prototype.tick.call(this, ctx);
 
-        if (!ige.isServer){
+		
+		//place logic now in Building.js:isBuildable
+        /*if (!ige.isServer){
 
             // if he is in the building mode
             if (this.controls.build || this.isInBuildingMode) {
@@ -129,16 +157,30 @@ var PlayerCommander = Player.extend({
                     //this.buildingObject.needsUpdate();
                 }
             }
-        }
+        }*/
     },
 
     toggleBuildingMode: function() {
         if (!ige.isServer) {
-            //toggle buildingMenu
-            //(de)activate 0..9 key buttons to select a building
+            // toggle buildingMenu
+			
+			// Tell the server about our control change
+            ige.network.send('playerControlBuildUp');
+            // 0..9 key buttons will then select a building
+			
             // (when a button is pressed while isBuilding: call placeBuilding to create the green/red building)
         }
     }
+	_numKeyChanged: function(keyNr, isUp) {
+		//Define how to react to a number (0..9) pressed
+		
+        Player.prototype.tick.call(this, keyNr, isUp);
+		
+		//
+		if (isUp) {
+			this.placeBuilding(1);
+		}
+	}
 });
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = PlayerCommander; }

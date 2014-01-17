@@ -280,7 +280,12 @@
             setValue: function(value) {
                 this.el.css('width', 240/this.maxvalue*value).set('text', Math.round(value));
             }
-        }
+        },
+		buildingMenu: {
+			displayPressed: function(key, isPressed) {
+				
+			}
+		}
     };
 
     $(function() {
