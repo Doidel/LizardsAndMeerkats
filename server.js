@@ -22,7 +22,10 @@ var Server = IgeClass.extend({
 		// Define an object to hold references to our player entities
 		this.players = {};
 
-        this.commander = undefined; //contains clientId from the player who's commander
+        this.commanders = {
+            lizards: undefined,
+            meerkats: undefined
+        }; //contains clientId from the player who's commander
 
         this.gameStates = {
             playerCounts: {
@@ -124,6 +127,13 @@ var Server = IgeClass.extend({
 				});
 			});
 	},
+    getCommander: function(faction) {
+        if (this.commanders[faction] != undefined) {
+            var p = this.players[this.commanders[faction]];
+            if (p != undefined) return p;
+        }
+        return false;
+    },
     physibehaviour: function (ctx) {
         ige.server.scene1._threeObj.simulate(); //ige._tickDelta/1000, 5
     }

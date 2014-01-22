@@ -136,6 +136,7 @@ var Levels = {
                 pGround.rotation.x = -Math.PI / 2;
                 pGround.position.set(0,0,0);
                 ige.server.scene1._threeObj.add(pGround);
+                ige.server.scene1._terrain = pGround;
             });
         } else {
             // FLOOR

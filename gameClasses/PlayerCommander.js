@@ -53,6 +53,7 @@ var PlayerCommander = Player.extend({
 				this.streamedBuilding = new MainBuildingLizards('lizardStreamBuilding', new THREE.Vector3(0, 10, 0))
 					.streamMode(1)
 					.mount(ige.server.scene1);
+                this.streamedBuilding.states.isBuilt = false;
 
 			} else {
 			}

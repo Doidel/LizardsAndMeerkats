@@ -12,11 +12,12 @@ var Building = IgeEntity.extend({
         this.values = {
             health: 300,
             maxhealth: 300,
-            healthregeneration: 0.005
+            healthregeneration: 0.005,
+            groundHeightDifferenceThreshold: 0.5
         };
 
         this.states = {
-            isBuilt: false,
+            isBuilt: true,
             nextBuildableCheck: 0
         }
 
@@ -73,11 +74,26 @@ var Building = IgeEntity.extend({
         if (ige.isServer) {
             if (ige._currentTime > this.states.nextBuildableCheck) {
                 this.states.nextBuildableCheck = ige._currentTime + 200; //call every 200 ms
+
+                var buildable = true,
+                    builder = ige.server.getCommander('lizards');
+
+                //adjust building position to be in front of player
+                this.translateTo(builder._translate.x, this._translate.y, builder._translate.z); //TODO Currently exactly at player position
+
                 //(check for resources made before building selection)
+
                 //check for flat terrain
+                var flatTerrainData = this._isFlatTerrain();
+                if (!flatTerrainData.buildable) buildable = false;
+
                 //check for collisions
+
+                //set the new building position (according to min height and in front of player)
+                this.translateTo(this._translate.x, flatTerrainData.minGroundHeight, this._translate.z); //TODO: Ground height + half building height ('cause of centered centroid)
+
                 //send client network command to execute client's "isBuildable" if "isGreen" changes
-                ige.network.send('setStreamBuildingBuildable', 1);
+                ige.network.send('setStreamBuildingBuildable', buildable);
             }
         } else {
             //color building red/green according to isGreen
@@ -128,6 +144,37 @@ var Building = IgeEntity.extend({
         //activate physics
         //activate abilities and functions
         //sent network command to finalPlaceBuildings on clients
+    },
+    _isFlatTerrain: function() {
+        //TODO: Take rotation into account
+        var vList = ige.server.scene1._terrain.geometry.vertices;
+        var terrainDistanceUnit = vList[1].x - vList[0].x,
+            width = this._threeObj._physijs.width,
+            height = this._threeObj._physijs.depth,
+            xPos = Math.floor((this._translate.x - width / 2) / terrainDistanceUnit),
+            yPos = Math.floor((this._translate.y - height / 2) / terrainDistanceUnit),
+            xSearchStart = Math.max(0, xPos),
+            xSearchEnd = Math.min(256, xPos + Math.ceil(width / terrainDistanceUnit)),
+            ySearchStart = Math.max(0, yPos),
+            ySearchEnd = Math.min(256, yPos + Math.ceil(height / terrainDistanceUnit));
+
+        var minGroundHeight = 99999, maxGroundHeight = -99999;
+        for (var y = ySearchStart; y <= ySearchEnd; y++) {
+            for (var x = xSearchStart; x <= xSearchEnd; x++) {
+                if (vList[y * 257 + x].y > maxGroundHeight) {
+                    maxGroundHeight = vList[y * 257 + x].y;
+                }
+                if (vList[y * 257 + x].y < minGroundHeight) {
+                    minGroundHeight = vList[y * 257 + x].y;
+                }
+            }
+        }
+
+        //is the building height difference within the threshold?
+        return {
+            buildable: (maxGroundHeight - minGroundHeight) <= this.values.groundHeightDifferenceThreshold,
+            minGroundHeight: minGroundHeight
+        };
     }
     /*_forwardAttribute: function(group, name, value, includeSelf) {
         //send values to all other players

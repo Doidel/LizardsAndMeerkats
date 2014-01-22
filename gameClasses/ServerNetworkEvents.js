@@ -30,6 +30,7 @@ var ServerNetworkEvents = {
             ige.server.players[clientId] = new PlayerCommander(clientId)
                 .streamMode(1)
                 .mount(ige.server.scene1);
+            ige.server._onPlayerTakesCommand(undefined, clientId); //TODO: Remove, for testing purposes
 
 			// Tell the client to track their player entity
 			ige.network.send('playerEntity', ige.server.players[clientId].id(), clientId);
@@ -142,8 +143,8 @@ var ServerNetworkEvents = {
     },
 
     _onPlayerTakesCommand: function (data, clientId) {
-        if (ige.server.commander == undefined) {
-            ige.server.commander = clientId;
+        if (ige.server.commanders['lizards'] == undefined) {
+            ige.server.commanders['lizards'] = clientId;
             //give player commander abilities
             ige.server.players[clientId].states.isCommander = true;
         }
