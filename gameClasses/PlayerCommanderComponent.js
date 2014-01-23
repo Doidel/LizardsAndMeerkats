@@ -21,7 +21,7 @@ var PlayerCommanderComponent = Player.extend({
 		
 		
 		/*this._streamBuidlingEventListener = ige.network.stream.on('entityCreated', function (entity) {
-			if (entity.id() === 'lizardStreamBuilding') {
+			if (entity.id() === 'lizardsStreamBuilding') {
 				
 			}
 		});*/
@@ -44,9 +44,10 @@ var PlayerCommanderComponent = Player.extend({
 				//Create a streamed building entity in front of the player
 				//the newly initialized Building.js calls isBuildable each tick on the server while it's not built
                 console.log('create stream');
-				this.streamedBuilding = new MainBuildingLizards('lizardStreamBuilding', new THREE.Vector3(0, 10, 0))
+				this.streamedBuilding = new MainBuildingLizards(this._player.faction + 'StreamBuilding', new THREE.Vector3(0, 10, 0))
 					.streamMode(1)
 					.mount(ige.server.scene1);
+				this.streamedBuilding.values.builderId = this._player._id;
                 this.streamedBuilding.states.isBuilt = false;
 
 			} else {

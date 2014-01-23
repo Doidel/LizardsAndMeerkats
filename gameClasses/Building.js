@@ -13,7 +13,8 @@ var Building = IgeEntity.extend({
             health: 300,
             maxhealth: 300,
             healthregeneration: 0.005,
-            groundHeightDifferenceThreshold: 0.5
+            groundHeightDifferenceThreshold: 0.5,
+			builderId: 0
         };
 
         this.states = {
@@ -77,7 +78,7 @@ var Building = IgeEntity.extend({
                 this.states.nextBuildableCheck = ige._currentTime + 200; //call every 200 ms
 
                 var buildable = 1,
-                    builder = ige.server.getCommander('lizards'); //TODO: If builder undefined
+                    builder = ige.server.players[this.values.builderId]; //TODO: If builder undefined
 
                 //adjust building position to be in front of player
                 this.translateTo(builder._translate.x, this._translate.y, builder._translate.z); //TODO Currently exactly at player position
@@ -94,7 +95,7 @@ var Building = IgeEntity.extend({
                 this.translateTo(this._translate.x, flatTerrainData.minGroundHeight + this._threeObj.geometry.boundingBox.max.y, this._translate.z);
 
                 //send client network command to execute client's "isBuildable" if "isGreen" changes
-                ige.network.send('setStreamBuildingBuildable', buildable);
+                ige.network.send('setStreamBuildingBuildable', {id: this._id, color: buildable});
 
                 //save the result for later use
                 this.states.isBuildableAtCurrentPosition = buildable != 2;

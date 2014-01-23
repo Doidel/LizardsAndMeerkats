@@ -143,8 +143,9 @@ var ServerNetworkEvents = {
     },
 
     _onPlayerTakesCommand: function (data, clientId) {
-        if (ige.server.commanders['lizards'] == undefined) {
-            ige.server.commanders['lizards'] = clientId;
+		var p = ige.server.players[clientId];
+        if (ige.server.commanders[p.faction] == undefined) {
+            ige.server.commanders[p.faction] = clientId;
             //give player commander abilities
 			ige.server.players[clientId].addComponent(PlayerCommanderComponent);
         }

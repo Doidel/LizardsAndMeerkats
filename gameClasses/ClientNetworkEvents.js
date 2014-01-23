@@ -153,8 +153,8 @@ var ClientNetworkEvents = {
         p._setPlayerModel(data.faction, data.unit);
     },
     _onSetStreamedBuildingBuildable: function(data) {
-        var streamBuilding = ige.$('lizardStreamBuilding');
-        if (streamBuilding) streamBuilding.isBuildable(data);
+        var streamBuilding = ige.$(data.id);
+        if (streamBuilding) streamBuilding.isBuildable(data.color);
     }
 };
 
