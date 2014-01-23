@@ -27,7 +27,7 @@ var ServerNetworkEvents = {
 			/*ige.server.players[clientId] = new Player(clientId)
                 .streamMode(1)
 				.mount(ige.server.scene1);*/
-            ige.server.players[clientId] = new PlayerCommander(clientId)
+            ige.server.players[clientId] = new Player(clientId)
                 .streamMode(1)
                 .mount(ige.server.scene1);
             ige.server._onPlayerTakesCommand(undefined, clientId); //TODO: Remove, for testing purposes
@@ -139,19 +139,19 @@ var ServerNetworkEvents = {
     },
 
     _onPlayerBuildUp: function (data, clientId) {
-        ige.server.players[clientId].toggleBuildingMode();
+        if (ige.server.players[clientId].commander) ige.server.players[clientId].commander.toggleBuildingMode();
     },
 
     _onPlayerTakesCommand: function (data, clientId) {
         if (ige.server.commanders['lizards'] == undefined) {
             ige.server.commanders['lizards'] = clientId;
             //give player commander abilities
-            ige.server.players[clientId].states.isCommander = true;
+			ige.server.players[clientId].addComponent(PlayerCommanderComponent);
         }
     },
 	
 	_onPlayerFinalBuild: function (data, clientId) {
-        ige.server.players[clientId].finalPlaceBuilding();
+		if (ige.server.players[clientId].commander) ige.server.players[clientId].commander.finalPlaceBuilding();
     }
 };
 

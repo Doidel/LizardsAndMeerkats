@@ -907,6 +907,8 @@ var Player = IgeEntity.extend({
 			//display the key press graphics
 			UI.buildingMenu.displayPressed(keyNr, isUp);
 		}
+		
+		if (this.commander) this.commander._numKeyChanged(keyNr, isUp);
 	},
     /* CEXCLUDE */
     _findPhysijsObjectById: function(id) {
