@@ -56,17 +56,16 @@ var PlayerCommander = Player.extend({
                 this.streamedBuilding.states.isBuilt = false;
 
 			} else {
+                //display " not enough resources "
 			}
 		}
     },
-	finalPlaceBuilding: function(isClientAttempt) {
-		//finally place the building at its current position
+	finalPlaceBuilding: function() {
+        //method is called by player.js left click
+		//finally place the building at its current position.
 		if (!ige.isServer) {
-			if (isClientAttempt) {
-				//if buildable, send network event to the server to call Building.js: finalPlaceBuilding
-			} else {
-				//called by a server network command. Places it for good.
-			}
+		    //send network event to the server to call Building.js: finalPlaceBuilding
+            ige.network.send('playerFinalBuild');
 		} else {
 			this.streamedBuilding.finalPlaceBuilding();
 		}
@@ -172,8 +171,7 @@ var PlayerCommander = Player.extend({
 		//Define how to react to a number (0..9) pressed
 		
         Player.prototype._numKeyChanged.call(this, keyNr, isUp);
-		
-		//
+
 		if (isUp) {
             console.log('call placeBuilding');
 		    this.placeBuilding(1);

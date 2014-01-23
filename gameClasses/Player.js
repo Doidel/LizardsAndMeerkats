@@ -28,8 +28,9 @@ var Player = IgeEntity.extend({
                 if(ige.client.controls.enabled==true) {
                     if (event.which == 1) {
                         // build mode
+                        console.log('building? ', self.states.buildingNr);
                         if(self.states.buildingNr >= 0){
-                            self.finalPlaceBuilding(true);
+                            self.finalPlaceBuilding();
                         }
                         //attack
                         else if (!self.controls.attack) {

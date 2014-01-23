@@ -18,7 +18,8 @@ var Building = IgeEntity.extend({
 
         this.states = {
             isBuilt: true,
-            nextBuildableCheck: 0
+            nextBuildableCheck: 0,
+            isBuildableAtCurrentPosition: false
         }
 
         this.streamSections(['transform']);
@@ -75,8 +76,8 @@ var Building = IgeEntity.extend({
             if (ige._currentTime > this.states.nextBuildableCheck) {
                 this.states.nextBuildableCheck = ige._currentTime + 200; //call every 200 ms
 
-                var buildable = true,
-                    builder = ige.server.getCommander('lizards');
+                var buildable = 1,
+                    builder = ige.server.getCommander('lizards'); //TODO: If builder undefined
 
                 //adjust building position to be in front of player
                 this.translateTo(builder._translate.x, this._translate.y, builder._translate.z); //TODO Currently exactly at player position
@@ -85,15 +86,18 @@ var Building = IgeEntity.extend({
 
                 //check for flat terrain
                 var flatTerrainData = this._isFlatTerrain();
-                if (!flatTerrainData.buildable) buildable = false;
+                if (!flatTerrainData.buildable) buildable = 2;
 
                 //check for collisions
 
-                //set the new building position (according to min height and in front of player)
-                this.translateTo(this._translate.x, flatTerrainData.minGroundHeight, this._translate.z); //TODO: Ground height + half building height ('cause of centered centroid)
+                //set the new building position (+ half of object's height)
+                this.translateTo(this._translate.x, flatTerrainData.minGroundHeight + this._threeObj.geometry.boundingBox.max.y, this._translate.z);
 
                 //send client network command to execute client's "isBuildable" if "isGreen" changes
                 ige.network.send('setStreamBuildingBuildable', buildable);
+
+                //save the result for later use
+                this.states.isBuildableAtCurrentPosition = buildable != 2;
             }
         } else {
             //color building red/green according to isGreen
@@ -137,22 +141,29 @@ var Building = IgeEntity.extend({
     },
     /* CEXCLUDE */
     finalPlaceBuilding: function() {
-        //remove green/red fragment shader (client)
+        console.log('finalPlaceBuilding called');
 
         //if isBuildable
+        if (!this.states.isBuildableAtCurrentPosition) return false;
+
         //remove resources
         //activate physics
         //activate abilities and functions
         //sent network command to finalPlaceBuildings on clients
+
+        //remove green/red fragment shader (client)
+        ige.network.send('setStreamBuildingBuildable', 0);
     },
     _isFlatTerrain: function() {
         //TODO: Take rotation into account
         var vList = ige.server.scene1._terrain.geometry.vertices;
-        var terrainDistanceUnit = vList[1].x - vList[0].x,
+        var terrainDistanceUnit = vList[1].x - vList[0].x, //assumes terrain is perfectly square
+            terrainHalfWidth = ige.server.scene1._terrain._physijs.xsize / 2,
+            terrainHalfHeight = ige.server.scene1._terrain._physijs.ysize / 2,
             width = this._threeObj._physijs.width,
             height = this._threeObj._physijs.depth,
-            xPos = Math.floor((this._translate.x - width / 2) / terrainDistanceUnit),
-            yPos = Math.floor((this._translate.y - height / 2) / terrainDistanceUnit),
+            xPos = Math.floor((this._translate.x + terrainHalfWidth - width / 2) / terrainDistanceUnit), //assumes terrain is at 0/0
+            yPos = Math.floor((this._translate.z + terrainHalfHeight - height / 2) / terrainDistanceUnit), //assumes terrain is at 0/0
             xSearchStart = Math.max(0, xPos),
             xSearchEnd = Math.min(256, xPos + Math.ceil(width / terrainDistanceUnit)),
             ySearchStart = Math.max(0, yPos),
@@ -161,19 +172,21 @@ var Building = IgeEntity.extend({
         var minGroundHeight = 99999, maxGroundHeight = -99999;
         for (var y = ySearchStart; y <= ySearchEnd; y++) {
             for (var x = xSearchStart; x <= xSearchEnd; x++) {
-                if (vList[y * 257 + x].y > maxGroundHeight) {
-                    maxGroundHeight = vList[y * 257 + x].y;
+                if (vList[y * 257 + x].z > maxGroundHeight) {
+                    maxGroundHeight = vList[y * 257 + x].z;
                 }
-                if (vList[y * 257 + x].y < minGroundHeight) {
-                    minGroundHeight = vList[y * 257 + x].y;
+                if (vList[y * 257 + x].z < minGroundHeight) {
+                    minGroundHeight = vList[y * 257 + x].z;
                 }
             }
         }
 
         //is the building height difference within the threshold?
+        console.log(minGroundHeight, maxGroundHeight);
         return {
             buildable: (maxGroundHeight - minGroundHeight) <= this.values.groundHeightDifferenceThreshold,
-            minGroundHeight: minGroundHeight
+            minGroundHeight: minGroundHeight,
+            maxGroundHeight: maxGroundHeight
         };
     }
     /*_forwardAttribute: function(group, name, value, includeSelf) {

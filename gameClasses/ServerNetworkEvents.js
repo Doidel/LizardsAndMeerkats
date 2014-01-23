@@ -152,7 +152,7 @@ var ServerNetworkEvents = {
 	
 	_onPlayerFinalBuild: function (data, clientId) {
         ige.server.players[clientId].finalPlaceBuilding();
-    },
+    }
 };
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = ServerNetworkEvents; }
