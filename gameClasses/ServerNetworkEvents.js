@@ -30,7 +30,6 @@ var ServerNetworkEvents = {
             ige.server.players[clientId] = new Player(clientId)
                 .streamMode(1)
                 .mount(ige.server.scene1);
-            ige.server._onPlayerTakesCommand(undefined, clientId); //TODO: Remove, for testing purposes
 
 			// Tell the client to track their player entity
 			ige.network.send('playerEntity', ige.server.players[clientId].id(), clientId);
@@ -148,6 +147,7 @@ var ServerNetworkEvents = {
             ige.server.commanders[p.faction] = clientId;
             //give player commander abilities
 			ige.server.players[clientId].addComponent(PlayerCommanderComponent);
+            ige.network.send('playerSetComponent', {player: clientId, add: true, component: 'PlayerCommanderComponent'});
         }
     },
 	

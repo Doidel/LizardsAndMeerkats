@@ -81,6 +81,7 @@ var Server = IgeClass.extend({
                         ige.network.define('playerHarvest');
                         ige.network.define('playerAttributeUpdate');
                         ige.network.define('playerSpawn');
+                        ige.network.define('playerSetComponent');
                         ige.network.define('changeBuildingColor');
                         ige.network.define('setStreamBuildingBuildable');
 

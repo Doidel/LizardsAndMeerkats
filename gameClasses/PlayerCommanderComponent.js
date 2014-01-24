@@ -4,6 +4,7 @@ var PlayerCommanderComponent = Player.extend({
 
     init: function (player, options) {
 		this._player = player;
+        console.log('TEST');
         // add hat
         var hatGeometry = new THREE.CubeGeometry(0.25,0.25,0.25);
         var hatMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color('#FF0000')});

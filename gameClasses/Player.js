@@ -30,7 +30,7 @@ var Player = IgeEntity.extend({
                         // build mode
                         console.log('building? ', self.states.buildingNr);
                         if(self.states.buildingNr >= 0){
-                            self.finalPlaceBuilding();
+                            self.commander.finalPlaceBuilding();
                         }
                         //attack
                         else if (!self.controls.attack) {
@@ -483,11 +483,10 @@ var Player = IgeEntity.extend({
                         if (!this.controls['key' + i]) {
                             // Record the new state
                             this.controls['key' + i] = true;
-                            //this.states.isJumping = true;
-
 
                             // Tell the server about our control change
                             ige.network.send('playerControlNumKeyDown', i);
+                            this._numKeyChanged(i, false);
                         }
                     } else {
                         if (this.controls['key' + i]) {
@@ -496,6 +495,7 @@ var Player = IgeEntity.extend({
 
                             // Tell the server about our control change
                             ige.network.send('playerControlNumKeyUp', i);
+                            this._numKeyChanged(i, true);
                         }
                     }
                 }

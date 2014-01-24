@@ -105,7 +105,7 @@ var Building = IgeEntity.extend({
             //(new position is already automatically streamed to the client)
             switch (color) {
                 case 0:
-                    this._threeObj.material.emissive = new THREE.Color( 0xffffff );
+                    this._threeObj.material.emissive = new THREE.Color( 0x000000 );
                     break;
                 case 1:
                     this._threeObj.material.emissive = new THREE.Color( 0x00ff00 );
@@ -148,12 +148,15 @@ var Building = IgeEntity.extend({
         if (!this.states.isBuildableAtCurrentPosition) return false;
 
         //remove resources
+        //remove streaming
+        //set new id
         //activate physics
         //activate abilities and functions
         //sent network command to finalPlaceBuildings on clients
 
         //remove green/red fragment shader (client)
-        ige.network.send('setStreamBuildingBuildable', 0);
+        this.states.isBuilt = true;
+        ige.network.send('setStreamBuildingBuildable', {id: this._id, color: 0});
     },
     _isFlatTerrain: function() {
         //TODO: Take rotation into account
@@ -183,7 +186,6 @@ var Building = IgeEntity.extend({
         }
 
         //is the building height difference within the threshold?
-        console.log(minGroundHeight, maxGroundHeight);
         return {
             buildable: (maxGroundHeight - minGroundHeight) <= this.values.groundHeightDifferenceThreshold,
             minGroundHeight: minGroundHeight,

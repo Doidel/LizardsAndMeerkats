@@ -152,6 +152,16 @@ var ClientNetworkEvents = {
         console.log('playerSpawn');
         p._setPlayerModel(data.faction, data.unit);
     },
+    _onPlayerSetComponent: function(data) {
+        var p = ige.$(data.player);
+        if (p != undefined) {
+            if (data.add !== false) {
+                p.addComponent(window[data.component]);
+            } else {
+
+            }
+        }
+    },
     _onSetStreamedBuildingBuildable: function(data) {
         var streamBuilding = ige.$(data.id);
         if (streamBuilding) streamBuilding.isBuildable(data.color);
