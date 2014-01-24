@@ -7,10 +7,11 @@ var MainBuildingLizards = Building.extend({
         var geom = new THREE.CubeGeometry(1, 1, 1);
 
         if (!ige.isServer) {
-            geom = ige.three._loader.parse(modelBuildingLizard);
+            geom = ige.three._loader.parse(modelBuildingLizard).geometry;
             var mat = new THREE.MeshLambertMaterial({
-                //map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/BuildingLizardTextureSmall.png' )
-                color: new THREE.Color('#FF0000')
+                map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/BuildingLizardTextureSmall.png' ),
+                side: 2
+                //color: new THREE.Color('#FF0000')
             });
 
             this._threeObj = new THREE.Mesh(
