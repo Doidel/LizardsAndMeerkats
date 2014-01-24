@@ -4,13 +4,13 @@ var MainBuildingLizards = Building.extend({
     init: function (id, position) {
         Building.prototype.init.call(this, id);
 
-        var geom = new THREE.CubeGeometry(4, 4, 4);
+        var geom = new THREE.CubeGeometry(1, 1, 1);
 
         if (!ige.isServer) {
-
+            geom = ige.three._loader.parse(modelBuildingLizard);
             var mat = new THREE.MeshLambertMaterial({
-                map: THREE.ImageUtils.loadTexture( './assets/textures/rock1.jpg' )
-                //color: new THREE.Color('#FF0000')
+                //map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/BuildingLizardTextureSmall.png' )
+                color: new THREE.Color('#FF0000')
             });
 
             this._threeObj = new THREE.Mesh(
@@ -26,7 +26,6 @@ var MainBuildingLizards = Building.extend({
         }
 
         if (ige.isServer) {
-
             var stoneMaterial = Physijs.createMaterial(
                 new THREE.MeshBasicMaterial(),
                 .6, // low friction

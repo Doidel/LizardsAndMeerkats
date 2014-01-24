@@ -17,6 +17,7 @@ var igeClientConfig = {
 		//'./models/modelTurret.js',
         './models/modelLizard.js',
         './models/modelMeerkat.js',
+        './models/buildings/modelBuildingLizard.js',
         './levels/LevelObjects/Plant1.js',
         './levels/LevelObjects/Rock1.js',
         './levels/LevelObjects/RockGold1.js',

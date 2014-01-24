@@ -474,7 +474,7 @@ var Player = IgeEntity.extend({
                         // Record the new state
                         this.controls.build = false;
 
-                        this.toggleBuildingMode();
+                        if(this.commander) this.commander.toggleBuildingMode();
                     }
                 }
 
@@ -580,8 +580,10 @@ var Player = IgeEntity.extend({
                     this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 290, 400, 1, false, ige.client.legBones);
                 } else if (this.states.isRunnig != false) {
                     //running
-                    this._checkResetAnimation('running' + this.states.isRunnig[0], 1);
-                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 4, this.states.isRunnig[1], this.states.isRunnig[2], 1, true, ige.client.legBones);
+                    if(this.states.isRunnig){
+                        this._checkResetAnimation('running' + this.states.isRunnig[0], 1);
+                        this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 4, this.states.isRunnig[1], this.states.isRunnig[2], 1, true, ige.client.legBones);
+                    }
                 } else {
                     //standing
                     this._checkResetAnimation('standing', 1);
@@ -907,7 +909,7 @@ var Player = IgeEntity.extend({
 			//display the key press graphics
 			UI.buildingMenu.displayPressed(keyNr, isUp);
 		}
-		
+
 		if (this.commander) this.commander._numKeyChanged(keyNr, isUp);
 	},
     /* CEXCLUDE */
