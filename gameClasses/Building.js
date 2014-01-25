@@ -23,6 +23,7 @@ var Building = IgeEntity.extend({
             isBuildableAtCurrentPosition: false
         }
 
+        this.streamSyncInterval(200);
         this.streamSections(['transform']);
     },
 
@@ -148,15 +149,25 @@ var Building = IgeEntity.extend({
         if (!this.states.isBuildableAtCurrentPosition) return false;
 
         //remove resources
-        //remove streaming
-        //set new id
-        //activate physics
-        //activate abilities and functions
-        //sent network command to finalPlaceBuildings on clients
 
-        //remove green/red fragment shader (client)
+        //remove streaming and green/red fragment shader (client)
         this.states.isBuilt = true;
+        this.streamMode(0);
         ige.network.send('setStreamBuildingBuildable', {id: this._id, color: 0});
+
+        //set new id
+        this.id(ige.newId());
+
+        //activate physics
+        this._threeObj.position.x = this._translate.x;
+        this._threeObj.position.y = this._translate.y;
+        this._threeObj.position.z = this._translate.z;
+        this._threeObj.quaternion.setFromEuler(new THREE.Euler(this._rotate.x, this._rotate.y, this._rotate.z));
+        this.activatePhysics();
+
+        //activate abilities and functions
+
+        //sent network command to finalPlaceBuildings on clients
     },
     _isFlatTerrain: function() {
         //TODO: Take rotation into account
@@ -191,6 +202,10 @@ var Building = IgeEntity.extend({
             minGroundHeight: minGroundHeight,
             maxGroundHeight: maxGroundHeight
         };
+    },
+    activatePhysics: function() {
+        ige.server.scene1._threeObj.add( this._threeObj );
+        //console.log('physics values', this._threeObj._physijs.position, this._threeObj._physijs.rotation);
     }
     /*_forwardAttribute: function(group, name, value, includeSelf) {
         //send values to all other players

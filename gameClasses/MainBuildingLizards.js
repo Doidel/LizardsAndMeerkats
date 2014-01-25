@@ -4,10 +4,9 @@ var MainBuildingLizards = Building.extend({
     init: function (id, position) {
         Building.prototype.init.call(this, id);
 
-        var geom = new THREE.CubeGeometry(1, 1, 1);
-
         if (!ige.isServer) {
-            geom = ige.three._loader.parse(modelBuildingLizard).geometry;
+            var geom = ige.three._loader.parse(modelBuildingLizard).geometry;
+            geom = new THREE.CubeGeometry(2, 2, 2);
             var mat = new THREE.MeshLambertMaterial({
                 map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/BuildingLizardTextureSmall.png' ),
                 side: 2
@@ -33,6 +32,8 @@ var MainBuildingLizards = Building.extend({
                 .2 // high restitution
             );
 
+            var geom = new THREE.CubeGeometry(2, 2, 2);
+
             this._threeObj = new Physijs.BoxMesh(
                 geom,
                 stoneMaterial,
@@ -41,7 +42,8 @@ var MainBuildingLizards = Building.extend({
             //this._threeObj.geometry.dynamic = false;
             this._threeObj.position = position;
 
-            //ige.server.scene1._threeObj.add( this._threeObj );
+            if (this._id.indexOf('Stream') == -1) this.activatePhysics();
+
             this.mount(ige.server.scene1);
         }
 
@@ -50,8 +52,6 @@ var MainBuildingLizards = Building.extend({
             this._threeObj.position = position;
             this.translateTo(position.x, position.y, position.z);
         }
-
-        console.log('position', position, id);
     }
 });
 
