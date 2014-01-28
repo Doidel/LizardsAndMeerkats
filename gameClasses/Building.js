@@ -185,7 +185,7 @@ var Building = IgeEntity.extend({
             ySearchEnd = Math.min(256, yPos + Math.ceil(height / terrainDistanceUnit));
 
         var minGroundHeight = 99999, maxGroundHeight = -99999;
-        for (var y = ySearchStart; y <= ySearchEnd; y++) {
+        /*for (var y = ySearchStart; y <= ySearchEnd; y++) {
             for (var x = xSearchStart; x <= xSearchEnd; x++) {
                 if (vList[y * 257 + x].z > maxGroundHeight) {
                     maxGroundHeight = vList[y * 257 + x].z;
@@ -194,7 +194,48 @@ var Building = IgeEntity.extend({
                     minGroundHeight = vList[y * 257 + x].z;
                 }
             }
-        }
+        }*/
+		
+		//new attempt with rotation
+		
+		var midPosX = Math.floor((this._translate.x + terrainHalfWidth) / terrainDistanceUnit), //assumes terrain is at 0/0
+            midPosY = Math.floor((this._translate.z + terrainHalfHeight) / terrainDistanceUnit), //assumes terrain is at 0/0
+			deltaX = Math.cos(this.rotation.y),
+			deltaY = Math.sin(this.rotation.y),
+			_compareTerrainHeight = function(pos) {
+				pos.x += midPosX;
+				pos.y += midPosY;
+				//take 2 diagonal vertices and compute average (which is not fully correct but less complicated)
+				var height = (vList[Math.ceil(pos.y) * 257 + Math.ceil(pos.x)].z + vList[Math.floor(pos.y) * 257 + Math.floor(pos.x)].z) / 2;
+				if (height > maxGroundHeight) {
+                    maxGroundHeight = height;
+                }
+                if (height < minGroundHeight) {
+                    minGroundHeight = height;
+                }
+			};
+			
+		
+		var currentPosInObjectCoordinates = new THREE.Vector2(0,0),
+			currentPosInTerrainCoordinates = new THREE.Vector2(0,0),
+			halfObjectHeight = - (height / 2 / terrainDistanceUnit),
+			halfObjectWidth = - (width / 2 / terrainDistanceUnit);
+		
+		//iterate in steps of terrainDistanceUnit from the object's left to right
+		for (var y = 0; y <= Math.ceil(height / terrainDistanceUnit); y+= terrainDistance) {
+			currentPosInObjectCoordinates.y = halfObjectHeight + y; //TODO: cut last iteration
+			//and the object's top to bottom
+			for (var x = 0; x <= Math.ceil(width / terrainDistanceUnit); x++) {
+				//(x, y) is now a point
+				currentPosInObjectCoordinates.x = halfObjectWidth + x; //TODO: cut last iteration
+				//Apply the rotation to figure out the point in terrain coordinates
+				var distanceToMid = currentPosInObjectCoordinates.length();
+				currentPosInTerrainCoordinates.x = distanceToMid * deltaX;
+				currentPosInTerrainCoordinates.y = distanceToMid * deltaY;
+				
+				_compareTerrainHeight(currentPosInTerrainCoordinates);
+			}
+		}
 
         //is the building height difference within the threshold?
         return {
