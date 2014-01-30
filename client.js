@@ -86,6 +86,8 @@ var Client = IgeClass.extend({
 						self.vp1.camera.translateTo(0, 2, 2);
                         self.vp1.camera._threeObj.rotation.order = "YXZ";
 
+                        self.initAudio();
+
                         ige._threeRenderer.shadowMapEnabled = true;
                         //ige._threeRenderer.shadowMapSoft = true;
 
@@ -159,6 +161,7 @@ var Client = IgeClass.extend({
                         ige.input.mapAction('key8', ige.input.key[8]);
                         ige.input.mapAction('key9', ige.input.key[9]);
                         ige.input.mapAction('key0', ige.input.key[0]);
+                        ige.input.mapAction('voice', ige.input.key.v);
                         /*ige.input.mapAction('block', ige.input.mouse.wheel);
                         ige.input.mapAction('chargeLeap', ige.input.mouse.down);*/
 
@@ -582,6 +585,93 @@ var Client = IgeClass.extend({
             instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
 
         }
+    },
+    initAudio: function() {
+        /**** AUDIO ****/
+
+        var soundUrls = ['lizards1.mp3', 'lizards2.mp3', 'lizards3.mp3', 'lizards4.mp3', 'lizards5.mp3', 'lizards6.mp3', 'meerkats1.mp3', 'meerkats2.mp3', 'meerkats3.mp3', 'meerkats4.mp3', 'meerkats5.mp3', 'meerkats6.mp3', 'forestNoise.ogg'];
+        this._sound = {
+            pannerList: [],
+            bufferList: []
+        };
+
+        // create WebAudio API context
+        var AudioContext= window.AudioContext || window.webkitAudioContext;
+        this._sound.context	= new AudioContext();
+
+        // put a ListenerObject3DUpdater
+        this._sound._listenerUpdater = new WebAudiox.ListenerObject3DUpdater(this._sound.context, ige.client.vp1.camera._threeObj);
+
+        // Create lineOut
+        this._sound.lineOut	= new WebAudiox.LineOut(this._sound.context);
+        this._sound.lineOut.volume	= 1;
+
+        //global load buffer to initialize the sound list
+        WebAudiox.loadBuffer.onLoad = function(context, url, buffer){
+            ige.client._sound.bufferList.push([url.replace('sounds/',''), buffer]);
+        };
+
+        for (var x = 0; x < soundUrls.length; x++) {
+            WebAudiox.loadBuffer(this._sound.context, 'sounds/'+soundUrls[x]);
+        }
+
+        ige.addBehaviour('soundUpdate', this.soundbehaviour);
+    },
+    soundbehaviour: function() {
+        var self = ige.client;
+        var now = Date.now();
+        var delta = now - self._lastSoundUpdate;
+
+        self._sound._listenerUpdater.update(delta, now);
+
+        for (var x = 0; x < self._sound.pannerList.length; x++) {
+            self._sound.pannerList[x].update(delta, now);
+        }
+
+        self._lastSoundUpdate = Date.now();
+    },
+    addAudioPannerToMesh: function(object3d) {
+        console.log('object3d', object3d);
+        var self = ige.client;
+        var panner	= self._sound.context.createPanner();
+        // panner.coneOuterGain	= 0.1
+        // panner.coneOuterAngle	= Math.PI *180/Math.PI
+        // panner.coneInnerAngle	= 0 *180/Math.PI
+        panner.connect(self._sound.lineOut.destination);
+
+        var pannerUpdater	= new WebAudiox.PannerObject3DUpdater(panner, object3d);
+        self._sound.pannerList.push(pannerUpdater);
+        object3d._panner = panner;
+    },
+    playSound: function(url, object3d) {
+        var index = this._findSoundIndex(url);
+        var panner = object3d._panner;
+        if (!panner) {
+            this.addAudioPannerToMesh(object3d);
+            panner = object3d._panner;
+        }
+        if (index != -1 && panner) {
+            // init AudioBufferSourceNode
+            var source	= this._sound.context.createBufferSource();
+            source.buffer = this._sound.bufferList[index][1];
+            source.loop	= false;
+            source.connect(panner);
+
+            // start the sound now
+            source.start(0);
+        } else {
+            console.log('can\'t play sound ' + url, index, panner);
+        }
+    },
+    _findSoundIndex: function(url) {
+        var index = -1;
+        for (var x = 0; x < this._sound.bufferList.length; x++) {
+            if (this._sound.bufferList[x][0] == url) {
+                index = x;
+                break;
+            }
+        }
+        return index;
     }
 });
 

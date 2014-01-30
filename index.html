@@ -167,6 +167,21 @@
             font-size: 10px;
             color: white;
         }
+
+        #voiceCommands {
+            float: right;
+            height: 100%;
+            overflow: visible;
+            font-size: 0.8em;
+            padding: 0 0.2em;
+            width: 10.5em;
+        }
+        #voiceCommands > div {
+            background-color: rgba(153, 102, 0, .3);
+            border: 1px solid rgb(153, 102, 0);
+            padding: 0 0.2em;
+            display: none;
+        }
     </style>
     <!-- Isogenic Loader -->
     <!-- <script type="text/javascript">var igeRoot = './ige/engine/';</script>
@@ -174,7 +189,10 @@
      <script type="text/javascript">var igeRoot = './ige2912/engine/';</script>
      <script type="text/javascript" src="./ige2912/engine/loader.js"></script>
     <script type="text/javascript" src="jquery-2.0.3.js"></script>
-    <script src="jquery-ui-1.10.3.custom.js"></script>
+    <script type="text/javascript" src="jquery-ui-1.10.3.custom.js"></script>
+    <script src='sounds/webaudiox.lineout.js'></script>
+    <script src='sounds/webaudiox.loadbuffer.js'></script>
+    <script src='sounds/webaudiox.three.js'></script>
 </head>
 <body>
     <div class="igeLoading loadingFloat">
@@ -215,6 +233,18 @@
         <div id="statusbar">
             0 <img src="./assets/ui/icon_gold.png" />
             0 <img src="./assets/ui/icon_wood.png" />
+
+            <div id="voiceCommands">
+                Voice Commands (V)
+                <div>
+                    1. Vie for attention<br />
+                    2. Question, insecurity<br />
+                    3. Warning shout<br />
+                    4. Cry for help<br />
+                    5. Excitement, panic<br />
+                    6. Chatter<br />
+                </div>
+            </div>
         </div>
 
         <div id="blockbar" style="width: 126px; height: 40px;">
@@ -305,7 +335,12 @@
             display: function(isDisplayed) {
                 $('#buildMenu').css('display', isDisplayed ? 'block' : 'none');
             }
-		}
+		},
+        voiceCommands: {
+            display: function(isDisplayed) {
+                $('#voiceCommands > div').css('display', isDisplayed ? 'block' : 'none');
+            }
+        }
     };
 
     $(function() {
@@ -314,4 +349,5 @@
             $(el).append('<span class="keyShortcutLabel">'+(index + 1)+'</span>');
         });
     });
+
 </script>

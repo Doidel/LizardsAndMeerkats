@@ -22,6 +22,7 @@ var Player = IgeEntity.extend({
             this.visuals.hitColor.setRGB(0.3,0.3,0);
             this._materialAmbientBackup = this._threeObj.material.ambient;
 
+            ige.client.addAudioPannerToMesh(this._threeObj);
 
             //events
             window.addEventListener('mousedown', function(event){
@@ -158,7 +159,8 @@ var Player = IgeEntity.extend({
             noAnimation: false,
             isCharging: false,
             isBuilding: false,
-            isRunning: false
+            isRunning: false,
+            isUsingVoice: false
         };
 
 		this.controls = {
@@ -181,7 +183,8 @@ var Player = IgeEntity.extend({
             key7: false,
             key8: false,
             key9: false,
-            build: false
+            build: false,
+            voice: false
 		};
 
         this.values = {
@@ -464,10 +467,6 @@ var Player = IgeEntity.extend({
                     if (!this.controls.build) {
                         // Record the new state
                         this.controls.build = true;
-
-
-                        // Tell the server about our control change
-                        //ige.network.send('playerControlBuildDown');
                     }
                 } else {
                     if (this.controls.build) {
@@ -475,6 +474,20 @@ var Player = IgeEntity.extend({
                         this.controls.build = false;
 
                         if(this.commander) this.commander.toggleBuildingMode();
+                    }
+                }
+
+                if (ige.input.actionState('voice')) {
+                    if (!this.controls.voice) {
+                        // Record the new state
+                        this.controls.voice = true;
+                    }
+                } else {
+                    if (this.controls.voice) {
+                        // Record the new state
+                        this.controls.voice = false;
+
+                        this.toggleVoiceMode();
                     }
                 }
 
@@ -761,6 +774,13 @@ var Player = IgeEntity.extend({
     takeCommander: function() {
         //try to take the commander spot. If it works, replace unit (ClientNetworkEvents)
         ige.network.send('playerTakesCommand');
+    },
+    toggleVoiceMode: function() {
+        if (!ige.isServer) {
+            this.states.isUsingVoice = !this.states.isUsingVoice;
+            // toggle buildingMenu
+            UI.voiceCommands.display(this.states.isUsingVoice);
+        }
     },
     /**
      * Can be called for manually updating AND synchronizing health.
