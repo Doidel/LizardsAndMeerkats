@@ -88,6 +88,7 @@ var Client = IgeClass.extend({
                         self.vp1.camera._threeObj.rotation.order = "YXZ";
 
                         self.initAudio();
+						self.playSound('forestNoise.ogg', true);
 
                         ige._threeRenderer.shadowMapEnabled = true;
                         //ige._threeRenderer.shadowMapSoft = true;
@@ -644,7 +645,7 @@ var Client = IgeClass.extend({
         self._sound.pannerList.push(pannerUpdater);
         object3d._panner = panner;
     },
-    playSound: function(url, object3d) {
+    playAttachedSound: function(url, object3d) {
         var index = this._findSoundIndex(url);
         var panner = object3d._panner;
         if (!panner) {
@@ -664,6 +665,24 @@ var Client = IgeClass.extend({
             console.log('can\'t play sound ' + url, index, panner);
         }
     },
+	playSound: function(url, loop) {
+		var index = this._findSoundIndex(url);
+        if (index != -1) {
+            // init AudioBufferSourceNode
+            var source	= this._sound.context.createBufferSource();
+            source.buffer = this._sound.bufferList[index][1];
+            source.loop	= loop;
+            source.connect(this._sound._lineOut.destination);
+
+            // start the sound now
+            source.start(0);
+			
+			return source;
+        } else {
+            console.log('can\'t play sound ' + url, index, panner);
+        }
+		return false;
+	},
     _findSoundIndex: function(url) {
         var index = -1;
         for (var x = 0; x < this._sound.bufferList.length; x++) {

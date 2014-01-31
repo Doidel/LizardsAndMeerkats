@@ -169,7 +169,7 @@ var ClientNetworkEvents = {
     _onPlayVoiceCommand: function(data) {
         var p = ige.$(data.player);
         if (p != undefined) {
-            ige.client.playSound(p.faction + data.nr + '.mp3', p._threeObj);
+            ige.client.playAttachedSound(p.faction + data.nr + '.mp3', p._threeObj);
         }
     }
 };
