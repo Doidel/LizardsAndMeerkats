@@ -514,6 +514,7 @@ var Player = IgeEntity.extend({
 								this._numKeyChanged(i, true);
 							} else {
 								ige.network.send('playerPlayVoiceCommand', i);
+                                this.toggleVoiceMode();
 							}
                         }
                     }
@@ -789,12 +790,7 @@ var Player = IgeEntity.extend({
         }
     },
 	playVoiceCommand: function(data) {
-		if (!ige.isServer) {
-			if (this.states.isUsingVoice) {
-				this.toggleVoiceMode();
-				
-			}
-		} else {
+		if (ige.isServer) {
 			ige.network.send('playVoiceCommand', data);
 		}
 	},
@@ -857,6 +853,8 @@ var Player = IgeEntity.extend({
         }
     },
     _setPlayerModel: function(faction, unit) {
+
+        var isPlayer = ige._player ? this.id() == ige._player.id() : false;
 
         //temp save old values and remove old model stuff
         if (this._threeObj) {
@@ -931,7 +929,7 @@ var Player = IgeEntity.extend({
         this._threeObj.add(chargeMesh2);
         this._threeObj.chargeElements = chargeMat;
 
-        ige.client.vp1.camera.mount(this);
+        if (isPlayer) ige.client.vp1.camera.mount(this);
     },
     _checkResetAnimation: function(selectedAnimation, layer) {
         if (this._previousAnimation[layer] != selectedAnimation) {

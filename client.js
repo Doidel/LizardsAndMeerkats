@@ -88,7 +88,15 @@ var Client = IgeClass.extend({
                         self.vp1.camera._threeObj.rotation.order = "YXZ";
 
                         self.initAudio();
-						self.playSound('forestNoise.ogg', true);
+						var backgroundSoundInit = function() {
+                            var sound = self.playSound('forestNoise.ogg', true);
+                            if (!sound) {
+                                setTimeout(backgroundSoundInit, 200);
+                            } else {
+                                //self._setVolume(sound, 0.1);
+                            }
+                        };
+                        backgroundSoundInit();
 
                         ige._threeRenderer.shadowMapEnabled = true;
                         //ige._threeRenderer.shadowMapSoft = true;
@@ -672,14 +680,12 @@ var Client = IgeClass.extend({
             var source	= this._sound.context.createBufferSource();
             source.buffer = this._sound.bufferList[index][1];
             source.loop	= loop;
-            source.connect(this._sound._lineOut.destination);
+            source.connect(this._sound.lineOut.destination);
 
             // start the sound now
             source.start(0);
 			
 			return source;
-        } else {
-            console.log('can\'t play sound ' + url, index, panner);
         }
 		return false;
 	},

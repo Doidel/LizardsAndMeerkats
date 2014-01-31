@@ -169,6 +169,7 @@ var ClientNetworkEvents = {
     _onPlayVoiceCommand: function(data) {
         var p = ige.$(data.player);
         if (p != undefined) {
+            console.log('play sound');
             ige.client.playAttachedSound(p.faction + data.nr + '.mp3', p._threeObj);
         }
     }
