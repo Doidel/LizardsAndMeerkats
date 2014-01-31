@@ -165,6 +165,12 @@ var ClientNetworkEvents = {
     _onSetStreamedBuildingBuildable: function(data) {
         var streamBuilding = ige.$(data.id);
         if (streamBuilding) streamBuilding.isBuildable(data.color);
+    },
+    _onPlayVoiceCommand: function(data) {
+        var p = ige.$(data.player);
+        if (p != undefined) {
+            ige.client.playSound(p.faction + data.nr + '.mp3', p._threeObj);
+        }
     }
 };
 

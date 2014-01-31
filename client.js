@@ -56,6 +56,7 @@ var Client = IgeClass.extend({
                         ige.network.define('playerSpawn', self._onPlayerSpawn);
                         ige.network.define('playerSetComponent', self._onPlayerSetComponent);
                         ige.network.define('setStreamBuildingBuildable', self._onSetStreamedBuildingBuildable);
+                        ige.network.define('playVoiceCommand', self._onPlayVoiceCommand);
 
 						// Setup the network stream handler
 						ige.network.addComponent(IgeStreamComponent)

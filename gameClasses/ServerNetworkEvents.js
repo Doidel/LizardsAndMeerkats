@@ -153,6 +153,10 @@ var ServerNetworkEvents = {
 	
 	_onPlayerFinalBuild: function (data, clientId) {
 		if (ige.server.players[clientId].commander) ige.server.players[clientId].commander.finalPlaceBuilding();
+    },
+	
+	_onPlayerPlayVoiceCommand: function (data, clientId) {
+		ige.server.players[clientId].playVoiceCommand({player: clientId, nr: data});
     }
 };
 

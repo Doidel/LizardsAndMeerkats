@@ -75,6 +75,7 @@ var Server = IgeClass.extend({
                         ige.network.define('playerControlRotation', self._onPlayerRotation);
                         ige.network.define('playerTakesCommand', self._onPlayerTakesCommand);
                         ige.network.define('playerFinalBuild', self._onPlayerFinalBuild);
+                        ige.network.define('playerPlayVoiceCommand', self._onPlayerPlayVoiceCommand);
 
                         ige.network.define('playerUpdateHealth');
                         ige.network.define('playersTakeHit');
@@ -84,6 +85,7 @@ var Server = IgeClass.extend({
                         ige.network.define('playerSetComponent');
                         ige.network.define('changeBuildingColor');
                         ige.network.define('setStreamBuildingBuildable');
+                        ige.network.define('playVoiceCommand');
 
 						ige.network.on('connect', self._onPlayerConnect); // Defined in ./gameClasses/ServerNetworkEvents.js
 						ige.network.on('disconnect', self._onPlayerDisconnect); // Defined in ./gameClasses/ServerNetworkEvents.js

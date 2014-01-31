@@ -498,8 +498,10 @@ var Player = IgeEntity.extend({
                             this.controls['key' + i] = true;
 
                             // Tell the server about our control change
-                            ige.network.send('playerControlNumKeyDown', i);
-                            this._numKeyChanged(i, false);
+                            if (!this.states.isUsingVoice) {
+								ige.network.send('playerControlNumKeyDown', i);
+								this._numKeyChanged(i, false);
+							}
                         }
                     } else {
                         if (this.controls['key' + i]) {
@@ -507,8 +509,12 @@ var Player = IgeEntity.extend({
                             this.controls['key' + i] = false;
 
                             // Tell the server about our control change
-                            ige.network.send('playerControlNumKeyUp', i);
-                            this._numKeyChanged(i, true);
+							if (!this.states.isUsingVoice) {
+								ige.network.send('playerControlNumKeyUp', i);
+								this._numKeyChanged(i, true);
+							} else {
+								ige.network.send('playerPlayVoiceCommand', i);
+							}
                         }
                     }
                 }
@@ -782,6 +788,16 @@ var Player = IgeEntity.extend({
             UI.voiceCommands.display(this.states.isUsingVoice);
         }
     },
+	playVoiceCommand: function(data) {
+		if (!ige.isServer) {
+			if (this.states.isUsingVoice) {
+				this.toggleVoiceMode();
+				
+			}
+		} else {
+			ige.network.send('playVoiceCommand', data);
+		}
+	},
     /**
      * Can be called for manually updating AND synchronizing health.
      * @param health
@@ -925,7 +941,8 @@ var Player = IgeEntity.extend({
     },
 	_numKeyChanged: function(keyNr, isUp) {
 		//how to react to a number (0..9) pressed? Override on sub classes
-		if (!ige.isServer) {
+		
+		if (!ige.isServer) {		
 			//display the key press graphics
 			UI.buildingMenu.displayPressed(keyNr, isUp);
 		}
