@@ -200,8 +200,10 @@ var Building = IgeEntity.extend({
 		
 		var midPosX = Math.floor((this._translate.x + terrainHalfWidth) / terrainDistanceUnit), //assumes terrain is at 0/0
             midPosY = Math.floor((this._translate.z + terrainHalfHeight) / terrainDistanceUnit), //assumes terrain is at 0/0
-			deltaX = Math.cos(this.rotation.y),
-			deltaY = Math.sin(this.rotation.y),
+			/*deltaX = Math.cos(this.rotation.y),
+			deltaY = Math.sin(this.rotation.y),*/
+            deltaX = Math.cos(this._rotate.y),
+            deltaY = Math.sin(this._rotate.y),
 			_compareTerrainHeight = function(pos) {
 				pos.x += midPosX;
 				pos.y += midPosY;
@@ -222,7 +224,8 @@ var Building = IgeEntity.extend({
 			halfObjectWidth = - (width / 2 / terrainDistanceUnit);
 		
 		//iterate in steps of terrainDistanceUnit from the object's left to right
-		for (var y = 0; y <= Math.ceil(height / terrainDistanceUnit); y+= terrainDistance) {
+		for (var y = 0; y <= Math.ceil(height / terrainDistanceUnit); y+= terrainDistanceUnit) {
+            //for (var y = 0; y <= Math.ceil(height / terrainDistanceUnit); y+= terrainDistance) {
 			currentPosInObjectCoordinates.y = halfObjectHeight + y; //TODO: cut last iteration
 			//and the object's top to bottom
 			for (var x = 0; x <= Math.ceil(width / terrainDistanceUnit); x++) {

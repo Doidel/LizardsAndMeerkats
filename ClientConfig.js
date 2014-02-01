@@ -13,11 +13,15 @@ var igeClientConfig = {
         //'./tween.min.js',
 
 		/* Models */
+        /* Characters */
 		//'./models/modelSpaceFrigate6.js',
 		//'./models/modelTurret.js',
         './models/modelLizard.js',
         './models/modelMeerkat.js',
+        /* Buildings */
         './models/buildings/modelBuildingLizard.js',
+        './models/buildings/modelBuildingStairsLizard.js',
+        './models/buildings/modelBuildingLaternLizard.js',
         './levels/LevelObjects/Plant1.js',
         './levels/LevelObjects/Rock1.js',
         './levels/LevelObjects/RockGold1.js',
