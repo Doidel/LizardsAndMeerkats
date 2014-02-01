@@ -79,10 +79,15 @@ var Building = IgeEntity.extend({
                 this.states.nextBuildableCheck = ige._currentTime + 200; //call every 200 ms
 
                 var buildable = 1,
-                    builder = ige.server.players[this.values.builderId]; //TODO: If builder undefined
+                    builder = ige.server.players[this.values.builderId]; //TODO: If builder undefined remove building
 
                 //adjust building position to be in front of player
-                this.translateTo(builder._translate.x, this._translate.y, builder._translate.z); //TODO Currently exactly at player position
+                this.translateTo(
+                    builder._translate.x - ( this._threeObj.geometry.boundingBox.max.z * 2 + 2) * Math.sin(builder._rotate.y),
+                    this._translate.y,
+                    builder._translate.z - ( this._threeObj.geometry.boundingBox.max.z * 2 + 2) * Math.cos(builder._rotate.y)
+                ); //TODO Currently exactly at player position
+                this.rotateTo(0, builder._rotate.y, 0);
 
                 //(check for resources made before building selection)
 
