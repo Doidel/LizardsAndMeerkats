@@ -70,7 +70,27 @@ var MainBuildingLizards = Building.extend({
                 laterns[i].castShadow = true;
             }
 
-            laterns[0].position = new THREE.Vector3(1.8, 3.15, 4.6);
+            laterns[0].position = new THREE.Vector3(1.78, 3.15, 4.6);
+            laterns[1].position = new THREE.Vector3(-1.78, 3.15, 4.6);
+
+            laterns[2].rotation.y = Math.PI;
+            laterns[3].rotation.y = Math.PI;
+            laterns[2].position = new THREE.Vector3(1.78, 3.15, -4.6);
+            laterns[3].position = new THREE.Vector3(-1.78, 3.15, -4.6);
+
+            laterns[4].rotation.y = Math.PI/2;
+            laterns[5].rotation.y = Math.PI/2;
+            laterns[6].rotation.y = Math.PI/2;
+            laterns[4].position = new THREE.Vector3(2.75, 3.15, 3.6475);
+            laterns[5].position = new THREE.Vector3(2.75, 3.15, 0);
+            laterns[6].position = new THREE.Vector3(2.75, 3.15, -3.6475);
+
+            laterns[7].rotation.y = (Math.PI*3)/4;
+            laterns[8].rotation.y = (Math.PI*3)/4;
+            laterns[9].rotation.y = (Math.PI*3)/4;
+            laterns[7].position = new THREE.Vector3(-2.75, 3.15, 3.6475);
+            laterns[8].position = new THREE.Vector3(-2.75, 3.15, 0);
+            laterns[9].position = new THREE.Vector3(-2.75, 3.15, -3.6475);
 
             /*
             laterns[1].rotation.y = Math.PI/2;
