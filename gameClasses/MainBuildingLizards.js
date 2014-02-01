@@ -39,16 +39,16 @@ var MainBuildingLizards = Building.extend({
                 stairs[i].castShadow = true;
             }
 
-            stairs[0].position = new THREE.Vector3(0, 0, 6.2);
+            stairs[0].position = new THREE.Vector3(0, 0, 4.65);
 
             stairs[1].rotation.y = Math.PI/2;
-            stairs[1].position = new THREE.Vector3(4.35, 0, 2);
+            stairs[1].position = new THREE.Vector3(3.26, 0, 1.5);
 
             stairs[2].rotation.y = Math.PI/2;
-            stairs[2].position = new THREE.Vector3(4.35, 0, -2);
+            stairs[2].position = new THREE.Vector3(3.26, 0, -1.5);
 
             stairs[3].rotation.y = Math.PI;
-            stairs[3].position = new THREE.Vector3(0, 0, -6.2);
+            stairs[3].position = new THREE.Vector3(0, 0, -4.65);
             for(var i=0; i<4; ++i){
                 this._threeObj.add(stairs[i]);
             }
@@ -70,18 +70,28 @@ var MainBuildingLizards = Building.extend({
                 laterns[i].castShadow = true;
             }
 
-            laterns[0].position = new THREE.Vector3(1.8, 3.15, 4.6);
+            laterns[0].position = new THREE.Vector3(1.34, 2.36, 3.45);
+            laterns[1].position = new THREE.Vector3(-1.34, 2.36, 3.45);
 
-            /*
-            laterns[1].rotation.y = Math.PI/2;
-            laterns[1].position = new THREE.Vector3(4.35, 0, 2);
-
-            laterns[2].rotation.y = Math.PI/2;
-            laterns[2].position = new THREE.Vector3(4.35, 0, -2);
-
+            laterns[2].rotation.y = Math.PI;
             laterns[3].rotation.y = Math.PI;
-            laterns[3].position = new THREE.Vector3(0, 0, -6.2);
-            */
+            laterns[2].position = new THREE.Vector3(1.34, 2.36, -3.45);
+            laterns[3].position = new THREE.Vector3(-1.34, 2.36, -3.45);
+
+            laterns[4].rotation.y = Math.PI/2;
+            laterns[5].rotation.y = Math.PI/2;
+            laterns[6].rotation.y = Math.PI/2;
+            laterns[4].position = new THREE.Vector3(2.07, 2.36, 2.735);
+            laterns[5].position = new THREE.Vector3(2.07, 2.36, 0);
+            laterns[6].position = new THREE.Vector3(2.07, 2.36, -2.735);
+
+            laterns[7].rotation.y = (Math.PI*3)/2;
+            laterns[8].rotation.y = (Math.PI*3)/2;
+            laterns[9].rotation.y = (Math.PI*3)/2;
+            laterns[7].position = new THREE.Vector3(-2.07, 2.36, 2.735);
+            laterns[8].position = new THREE.Vector3(-2.07, 2.36, 0);
+            laterns[9].position = new THREE.Vector3(-2.07, 2.36, -2.735);
+
             for(var i=0; i<10; ++i){
                 this._threeObj.add(laterns[i]);
             }
