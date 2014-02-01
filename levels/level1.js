@@ -94,7 +94,8 @@ var Levels = {
     // Level 2 with height map
     level2: function() {
         if (ige.isServer) {
-            var hMapUrl = "./assets/heightmaps/hMapV3.png";
+            var hMapUrl = "./assets/heightmaps/Botswana.png";
+            //var hMapUrl = "./assets/heightmaps/hMapV3.png";
             // count of image borderlines - only used for lod
             var count = 1;
 
@@ -102,7 +103,7 @@ var Levels = {
 
             var pixels = [];
             PNG.decode(hMapUrl, function(pixels){
-                var size = 64;
+                var size = 1024;
                 var faces = 256;
                 var shape = new THREE.PlaneGeometry(size, size, faces, faces);
 
@@ -110,7 +111,7 @@ var Levels = {
                 var vAmountY = faces+1;
                 var multX = 1024 / vAmountX;
                 var mult = (pixels.length / 4)/ ((vAmountX)*(vAmountY));
-                var scale = 3;
+                var scale = 50;
 
                 var count = 0;
                 for (var i = 0; i < vAmountY; ++i) {
@@ -141,26 +142,26 @@ var Levels = {
         } else {
             // FLOOR
 
-            var hMapUrl = "./assets/heightmaps/hMapV3.png";
+            var hMapUrl = "./assets/heightmaps/Botswana.png";
             // count of image borderlines - only used for lod
             var count = 1;
             var hMap = new Image();
             Levels.loadImage(hMap, hMapUrl, count, function(){
                 var imagedata = Levels.getImageData(hMap);
 
-                var size = 64;
+                var size = 1024;
                 var faces = 256;
                 var shape = new THREE.PlaneGeometry(size, size, faces, faces);
-                var grass = THREE.ImageUtils.loadTexture( './assets/textures/grass1.jpg' );
+                var grass = THREE.ImageUtils.loadTexture( './assets/textures/SoilSand0216_5_S.jpg' );
                 grass.wrapS = grass.wrapT = THREE.RepeatWrapping;
-                grass.repeat.set( 8, 8 );
+                grass.repeat.set(8, 8);
                 var cover = new THREE.MeshLambertMaterial({map: grass, side: 2});
 
                 var vAmountX = faces+1;
                 var vAmountY = faces+1;
                 var multX = hMap.width / vAmountX;
                 var multY = hMap.height / vAmountY;
-                var scale = 3;
+                var scale = 50;
 
                 count = 0;
                 for (var i = 0; i < vAmountY; ++i) {
@@ -182,7 +183,7 @@ var Levels = {
                 ige.client.scene1._threeObj.add(ground);
 
                 // water
-                /*
+/*
                 var parameters = {
                     width: 2000,
                     height: 2000,
@@ -198,13 +199,13 @@ var Levels = {
                 waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
 
                 // Create the water effect
-                console.log(ige);
                 watershader = new THREE.Water( ige._threeRenderer, ige._currentCamera._threeObj, ige.client.scene1._threeObj, {
                     textureWidth: 512,
                     textureHeight: 512,
                     waterNormals: waterNormals,
                     alpha: 	0.85,
-                    sunDirection: sunlight.position.normalize(),
+                    //sunDirection: sunlight.position.normalize(),
+                    sunDirection: new THREE.Vector3(1,0,0),
                     sunColor: 0xffffff,
                     waterColor: 0x001e0f,
                     distortionScale: 50.0
@@ -219,11 +220,11 @@ var Levels = {
                 ige.client.scene1._threeObj.add(aMeshMirror);
 
                 // update content
-                ige.client.scene1._threeObj.addBehavior('updateContent', function(){
-                    watershader.material.uniforms.time.value += 0.25 / 60.0;
+                ige.addBehavior('updateContent', function(){
+                    watershader.material.uniforms.time.value += ige._tickDelta/10;
                     watershader.render();
                 });
-                */
+*/
             });
         }
 

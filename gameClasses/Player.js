@@ -131,7 +131,7 @@ var Player = IgeEntity.extend({
                 5 //mass
             );
             this._threeObj.geometry.dynamic = false;
-            this._threeObj.position.set(0,10,0);
+            this._threeObj.position.set(0,100,0);
 
             var upAxis = new THREE.Vector3(0,1,0);
             this._threeObj.addEventListener('collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
