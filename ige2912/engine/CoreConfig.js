@@ -33,7 +33,7 @@ var igeCoreConfig = {
 		['csap', 'IgeEntityManagerComponent', 'components/IgeEntityManagerComponent.js'],
 		['csap', 'IgeEditorComponent', 'components/editor/IgeEditorComponent.js'],
 		/* Physics Libraries */
-		['csap', 'Box2D', 'components/physics/box2d/lib_box2d.js', 'Box2D'],
+		//['csap', 'Box2D', 'components/physics/box2d/lib_box2d.js', 'Box2D'],
 		['csap', 'Cannon', 'components/physics/cannon/lib_cannon.js'],
 		['csap', 'IgeCannonComponent', 'components/physics/cannon/IgeCannonComponent.js'],
 		/* Network Stream */

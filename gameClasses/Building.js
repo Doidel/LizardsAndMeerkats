@@ -120,6 +120,12 @@ var Building = IgeEntity.extend({
                     this._threeObj.material.emissive = new THREE.Color( 0xff0000 );
                     break;
             }
+
+            if (color == 0) {
+                //the building was finally built
+                this.states.isBuilt = true;
+                this.streamMode(0);
+            }
         }
     },
     /**
@@ -158,10 +164,15 @@ var Building = IgeEntity.extend({
         //remove streaming and green/red fragment shader (client)
         this.states.isBuilt = true;
         this.streamMode(0);
-        ige.network.send('setStreamBuildingBuildable', {id: this._id, color: 0});
+
+        //create new id
+        var newId = ige.newId();
+
+        //sent network command to finalPlaceBuildings on clients
+        ige.network.send('setStreamBuildingBuildable', {id: this._id, color: 0, newId: newId});
 
         //set new id
-        this.id(ige.newId());
+        this.id(newId);
 
         //activate physics
         this._threeObj.position.x = this._translate.x;
@@ -171,8 +182,6 @@ var Building = IgeEntity.extend({
         this.activatePhysics();
 
         //activate abilities and functions
-
-        //sent network command to finalPlaceBuildings on clients
     },
     _isFlatTerrain: function() {
         //TODO: Take rotation into account

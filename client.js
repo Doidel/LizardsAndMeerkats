@@ -22,7 +22,10 @@ var Client = IgeClass.extend({
 		this.textures = {
 			//ship: new IgeTexture('./assets/PlayerTexture.js')
             grass1: new IgeTexture('./assets/textures/grass1.jpg'),
-            charge: new IgeTexture('./assets/textures/charge.png')
+            charge: new IgeTexture('./assets/textures/charge.png'),
+            healthbarInner: new IgeTexture('assets/ui/healthbarInner.png'),
+            healthbarRed: new IgeTexture('assets/ui/healthbarRed.png'),
+            healthbarOuter: new IgeTexture('assets/ui/healthbarOuter.png')
 		};
 
         this.armBones = ["Shoulder_L", "Arm_L", "ArmLower_L", "Hand_L", "Shoulder_R", "Arm_R", "ArmLower_R", "Hand_R", "Back", "NeckLower", "NeckUpper", "Head"];

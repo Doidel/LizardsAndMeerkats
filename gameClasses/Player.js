@@ -805,6 +805,7 @@ var Player = IgeEntity.extend({
         if (!ige.isServer) {
             //ui
             if (this._id == ige._player._id) UI.healthBar.setValue(health);
+            this._healthbar.setPercent(100 / this.values.maxhealth * this.values.health);
         }
         /* CEXCLUDE */
         else {
@@ -928,6 +929,11 @@ var Player = IgeEntity.extend({
         chargeMesh2.rotation.y = - Math.PI / 1.7;
         this._threeObj.add(chargeMesh2);
         this._threeObj.chargeElements = chargeMat;
+
+        this._healthbar = new Healthbar({
+            entity: this,
+            healthPercent: 100
+        });
 
         if (isPlayer) ige.client.vp1.camera.mount(this);
     },

@@ -6,6 +6,7 @@ var igeClientConfig = {
         './gameClasses/PlayerCommanderComponent.js',
         './gameClasses/Building.js',
         './gameClasses/MainBuildingLizards.js',
+        './gameClasses/Healthbar.js',
         './levels/level1.js',
 		//'./gameClasses/TurretMouseAim.js',
         //'./Sparks.js',
