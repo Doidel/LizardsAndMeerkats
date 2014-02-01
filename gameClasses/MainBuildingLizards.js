@@ -107,7 +107,7 @@ var MainBuildingLizards = Building.extend({
                 .2 // high restitution
             );
 
-            var geom = new THREE.CubeGeometry(3, 7, 5);
+            var geom = new THREE.CubeGeometry(4.785, 8.52, 7.557);
             geom.computeBoundingBox();
             var halfHeight = (geom.boundingBox.max.y - geom.boundingBox.min.y) / 2;
             geom.boundingBox.max.y -= halfHeight;

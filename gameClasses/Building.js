@@ -83,9 +83,9 @@ var Building = IgeEntity.extend({
 
                 //adjust building position to be in front of player
                 this.translateTo(
-                    builder._translate.x - ( this._threeObj.geometry.boundingBox.max.z * 2 + 2) * Math.sin(builder._rotate.y),
+                    builder._translate.x - ( this._threeObj.geometry.boundingBox.max.z + 2) * Math.sin(builder._rotate.y),
                     this._translate.y,
-                    builder._translate.z - ( this._threeObj.geometry.boundingBox.max.z * 2 + 2) * Math.cos(builder._rotate.y)
+                    builder._translate.z - ( this._threeObj.geometry.boundingBox.max.z + 2) * Math.cos(builder._rotate.y)
                 ); //TODO Currently exactly at player position
                 this.rotateTo(0, builder._rotate.y, 0);
 
