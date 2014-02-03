@@ -691,6 +691,7 @@ var Player = IgeEntity.extend({
                     possibleEnemies[x].takeDamage(20);
                 }
             }
+			//TODO: THINK TRHOUGH
             if (playersTakenHit.length > 0) {
                 //send the hit to all players
                 for (var key in ige.server.players) {
@@ -811,10 +812,7 @@ var Player = IgeEntity.extend({
         else {
             if (synchronize) {
                 //send update to all clients
-                for (var key in ige.server.players) {
-                    if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
-                    ige.network.send('playerUpdateHealth', {player: this._id, health: health}, key);
-                }
+                ige.network.send('updateHealth', {unit: this._id, health: health});
             }
         }
         /* CEXCLUDE */

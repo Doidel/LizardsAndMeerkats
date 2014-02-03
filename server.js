@@ -77,7 +77,7 @@ var Server = IgeClass.extend({
                         ige.network.define('playerFinalBuild', self._onPlayerFinalBuild);
                         ige.network.define('playerPlayVoiceCommand', self._onPlayerPlayVoiceCommand);
 
-                        ige.network.define('playerUpdateHealth');
+                        ige.network.define('updateHealth');
                         ige.network.define('playersTakeHit');
                         ige.network.define('playerHarvest');
                         ige.network.define('playerAttributeUpdate');

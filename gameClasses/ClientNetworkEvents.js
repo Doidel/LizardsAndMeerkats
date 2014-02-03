@@ -125,9 +125,9 @@ var ClientNetworkEvents = {
             }
         }
     },
-    _onPlayerUpdateHealth: function (data) {
-            if (ige.$(data.player)) {
-                ige.$(data.player)._updateHealth(data.health);
+    _onUpdateHealth: function (data) {
+            if (ige.$(data.unit)) {
+                ige.$(data.unit)._updateHealth(data.health);
             }
     },
     _onPlayerHarvest: function (data) {

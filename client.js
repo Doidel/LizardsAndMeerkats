@@ -55,7 +55,7 @@ var Client = IgeClass.extend({
                         ige.network.define('playersTakeHit', self._onPlayersTakeHit);
                         ige.network.define('playerHarvest', self._onPlayerHarvest);
                         ige.network.define('playerAttributeUpdate', self._onPlayerAttributeUpdate);
-                        ige.network.define('playerUpdateHealth', self._onPlayerUpdateHealth);
+                        ige.network.define('updateHealth', self._onUpdateHealth);
                         ige.network.define('playerSpawn', self._onPlayerSpawn);
                         ige.network.define('playerSetComponent', self._onPlayerSetComponent);
                         ige.network.define('setStreamBuildingBuildable', self._onSetStreamedBuildingBuildable);

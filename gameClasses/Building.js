@@ -13,7 +13,7 @@ var Building = IgeEntity.extend({
             health: 300,
             maxhealth: 300,
             healthregeneration: 0.005,
-            groundHeightDifferenceThreshold: 0.5,
+            groundHeightDifferenceThreshold: 0.3,
 			builderId: 0
         };
 
@@ -22,6 +22,16 @@ var Building = IgeEntity.extend({
             nextBuildableCheck: 0,
             isBuildableAtCurrentPosition: false
         }
+		
+		if (!ige.isServer) {
+			//Colors etc
+			this.visuals = {
+				hitColor: new THREE.Color(),
+				materialAmbientBackup = new THREE.Color()
+			};
+			this.visuals.hitColor.setRGB(0.3,0.3,0);
+			this.visuals.materialAmbientBackup.setRGB(0,0,0);
+		}
 
         this.streamSyncInterval(200);
         this.streamSections(['transform']);
@@ -62,16 +72,16 @@ var Building = IgeEntity.extend({
         //TODO: Adapt, still from Player.js
         if (!ige.isServer) {
             //red glow
-            this._threeObj.material.ambient = this.visuals.hitColor;
+            this._threeObj.material.emissive = this.visuals.hitColor;
             if (this._hitTimeoutVisual) {
                 clearTimeout(this._hitTimeoutVisual);
             }
             var self = this;
             this._hitTimeoutVisual = setTimeout(function() {
-                self._threeObj.material.ambient = self._materialAmbientBackup;
+                self._threeObj.material.emissive = self.visuals.materialAmbientBackup;
             }, 200);
         }
-        this._updateHealth(this.values.health - damage, false)
+        this._updateHealth(this.values.health - damage, false);
     },
     isBuildable: function(color) {
         if (ige.isServer) {
@@ -138,16 +148,13 @@ var Building = IgeEntity.extend({
         this.values.health = health;
         if (!ige.isServer) {
             //ui
-            if (this._id == ige._player._id) UI.healthBar.setValue(health);
+            this._healthbar.setPercent(100 / this.values.maxhealth * this.values.health);
         }
         /* CEXCLUDE */
         else {
             if (synchronize) {
                 //send update to all clients
-                for (var key in ige.server.players) {
-                    if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
-                    ige.network.send('playerUpdateHealth', {player: this._id, health: health}, key);
-                }
+                ige.network.send('updateHealth', {unit: this._id, health: health});
             }
         }
         /* CEXCLUDE */
@@ -199,23 +206,11 @@ var Building = IgeEntity.extend({
             ySearchEnd = Math.min(256, yPos + Math.ceil(height / terrainDistanceUnit));
 
         var minGroundHeight = 99999, maxGroundHeight = -99999;
-        /*for (var y = ySearchStart; y <= ySearchEnd; y++) {
-            for (var x = xSearchStart; x <= xSearchEnd; x++) {
-                if (vList[y * 257 + x].z > maxGroundHeight) {
-                    maxGroundHeight = vList[y * 257 + x].z;
-                }
-                if (vList[y * 257 + x].z < minGroundHeight) {
-                    minGroundHeight = vList[y * 257 + x].z;
-                }
-            }
-        }*/
 		
 		//new attempt with rotation
 		
 		var midPosX = Math.floor((this._translate.x + terrainHalfWidth) / terrainDistanceUnit), //assumes terrain is at 0/0
             midPosY = Math.floor((this._translate.z + terrainHalfHeight) / terrainDistanceUnit), //assumes terrain is at 0/0
-			/*deltaX = Math.cos(this.rotation.y),
-			deltaY = Math.sin(this.rotation.y),*/
             deltaX = Math.cos(this._rotate.y),
             deltaY = Math.sin(this._rotate.y),
 			_compareTerrainHeight = function(pos) {
