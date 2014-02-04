@@ -691,13 +691,9 @@ var Player = IgeEntity.extend({
                     possibleEnemies[x].takeDamage(20);
                 }
             }
-			//TODO: THINK TRHOUGH
             if (playersTakenHit.length > 0) {
                 //send the hit to all players
-                for (var key in ige.server.players) {
-                    if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
-                    ige.network.send('playersTakeHit', {hit: playersTakenHit, rawDamage: 20}, key);
-                }
+                ige.network.send('playersTakeHit', {hit: playersTakenHit, rawDamage: 20});
             }
         }, 300);
 
@@ -765,6 +761,36 @@ var Player = IgeEntity.extend({
         }
         return players;
     },
+    getBuildingsWithinRadius: function(radius) {
+        //Wenn die Distanz zwischen den Mittelpunkten zweier Kreise kleiner ist als die Summe ihrer Radien, so liegt eine Kollision vor
+
+        /*var pointLineDistance = function(point, linestart, lineend) {
+            var a = new THREE.Vector2().subVectors(lineend, linestart);
+            var b = new THREE.Vector2().subVectors(point, linestart);
+            var alen = a.length;
+            var t = a.dot(b)/(alen * alen);
+            if (t < 0) t = 0;
+            if (t > 1) t = 1;
+            return new THREE.Vector2().addVectors(linestart, a.multiplyScalar(t));
+        };
+
+        float minDistSq = HUGE_VAL;
+        Vector2 basePoint = Vector2(0,0);
+        // Seiten durchgehen, Schleife kann (bzw muss, je nachdem wie Rect aussieht) entrollt werden
+        for(int i=0; i<4 ;i++)
+        {
+            Vector2 base = pointLineDistance(circle.mid, rect.points[i], rect.points[(i+1) % 4]);
+            if(lengthsq(circle.mid-base)<minDistSq)
+            {
+                // Kürzerer Abstand, neu zuweisen.
+                minDistSq = lengthsq(circle.mid - base);
+                basePoint = base;
+            }
+        }
+        return {minDistSq < circle.radius * circle.radius,
+            basePoint,
+            minDistSq};*/
+    },
     takeDamage: function(damage) {
         if (!ige.isServer) {
             //red glow
@@ -777,7 +803,7 @@ var Player = IgeEntity.extend({
                 self._threeObj.material.ambient = self._materialAmbientBackup;
             }, 200);
         }
-        this._updateHealth(this.values.health - damage, false)
+        this._updateHealth(this.values.health - damage, false);
     },
     takeCommander: function() {
         //try to take the commander spot. If it works, replace unit (ClientNetworkEvents)

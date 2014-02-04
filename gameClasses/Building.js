@@ -27,7 +27,7 @@ var Building = IgeEntity.extend({
 			//Colors etc
 			this.visuals = {
 				hitColor: new THREE.Color(),
-				materialAmbientBackup = new THREE.Color()
+				materialAmbientBackup: new THREE.Color()
 			};
 			this.visuals.hitColor.setRGB(0.3,0.3,0);
 			this.visuals.materialAmbientBackup.setRGB(0,0,0);
