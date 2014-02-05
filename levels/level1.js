@@ -94,7 +94,8 @@ var Levels = {
     // Level 2 with height map
     level2: function() {
         if (ige.isServer) {
-            var hMapUrl = "./assets/heightmaps/Botswana.png";
+            var hMapUrl = "./assets/heightmaps/NullHeight.png";
+            //var hMapUrl = "./assets/heightmaps/Botswana.png";
             //var hMapUrl = "./assets/heightmaps/hMapV3.png";
             // count of image borderlines - only used for lod
             var count = 1;
@@ -103,8 +104,8 @@ var Levels = {
 
             var pixels = [];
             PNG.decode(hMapUrl, function(pixels){
-                var size = 1024;
-                var faces = 256;
+                var size = 32;
+                var faces = 2;
                 var shape = new THREE.PlaneGeometry(size, size, faces, faces);
 
                 var vAmountX = faces+1;
@@ -112,6 +113,7 @@ var Levels = {
                 var multX = 1024 / vAmountX;
                 var mult = (pixels.length / 4)/ ((vAmountX)*(vAmountY));
                 var scale = 50;
+
 
                 var count = 0;
                 for (var i = 0; i < vAmountY; ++i) {
@@ -123,6 +125,7 @@ var Levels = {
                         shape.vertices[i*vAmountX + j].z = ((pixels[pixelIndex]/255 + pixels[pixelIndex + 1]/255 + pixels[pixelIndex + 2]/255)/3)*scale;
                     }
                 }
+                shape.vertices[0].z = 51;
 
                 shape.computeFaceNormals();
                 shape.computeVertexNormals();
@@ -142,20 +145,30 @@ var Levels = {
         } else {
             // FLOOR
 
-            var hMapUrl = "./assets/heightmaps/Botswana.png";
+            //var hMapUrl = "./assets/heightmaps/Botswana.png";
+            var hMapUrl = "./assets/heightmaps/NullHeight.png";
             // count of image borderlines - only used for lod
             var count = 1;
             var hMap = new Image();
             Levels.loadImage(hMap, hMapUrl, count, function(){
                 var imagedata = Levels.getImageData(hMap);
 
-                var size = 1024;
-                var faces = 256;
+                var size = 32;
+                //var faces = 256;
+                var faces = 2;
                 var shape = new THREE.PlaneGeometry(size, size, faces, faces);
                 var grass = THREE.ImageUtils.loadTexture( './assets/textures/SoilSand0216_5_S.jpg' );
+                //var grassNormal = THREE.ImageUtils.loadTexture( './assets/textures/SoilSand0216_5_S_NRM.png' );
                 grass.wrapS = grass.wrapT = THREE.RepeatWrapping;
-                grass.repeat.set(8, 8);
-                var cover = new THREE.MeshLambertMaterial({map: grass, side: 2});
+                grass.repeat.set(64, 64);
+                //grassNormal.wrapS = grassNormal.wrapT = THREE.RepeatWrapping;
+                //grassNormal.repeat.set(64, 64);
+                //var cover = new THREE.MeshLambertMaterial({map: grass, side: 2});
+                var cover = new THREE.MeshPhongMaterial({
+                    map: grass,
+                    //normalmap: grassNormal,
+                    side: 2
+                });
 
                 var vAmountX = faces+1;
                 var vAmountY = faces+1;
@@ -171,6 +184,7 @@ var Levels = {
                         //ige.log(shape.vertices[i*vAmountX + j].z, count++, "client");
                     }
                 }
+                shape.vertices[0].z = 51;
 
                 shape.computeFaceNormals();
                 shape.computeVertexNormals();
@@ -180,51 +194,139 @@ var Levels = {
                 //ground.castShadow = true;
                 ground.position.set(0,0,0);
                 ground.name = "level";
-                ige.client.scene1._threeObj.add(ground);
 
-                // water
-/*
-                var parameters = {
-                    width: 2000,
-                    height: 2000,
-                    widthSegments: 1,
-                    heightSegments: 1,
-                    depth: 1500,
-                    param: 4,
-                    filterparam: 1
-                };
+                // create scenery
+                var savannahGrassTexture = new THREE.ImageUtils.loadTexture( './assets/textures/scenery/Savanna_Grass.png' );
+                var savannahGrassGeomMED = new THREE.PlaneGeometry(1,1);
+                var savannahGrassGeomHIG = ige.three._loader.parse(modelAngle60).geometry;
+                var savannahGrassLODMeshes = [];
 
-                // Load textures
-                var waterNormals = new THREE.ImageUtils.loadTexture( './assets/textures/waternormals.jpg' );
-                waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
+                var savannahGrassSpriteMat = new THREE.SpriteMaterial({
+                    //color: 0xffffff,
+                    map: savannahGrassTexture,
+                    useScreenCoordinates: false,
+                    transparent: true,
+                    depthWrite: false
+                    //depthTest: false
+                });
 
+                var savannahGrassMat = new THREE.MeshLambertMaterial({
+                    //color: 0xffffff,
+                    map: savannahGrassTexture,
+                    side: 2,
+                    transparent: true,
+                    depthWrite: false
+                    //depthTest: false
+                });
+
+                for(var i=0; i<ground.geometry.vertices.length; ++i){
+                    // low
+                    var lod = new THREE.LOD();
+                    var savannahGrassMeshLOW = new THREE.Mesh();
+                    savannahGrassMeshLOW.updateMatrix();
+                    savannahGrassMeshLOW.matrixAutoUpdate = false;
+                    // medium
+                    var savannahGrassMeshMED = new THREE.Mesh(savannahGrassGeomMED, savannahGrassMat);
+                    if(i==4){
+                        console.log('test');
+                        savannahGrassMeshMED = new THREE.Mesh(savannahGrassGeomMED, new THREE.MeshBasicMaterial({color: 0xff0000, side: 2}));
+                    };
+                    savannahGrassMeshMED.name = "med";
+                    savannahGrassMeshMED.rotation.x = Math.PI * 0.5;
+                    savannahGrassMeshMED.position.z += savannahGrassGeomMED.height * 0.5;
+
+                    savannahGrassMeshMED.updateMatrix();
+                    savannahGrassMeshMED.matrixAutoUpdate = false;
+                    // high
+                   var savannahGrassMeshHIG = new THREE.Mesh(savannahGrassGeomHIG, savannahGrassMat);
+                    savannahGrassMeshHIG.rotation.x = Math.PI * 0.5;
+                    savannahGrassMeshHIG.position.z += savannahGrassGeomMED.height * 0.5;
+                    savannahGrassMeshHIG.updateMatrix();
+                    savannahGrassMeshHIG.matrixAutoUpdate = false;
+
+                    lod.addLevel(savannahGrassMeshHIG, 5);
+                    lod.addLevel(savannahGrassMeshMED, 15);
+                    lod.addLevel(savannahGrassMeshLOW, 100);
+
+                    lod.position.x = ground.geometry.vertices[i].x;
+                    lod.position.y =  ground.geometry.vertices[i].y;
+                    lod.position.z = ground.geometry.vertices[i].z;
+
+                    lod.updateMatrix();
+                    lod.matrixAutoUpdate = false;
+
+                    ground.add(lod);
+                    savannahGrassLODMeshes.push(lod);
+                }
+
+                /*
                 // Create the water effect
+
+                 // water
+
+                 var parameters = {
+                 //width: 2000,
+                 width: 10,
+                 //height: 2000,
+                 height: 10,
+                 widthSegments: 1,
+                 heightSegments: 1,
+                 depth: 50,
+                 param: 4,
+                 filterparam: 1
+                 };
+
+                 // Load textures
+                 var waterNormals = new THREE.ImageUtils.loadTexture( './assets/textures/waternormals.jpg' );
+                 waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
+
                 watershader = new THREE.Water( ige._threeRenderer, ige._currentCamera._threeObj, ige.client.scene1._threeObj, {
                     textureWidth: 512,
                     textureHeight: 512,
                     waterNormals: waterNormals,
                     alpha: 	0.85,
                     //sunDirection: sunlight.position.normalize(),
-                    sunDirection: new THREE.Vector3(1,0,0),
+                    sunDirection: new THREE.Vector3(10,10,10).normalize(),
                     sunColor: 0xffffff,
-                    waterColor: 0x001e0f,
+                    //waterColor: 0x001e0f,
+                    waterColor: 0xffffff,
                     distortionScale: 50.0
                 } );
 
+                watershader.material.side = 2;
+
                 var aMeshMirror = new THREE.Mesh(
-                    new THREE.PlaneGeometry( parameters.width * 500, parameters.height * 500, 50, 50 ),
+                    new THREE.PlaneGeometry( parameters.width * 50, parameters.height * 50, 10, 10 ),
                     watershader.material
                 );
                 aMeshMirror.add( watershader );
                 aMeshMirror.rotation.x = - Math.PI * 0.5;
+                aMeshMirror.position.y += 20;
                 ige.client.scene1._threeObj.add(aMeshMirror);
 
+                 */
+
+                ground.position.set(0,0,0);
+                ige.client.scene1._threeObj.add(ground);
+
                 // update content
-                ige.addBehavior('updateContent', function(){
-                    watershader.material.uniforms.time.value += ige._tickDelta/10;
-                    watershader.render();
-                });
-*/
+                    ige.addBehaviour('updateContent', function(){
+                        /*
+                         //watershader.material.uniforms.time.value += ige._tickDelta/1000;
+                         //watershader.render();
+                         */
+                        for(var i=0; i<savannahGrassLODMeshes.length; ++i){
+                            savannahGrassLODMeshes[i].update(ige._currentCamera._threeObj);
+                            if(savannahGrassLODMeshes[i].children[0].name == 'med'){
+                                // carefull y and z are switched
+                                var v1 = new THREE.Vector3(savannahGrassLODMeshes[i].position.x,0, savannahGrassLODMeshes[i].position.y);
+                                var v2 = new THREE.Vector3(ige._player._threeObj.position.x, 0, ige._player._threeObj.position.z);
+                                var angle = Math.acos(v1);
+                                savannahGrassLODMeshes[i].children[0].updateMatrix();
+                                savannahGrassLODMeshes[i].children[0].matrixAutoUpdate = false;
+                            }
+                        }
+                    });
             });
         }
 
