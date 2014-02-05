@@ -193,6 +193,60 @@
     <script src='sounds/webaudiox.lineout.js'></script>
     <script src='sounds/webaudiox.loadbuffer.js'></script>
     <script src='sounds/webaudiox.three.js'></script>
+
+    <script type="x-shader/x-vertex" id="grassvertexshader">
+
+        uniform float zoom;
+
+        attribute float atlasIndex;
+
+        varying vec2 vUv;
+        varying float grassViewHeight;
+
+        const float imageSize = 128.0;
+        const float imagesOnAtlas = 2.0;
+        const float PI = 3.14159265358979323846264;
+
+        void main() {
+
+        float y = floor(atlasIndex / imagesOnAtlas);
+        vUv = vec2( (atlasIndex - y * imagesOnAtlas) / imagesOnAtlas, y / imagesOnAtlas );
+
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+        //grassViewHeight = cos(atan(mvPosition.y / mvPosition.z));
+        grassViewHeight = cos(atan(abs(cameraPosition.y - position.y) / length(position.xz - cameraPosition.xz)));
+
+        gl_PointSize = zoom * ( 180.0 / length( mvPosition.xyz ) );
+
+        gl_Position = projectionMatrix * mvPosition;
+
+        }
+
+    </script>
+
+    <script type="x-shader/x-fragment" id="grassfragmentshader">
+
+        uniform sampler2D grassAtlas;
+
+        varying vec2 vUv;
+
+        varying float grassViewHeight;
+
+        const float imagesOnAtlas = 2.0;
+
+        void main() {
+            if (gl_PointCoord.y < grassViewHeight) {
+                gl_FragColor = texture2D(grassAtlas, vec2( (gl_PointCoord.x / imagesOnAtlas) + vUv.s, ((gl_PointCoord.y / imagesOnAtlas) / grassViewHeight) + vUv.t ) );
+            } else {
+                gl_FragColor.r = 1.0;
+                gl_FragColor.g = 1.0;
+                gl_FragColor.b = 1.0;
+                gl_FragColor.a = 0.0;
+            }
+        }
+
+    </script>
 </head>
 <body>
     <div class="igeLoading loadingFloat">

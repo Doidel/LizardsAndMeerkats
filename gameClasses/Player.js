@@ -810,6 +810,7 @@ var Player = IgeEntity.extend({
 			this._translate.y >= y1 - radius && this._translate.y <= y2 + radius) {
 			
 			//3 sensing devices as points. True, if one of the points is within the rectangle
+            var PI_2 = Math.PI * 2;
 			var rot = (self._rotate.y % PI_2 + PI_2) % PI_2;
 			var blockHitAngle = Math.PI * 0.35;
 			
@@ -821,11 +822,11 @@ var Player = IgeEntity.extend({
 			];
 			
 			//is one of the points in the rectangle?
-			for (var x = -0.5; x < 0.6 x+=0.5) {
+			for (var x = -0.5; x < 0.6; x+=0.5) {
 				var angle = rot + x * blockHitAngle;
 				var sensingPoint = new THREE.Vector2(Math.cos(angle) * radius, Math.sin(angle) * radius);
-				if (this._translate.x >= x1 && this._translate.x <= x2 && this._translate.y >= y1 && this._translate.y <= y2) {
-				
+				if (sensingPoint.x >= x1 && sensingPoint.x <= x2 && sensingPoint.y >= y1 && sensingPoint.y <= y2) {
+
 				}
 			}
 			

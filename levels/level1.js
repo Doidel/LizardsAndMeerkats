@@ -219,7 +219,7 @@ var Levels = {
                     //depthTest: false
                 });
 
-                for(var i=0; i<ground.geometry.vertices.length; ++i){
+                /*for(var i=0; i<ground.geometry.vertices.length; ++i){
                     // low
                     var lod = new THREE.LOD();
                     var savannahGrassMeshLOW = new THREE.Mesh();
@@ -257,7 +257,19 @@ var Levels = {
 
                     ground.add(lod);
                     savannahGrassLODMeshes.push(lod);
+                }*/
+
+                //Create grass
+                var grassPositions = new Float32Array( 300 );
+                var amountOfShapeVertices = shape.vertices.length;
+                for (var x = 0; x < grassPositions.length / 3; x++) {
+                    //take a random vertice
+                    var randomShapeVertice = shape.vertices[Math.floor(Math.random() * amountOfShapeVertices)]
+                    grassPositions[x * 3] = randomShapeVertice.x;
+                    grassPositions[x * 3 + 1] = randomShapeVertice.z;
+                    grassPositions[x * 3 + 2] = randomShapeVertice.y;
                 }
+                var grass = new levelUtils.Grass(grassPositions);
 
                 /*
                 // Create the water effect
