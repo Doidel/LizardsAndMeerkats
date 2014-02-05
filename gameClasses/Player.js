@@ -763,33 +763,94 @@ var Player = IgeEntity.extend({
     },
     getBuildingsWithinRadius: function(radius) {
         //Wenn die Distanz zwischen den Mittelpunkten zweier Kreise kleiner ist als die Summe ihrer Radien, so liegt eine Kollision vor
-
-        /*var pointLineDistance = function(point, linestart, lineend) {
+		
+		//returns minimal distance between line and point
+        var pointLineDistance = function(point, linestart, lineend) {
             var a = new THREE.Vector2().subVectors(lineend, linestart);
             var b = new THREE.Vector2().subVectors(point, linestart);
-            var alen = a.length;
+            var alen = a.length; // evtl. ohne squareroot
             var t = a.dot(b)/(alen * alen);
             if (t < 0) t = 0;
             if (t > 1) t = 1;
             return new THREE.Vector2().addVectors(linestart, a.multiplyScalar(t));
         };
-
-        float minDistSq = HUGE_VAL;
-        Vector2 basePoint = Vector2(0,0);
+		
+		
+        /*var minDistSq = 999999;
+        var basePoint = new THREE.Vector2(0,0);
+		var circleMidPos = new THREE.Vector2(this._translate.x, this._translate.y);
+		var rect = [new THREE.Vector3(0,0,0), new THREE.Vector3(1,0,0), new THREE.Vector3(1,1,0), new THREE.Vector3(0,1,0)];
+		
         // Seiten durchgehen, Schleife kann (bzw muss, je nachdem wie Rect aussieht) entrollt werden
-        for(int i=0; i<4 ;i++)
+        for(var i = 0; i < 4; i++)
         {
-            Vector2 base = pointLineDistance(circle.mid, rect.points[i], rect.points[(i+1) % 4]);
-            if(lengthsq(circle.mid-base)<minDistSq)
+            var base = pointLineDistance(circleMidPos, rect[i], rect[(i+1) % 4]);
+			var vDist = new THREE.Vector2().subVectors(circleMidPos, base).lengthSq();
+			//TODO: Angle, is the player facing this line?
+            if(vDist < minDistSq)
             {
                 // Kürzerer Abstand, neu zuweisen.
-                minDistSq = lengthsq(circle.mid - base);
+                minDistSq = vDist;
                 basePoint = base;
             }
         }
-        return {minDistSq < circle.radius * circle.radius,
-            basePoint,
-            minDistSq};*/
+        return {
+			isCollided: minDistSq < circle.radius * circle.radius,
+            collisionPoint: basePoint,
+            distanceSq: minDistSq
+		};*/
+			
+			
+			
+			
+			
+		//Rectangle x1, x2, y1, y2
+		//Fast check: is the player within the rectangle + radius area?
+		if (this._translate.x >= x1 - radius && this._translate.x <= x2 + radius &&
+			this._translate.y >= y1 - radius && this._translate.y <= y2 + radius) {
+			
+			//3 sensing devices as points. True, if one of the points is within the rectangle
+			var rot = (self._rotate.y % PI_2 + PI_2) % PI_2;
+			var blockHitAngle = Math.PI * 0.35;
+			
+			//calculate the 3 sensing device points
+			var sensingPoints = [
+				new THREE.Vector2(Math.cos(rot - blockHitAngle / 2) * radius, Math.sin(rot - blockHitAngle / 2) * radius),
+				new THREE.Vector2(Math.cos(rot) * radius, Math.sin(rot) * radius),
+				new THREE.Vector2(Math.cos(rot + blockHitAngle / 2) * radius, Math.sin(rot + blockHitAngle / 2) * radius)
+			];
+			
+			//is one of the points in the rectangle?
+			for (var x = -0.5; x < 0.6 x+=0.5) {
+				var angle = rot + x * blockHitAngle;
+				var sensingPoint = new THREE.Vector2(Math.cos(angle) * radius, Math.sin(angle) * radius);
+				if (this._translate.x >= x1 && this._translate.x <= x2 && this._translate.y >= y1 && this._translate.y <= y2) {
+				
+				}
+			}
+			
+			//get the 2 nearest building vertices in player coordinates
+			
+			//
+                t = possibleEnemies[x]._translate;
+                //localEnemyPosition = self._threeObj.worldToLocal(new THREE.Vector3(t.x, t.y, t.z));
+                localEnemyPosition = new THREE.Vector3(t.x, t.y, t.z).sub(this._translate);
+                angle = Math.atan(localEnemyPosition.x / localEnemyPosition.z);
+                if (localEnemyPosition.x <= 0 && localEnemyPosition.z <= 0) {
+                    //change nothing
+                } else if (localEnemyPosition.x <= 0 && localEnemyPosition.z >= 0) {
+                    angle = Math.PI + angle;
+                } else if (localEnemyPosition.x >= 0 && localEnemyPosition.z >= 0) {
+                    angle += Math.PI;
+                } else {
+                    angle = 2*Math.PI + angle;
+                }
+                if (Math.abs(angle - rot) < blockHitAngle && !isBlocked) {
+                    //hit
+                    playersTakenHit.push(possibleEnemies[x]._id);
+                    possibleEnemies[x].takeDamage(20);
+                }
+		}
     },
     takeDamage: function(damage) {
         if (!ige.isServer) {
