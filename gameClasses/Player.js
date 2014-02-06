@@ -656,7 +656,7 @@ var Player = IgeEntity.extend({
         var blockHitAngle = Math.PI * 0.35;
         var rot = (self._rotate.y % PI_2 + PI_2) % PI_2;
         var enemyrot, t, localEnemyPosition, angle, isBlocked;
-        var playersTakenHit = [];
+        var objectsTakenHit = [];
         var enemyAround = self._isEnemyAround();
 
         //check for the actual hit 300ms later
@@ -676,6 +676,7 @@ var Player = IgeEntity.extend({
                 //localEnemyPosition = self._threeObj.worldToLocal(new THREE.Vector3(t.x, t.y, t.z));
                 localEnemyPosition = new THREE.Vector3(t.x, t.y, t.z).sub(self._translate);
                 angle = Math.atan(localEnemyPosition.x / localEnemyPosition.z);
+				//TODO: Math.atan2 ?
                 if (localEnemyPosition.x <= 0 && localEnemyPosition.z <= 0) {
                     //change nothing
                 } else if (localEnemyPosition.x <= 0 && localEnemyPosition.z >= 0) {
@@ -687,13 +688,22 @@ var Player = IgeEntity.extend({
                 }
                 if (Math.abs(angle - rot) < blockHitAngle && !isBlocked) {
                     //hit
-                    playersTakenHit.push(possibleEnemies[x]._id);
+                    objectsTakenHit.push(possibleEnemies[x]._id);
                     possibleEnemies[x].takeDamage(20);
                 }
             }
-            if (playersTakenHit.length > 0) {
+				
+			//does he hit a building?
+			var buildingsHit = self.getBuildingsHit();
+			if (buildingsHit.length > 0) console.log('player hits buildings: ', buildingsHit);
+			for (var x = 0; x < buildingsHit.length; x++) {
+				objectsTakenHit.push(buildingsHit[x]._id);
+				objectsTakenHit.takeDamage(20);
+			}
+				
+            if (objectsTakenHit.length > 0) {
                 //send the hit to all players
-                ige.network.send('playersTakeHit', {hit: playersTakenHit, rawDamage: 20});
+                ige.network.send('playersTakeHit', {hit: objectsTakenHit, rawDamage: 20});
             }
         }, 300);
 
@@ -761,97 +771,42 @@ var Player = IgeEntity.extend({
         }
         return players;
     },
-    getBuildingsWithinRadius: function(radius) {
-        //Wenn die Distanz zwischen den Mittelpunkten zweier Kreise kleiner ist als die Summe ihrer Radien, so liegt eine Kollision vor
-		
-		//returns minimal distance between line and point
-        var pointLineDistance = function(point, linestart, lineend) {
-            var a = new THREE.Vector2().subVectors(lineend, linestart);
-            var b = new THREE.Vector2().subVectors(point, linestart);
-            var alen = a.length; // evtl. ohne squareroot
-            var t = a.dot(b)/(alen * alen);
-            if (t < 0) t = 0;
-            if (t > 1) t = 1;
-            return new THREE.Vector2().addVectors(linestart, a.multiplyScalar(t));
-        };
-		
-		
-        /*var minDistSq = 999999;
-        var basePoint = new THREE.Vector2(0,0);
-		var circleMidPos = new THREE.Vector2(this._translate.x, this._translate.y);
-		var rect = [new THREE.Vector3(0,0,0), new THREE.Vector3(1,0,0), new THREE.Vector3(1,1,0), new THREE.Vector3(0,1,0)];
-		
-        // Seiten durchgehen, Schleife kann (bzw muss, je nachdem wie Rect aussieht) entrollt werden
-        for(var i = 0; i < 4; i++)
-        {
-            var base = pointLineDistance(circleMidPos, rect[i], rect[(i+1) % 4]);
-			var vDist = new THREE.Vector2().subVectors(circleMidPos, base).lengthSq();
-			//TODO: Angle, is the player facing this line?
-            if(vDist < minDistSq)
-            {
-                // Kürzerer Abstand, neu zuweisen.
-                minDistSq = vDist;
-                basePoint = base;
-            }
-        }
-        return {
-			isCollided: minDistSq < circle.radius * circle.radius,
-            collisionPoint: basePoint,
-            distanceSq: minDistSq
-		};*/
+    getBuildingsHit: function(radius) {
+		var hitBuildings = [];
+		var buildingsLength = ige.server.levelObjects.buildings.length;
+		for (var x = 0; x < buildingsLength; x++) {
+			var building = ige.server.levelObjects.buildings[x];
+			var buildingMatrix = building.matrixWorld;
 			
-			
-			
-			
-			
-		//Rectangle x1, x2, y1, y2
-		//Fast check: is the player within the rectangle + radius area?
-		if (this._translate.x >= x1 - radius && this._translate.x <= x2 + radius &&
-			this._translate.y >= y1 - radius && this._translate.y <= y2 + radius) {
-			
-			//3 sensing devices as points. True, if one of the points is within the rectangle
-            var PI_2 = Math.PI * 2;
-			var rot = (self._rotate.y % PI_2 + PI_2) % PI_2;
-			var blockHitAngle = Math.PI * 0.35;
-			
-			//calculate the 3 sensing device points
-			var sensingPoints = [
-				new THREE.Vector2(Math.cos(rot - blockHitAngle / 2) * radius, Math.sin(rot - blockHitAngle / 2) * radius),
-				new THREE.Vector2(Math.cos(rot) * radius, Math.sin(rot) * radius),
-				new THREE.Vector2(Math.cos(rot + blockHitAngle / 2) * radius, Math.sin(rot + blockHitAngle / 2) * radius)
-			];
-			
-			//is one of the points in the rectangle?
-			for (var x = -0.5; x < 0.6; x+=0.5) {
-				var angle = rot + x * blockHitAngle;
-				var sensingPoint = new THREE.Vector2(Math.cos(angle) * radius, Math.sin(angle) * radius);
-				if (sensingPoint.x >= x1 && sensingPoint.x <= x2 && sensingPoint.y >= y1 && sensingPoint.y <= y2) {
-
+			if (building._threeObj.geometry.boundingBox) {
+				//Rectangle x1, x2, y1, y2
+				var buildingCorner1 = new THREE.Vector3(geometry.boundingBox.min.x, 0 geometry.boundingBox.min.z).applyMatrix4(buildingMatrix),
+					buildingCorner2 = new THREE.Vector3(geometry.boundingBox.max.x, 0 geometry.boundingBox.max.z).applyMatrix4(buildingMatrix);
+				
+				//Fast check: is the player within the rectangle + radius area?
+				if (this._translate.x >= buildingCorner1.x - radius && this._translate.x <= buildingCorner2.x + radius &&
+					this._translate.y >= buildingCorner1.y - radius && this._translate.y <= buildingCorner2.y + radius) {
+					
+					//3 sensing devices as points. True, if one of the points is within the rectangle
+					var PI_2 = Math.PI * 2;
+					var rot = (self._rotate.y % PI_2 + PI_2) % PI_2;
+					var blockHitAngle = Math.PI * 0.35;
+					
+					//is one of the points in the rectangle?
+					for (var x = -0.5; x < 0.6; x+=0.5) {
+						var angle = rot + x * blockHitAngle;
+						var sensingPoint = new THREE.Vector2(Math.cos(angle) * radius, Math.sin(angle) * radius);
+						if (sensingPoint.x >= buildingCorner1.x && sensingPoint.x <= buildingCorner2.x && sensingPoint.y >= buildingCorner1.y && sensingPoint.y <= buildingCorner2.y) {
+							//sensing point is within the rectangle!
+							hitBuildings.push(building);
+						}
+					}
 				}
+			} else if (building._threeObj.geometry.boundingSphere) {
+				//Wenn die Distanz zwischen den Mittelpunkten zweier Kreise kleiner ist als die Summe ihrer Radien, so liegt eine Kollision vor			
 			}
-			
-			//get the 2 nearest building vertices in player coordinates
-			
-			//
-                t = possibleEnemies[x]._translate;
-                //localEnemyPosition = self._threeObj.worldToLocal(new THREE.Vector3(t.x, t.y, t.z));
-                localEnemyPosition = new THREE.Vector3(t.x, t.y, t.z).sub(this._translate);
-                angle = Math.atan(localEnemyPosition.x / localEnemyPosition.z);
-                if (localEnemyPosition.x <= 0 && localEnemyPosition.z <= 0) {
-                    //change nothing
-                } else if (localEnemyPosition.x <= 0 && localEnemyPosition.z >= 0) {
-                    angle = Math.PI + angle;
-                } else if (localEnemyPosition.x >= 0 && localEnemyPosition.z >= 0) {
-                    angle += Math.PI;
-                } else {
-                    angle = 2*Math.PI + angle;
-                }
-                if (Math.abs(angle - rot) < blockHitAngle && !isBlocked) {
-                    //hit
-                    playersTakenHit.push(possibleEnemies[x]._id);
-                    possibleEnemies[x].takeDamage(20);
-                }
 		}
+		return hitBuildings;
     },
     takeDamage: function(damage) {
         if (!ige.isServer) {

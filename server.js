@@ -35,7 +35,8 @@ var Server = IgeClass.extend({
         };
 
         this.levelObjects = {
-            goldRocks: []
+            goldRocks: [],
+			buildings: []
         };
 
 		// Add the server-side game methods / event handlers
