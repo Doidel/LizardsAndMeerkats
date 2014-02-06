@@ -196,8 +196,12 @@ var Player = IgeEntity.extend({
             healthregeneration: 0.005
         };
 
+        //contains data and actions which have to be streamed to the client, e.g.
+        //_streamActions['uH'] =  299 // identifier = 'updateHealth', value = 299
+        this._streamActions = {};
+
 		// Define the data sections that will be included in the stream
-		this.streamSections(['transform', 'stamina']);
+		this.streamSections(['transform', 'actions']);
 	},
 
 	/**
@@ -212,15 +216,16 @@ var Player = IgeEntity.extend({
 	 */
 	streamSectionData: function (sectionId, data) {
 		// Check if the section is one that we are handling
-		if (sectionId === 'stamina') {
+		if (sectionId === 'actions') {
 			// Check if the server sent us data, if not we are supposed
 			// to return the data instead of set it
 			if (data) {
-				// We have been given new data!
-                //ige.client.UI.blockBar.setPercent(100 / this.values.maxStamina * data);
+				// Analyze the given action data
 			} else {
 				// Return current data
-				return this.values.currentStamina;
+                var data = this._streamActions;
+                this._streamActions = {};
+				return data;
 			}
 		} else {
 			// The section was not one that we handle here, so pass this
@@ -229,6 +234,10 @@ var Player = IgeEntity.extend({
 			return IgeEntity.prototype.streamSectionData.call(this, sectionId, data);
 		}
 	},
+
+    addStreamData: function(id, data) {
+        this._streamActions[id] = data;
+    },
 
 	/**
 	 * Called every frame by the engine when this entity is mounted to the

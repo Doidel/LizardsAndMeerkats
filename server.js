@@ -138,6 +138,12 @@ var Server = IgeClass.extend({
         }
         return false;
     },
+    addStreamDataToAll: function(id, data) {
+        /*for (var key in ige.server.players) {
+            if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
+            ige.server.players[key].addStreamData(id, data);
+        }*/
+    },
     physibehaviour: function (ctx) {
         ige.server.scene1._threeObj.simulate(); //ige._tickDelta/1000, 5
     }

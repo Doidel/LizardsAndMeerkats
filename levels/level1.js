@@ -259,13 +259,13 @@ var Levels = {
                 }*/
 
                 //Create grass
-                var grassPositions = new Float32Array( 300 );
+                var grassPositions = new Float32Array( 30000 );
                 var amountOfShapeVertices = shape.vertices.length;
                 for (var x = 0; x < grassPositions.length / 3; x++) {
                     //take a random vertice
                     var randomShapeVertice = shape.vertices[Math.floor(Math.random() * amountOfShapeVertices)]
                     grassPositions[x * 3] = randomShapeVertice.x;
-                    grassPositions[x * 3 + 1] = randomShapeVertice.z;
+                    grassPositions[x * 3 + 1] = randomShapeVertice.z + 0.5;
                     grassPositions[x * 3 + 2] = randomShapeVertice.y;
                 }
                 var grass = new levelUtils.Grass(grassPositions);
