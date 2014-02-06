@@ -239,6 +239,7 @@
         void main() {
             if (gl_PointCoord.y < grassViewHeight) {
                 gl_FragColor = texture2D(grassAtlas, vec2( (gl_PointCoord.x / imagesOnAtlas) + vUv.s, ((gl_PointCoord.y / imagesOnAtlas) / grassViewHeight) + vUv.t ) );
+                //gl_FragColor = texture2D(grassAtlas, vUv );
             } else {
                 gl_FragColor.r = 1.0;
                 gl_FragColor.g = 1.0;

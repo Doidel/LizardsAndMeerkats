@@ -22,7 +22,6 @@ var levelUtils = {
            transparent: true
        });
 
-
        this._particleGeom = new THREE.BufferGeometry();
        this._particleGeom.dynamic = false;
        this._particleGeom.attributes = {
@@ -42,9 +41,9 @@ var levelUtils = {
        this.atlasIndexes = this._particleGeom.attributes.atlasIndex.array;
 
        for (var x = 0; x < this.positions.length; x++) {
-           this.atlasIndexes[x] = Math.round(Math.random() * 4);
+           //this.atlasIndexes[x] = Math.round(Math.random() * 4);
+           this.atlasIndexes[x] = Math.round(Math.random() * 3);
        }
-
 
        this.particles = new THREE.ParticleSystem( this._particleGeom,
            this.grassShaderMaterial
