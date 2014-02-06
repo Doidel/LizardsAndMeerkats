@@ -104,8 +104,8 @@ var Levels = {
 
             var pixels = [];
             PNG.decode(hMapUrl, function(pixels){
-                var size = 32;
-                var faces = 2;
+                var size = 1024;
+                var faces = 128;
                 var shape = new THREE.PlaneGeometry(size, size, faces, faces);
 
                 var vAmountX = faces+1;
@@ -153,9 +153,8 @@ var Levels = {
             Levels.loadImage(hMap, hMapUrl, count, function(){
                 var imagedata = Levels.getImageData(hMap);
 
-                var size = 32;
-                //var faces = 256;
-                var faces = 2;
+                var size = 1024;
+                var faces = 128;
                 var shape = new THREE.PlaneGeometry(size, size, faces, faces);
                 var grass = THREE.ImageUtils.loadTexture( './assets/textures/SoilSand0216_5_S.jpg' );
                 //var grassNormal = THREE.ImageUtils.loadTexture( './assets/textures/SoilSand0216_5_S_NRM.png' );
