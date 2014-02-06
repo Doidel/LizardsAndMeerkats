@@ -213,8 +213,9 @@
         vUv = vec2( (atlasIndex - y * imagesOnAtlas) / imagesOnAtlas, y / imagesOnAtlas );
 
         vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+		
+		//if (length( mvPosition.xyz ) < 10.0) discard;
 
-        //grassViewHeight = cos(atan(mvPosition.y / mvPosition.z));
         grassViewHeight = cos(atan(abs(cameraPosition.y - position.y) / length(position.xz - cameraPosition.xz)));
 
         gl_PointSize = zoom * ( 180.0 / length( mvPosition.xyz ) );
