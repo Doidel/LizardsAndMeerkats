@@ -780,8 +780,8 @@ var Player = IgeEntity.extend({
 			
 			if (building._threeObj.geometry.boundingBox) {
 				//Rectangle x1, x2, y1, y2
-				var buildingCorner1 = new THREE.Vector3(geometry.boundingBox.min.x, 0 geometry.boundingBox.min.z).applyMatrix4(buildingMatrix),
-					buildingCorner2 = new THREE.Vector3(geometry.boundingBox.max.x, 0 geometry.boundingBox.max.z).applyMatrix4(buildingMatrix);
+				var buildingCorner1 = new THREE.Vector3(building._threeObj.geometry.boundingBox.min.x, 0, building._threeObj.geometry.boundingBox.min.z).applyMatrix4(buildingMatrix),
+					buildingCorner2 = new THREE.Vector3(building._threeObj.geometry.boundingBox.max.x, 0, building._threeObj.geometry.boundingBox.max.z).applyMatrix4(buildingMatrix);
 				
 				//Fast check: is the player within the rectangle + radius area?
 				if (this._translate.x >= buildingCorner1.x - radius && this._translate.x <= buildingCorner2.x + radius &&

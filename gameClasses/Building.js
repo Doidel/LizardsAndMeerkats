@@ -31,9 +31,10 @@ var Building = IgeEntity.extend({
 			};
 			this.visuals.hitColor.setRGB(0.3,0.3,0);
 			this.visuals.materialAmbientBackup.setRGB(0,0,0);
-		}
-		
-		ige.server.levelObjects.buildings.push(this);
+		} else {
+            ige.server.levelObjects.buildings.push(this);
+        }
+
 
         this.streamSyncInterval(200);
         this.streamSections(['transform']);
