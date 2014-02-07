@@ -4,12 +4,14 @@ var LevelRoomComponent = IgeClass.extend({
 
     init: function (player, options) {
 		this._player = player;
-		this._tickTimer = 0;
+		this._tickTimer = ige.server.gameOptions.networkLevelRoomCheckInterval;
 		this._attachedEntities = [];
 		this._clientRoomPosition = {
 			x: undefined,
 			y: undefined
 		};
+		//per default we join a stream room "ige" which we'll keep. We will not stream this
+		//unit to "ige" though, "ige" will only be used for global streams.
     },
 	
     /**
@@ -36,7 +38,8 @@ var LevelRoomComponent = IgeClass.extend({
 		if (roomPosX != this._clientRoomPosition.x && roomPosY != this._clientRoomPosition.y) {
 			var clientId = this._player._id,
 				streamRooms = [];
-			ige.network.clientLeaveAllRooms(clientId);
+			
+			this._leaveAbandonedLevelRooms(roomPosX, roomPosY, clientId);
 			
 			for (var x = roomPosX - 1; x <= roomPosX + 1; x++) {
 				for (var y = roomPosY - 1; y <= roomPosY + 1; y++) {
@@ -55,6 +58,16 @@ var LevelRoomComponent = IgeClass.extend({
 			//save the new level room position
 			this._clientRoomPosition.x = roomPosX;
 			this._clientRoomPosition.y = roomPosY;
+		}
+	},
+	
+	_leaveAbandonedLevelRooms: function(roomPosX, roomPosY, clientId) {
+		for (var x = this._clientRoomPosition.x - 1; x <= this._clientRoomPosition.x + 1; x++) {
+			for (var y = this._clientRoomPosition.y - 1; y <= this._clientRoomPosition.y + 1; y++) {
+				if (x >= roomPosX - 1 && x <= roomPosX + 1 && y >= roomPosY - 1 && y <= roomPosY + 1) continue;
+				//set the stream rooms for the actual socket, which is always in sync with the player's stream rooms
+				ige.network.clientLeaveRoom(clientId, x + ':' + y);
+			}
 		}
 	}
 });
