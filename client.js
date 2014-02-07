@@ -71,7 +71,7 @@ var Client = IgeClass.extend({
 							});
 
 						// Create the scene
-						self.scene1 = new IgeScene2d()
+						self.scene1 = new StreamScene()
 							.id('scene1');
 
 						// Create the main viewport and set the scene

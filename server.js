@@ -105,8 +105,9 @@ var Server = IgeClass.extend({
 						ige.network.acceptConnections(true);
 
 						// Create the scene
-						self.scene1 = new IgeScene2d()
-							.id('scene1');
+						self.scene1 = new StreamScene()
+							.id('scene1')
+							.streamMode(1);
 
                         self.scene1._threeObj = new Physijs.Scene({ fixedTimeStep: 1 / 120 });
                         self.scene1._threeObj.setGravity(new THREE.Vector3(0, -60, 0));
@@ -143,7 +144,9 @@ var Server = IgeClass.extend({
         }
         return false;
     },
+	//TODO: Create an always streamed entity where no transform will be streamed. 
     addStreamDataToAll: function(id, data) {
+		
         /*for (var key in ige.server.players) {
             if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
             ige.server.players[key].addStreamData(id, data);
