@@ -33,6 +33,11 @@ var Server = IgeClass.extend({
                 meerkats: 0
             }
         };
+		
+		this.gameOptions = {
+			networkLevelRoomSize: 20,
+			networkLevelRoomCheckInterval: 500
+		}
 
         this.levelObjects = {
             goldRocks: [],

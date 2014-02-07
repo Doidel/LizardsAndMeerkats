@@ -1,0 +1,6 @@
+stream changes:
+IgeObject: 844
+IgeEntity: 3410, 3548, 3638
+IgeScene2d: 31
+
+Changes: "streamControl" and "_streamSync" roomIds now array instead of string

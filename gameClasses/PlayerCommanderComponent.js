@@ -1,4 +1,4 @@
-var PlayerCommanderComponent = Player.extend({
+var PlayerCommanderComponent = IgeClass.extend({
     classId: 'PlayerCommanderComponent',
 	componentId: 'commander',
 
@@ -50,7 +50,7 @@ var PlayerCommanderComponent = Player.extend({
 					.mount(ige.server.scene1);
 				this.streamedBuilding.values.builderId = this._player._id;
                 this.streamedBuilding.states.isBuilt = false;
-
+				this._player.levelRoom.attachEntity(this.streamedBuilding);
 			} else {
                 //display " not enough resources "
 			}

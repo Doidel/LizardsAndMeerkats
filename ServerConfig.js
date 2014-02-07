@@ -3,6 +3,7 @@ var config = {
 		{name: 'ServerNetworkEvents', path: './gameClasses/ServerNetworkEvents'},
 		{name: 'Player', path: './gameClasses/Player'},
         {name: 'PlayerCommanderComponent', path: './gameClasses/PlayerCommanderComponent'},
+		{name: 'LevelRoomComponent', path: './gameClasses/LevelRoomComponent'},
         {name: 'Building', path: './gameClasses/Building'},
         {name: 'MainBuildingLizards', path: './gameClasses/MainBuildingLizards'},
         {name: 'THREE', path: './ige2912/engine/components/three/three.min'},

@@ -3406,6 +3406,36 @@ var IgeEntity = IgeObject.extend({
 
 		return this._streamControl;
 	},
+	
+	/**
+	 * Set the stream rooms for an entity manually
+	 * @param {*} streamRoomIds String 'inherit' or array of roomIds
+	 * @example #Assign stream rooms to an entity
+	 *     // Our entity is in stream mode and we use rooms
+	 *     // Create our room list - the rooms we want to stream the entities to
+	 *     var rooms = ['room1'];
+	 *	
+	 *     // Assign those rooms to an entity
+	 *     entity.setStreamRooms(rooms);
+	 *     
+	 *     // ...
+	 *     
+	 *     // Now we want the entity to inherit the scene's streaming room again
+	 *     entity.setStreamRooms('inherit');
+	 * @return {*} Returns this, for method chaining
+	 */
+	setStreamRooms: function(streamRoomIds) {
+		if (streamRoomIds) {
+			if (streamRoomIds == 'inherit') {
+				this._streamRoomIdManuallySet = false;
+				this._streamRoomIds = this._parent._streamRoomIds;
+			} else if (Array.isArray(streamRoomIds)) {
+				this._streamRoomIdManuallySet = false;
+				this._streamRoomIds = streamRoomIds;
+			}
+		}
+		return this;
+	},
 
 	/**
 	 * Gets / sets the stream sync interval. This value
@@ -3515,8 +3545,18 @@ var IgeEntity = IgeObject.extend({
 			// Grab an array of connected clients from the network
 			// system
 			var recipientArr = [],
-				clientArr = ige.network.clients(this._streamRoomId),
+				clientArr = [],
 				i;
+			
+			//get all recipients 
+			if (this._streamRoomIds != undefined) {
+				//by rooms, if available
+				for (s in this._streamRoomIds) {
+					clientArr = clientArr.concat(ige.network.clients(s));
+				}
+			} else {
+				clientArr = ige.network.clients();
+			}
 			
 			for (i in clientArr) {
 				if (clientArr.hasOwnProperty(i)) {
@@ -3524,7 +3564,7 @@ var IgeEntity = IgeObject.extend({
 					if (this._streamControl) {
 						// Call the callback method and if it returns true,
 						// send the stream data to this client
-						if (this._streamControl.apply(this, [i, this._streamRoomId])) {
+						if (this._streamControl.apply(this, [i, this._streamRoomIds])) {
 							recipientArr.push(i);
 						}
 					} else {
@@ -3540,7 +3580,7 @@ var IgeEntity = IgeObject.extend({
 
 		if (this._streamMode === 2) {
 			// Stream mode is advanced
-			this._streamSync(clientId, this._streamRoomId);
+			this._streamSync(clientId, this._streamRoomIds);
 
 			return this;
 		}
@@ -3595,11 +3635,11 @@ var IgeEntity = IgeObject.extend({
 	 * @param {Array} recipientArr The array of ids of the client(s) to
 	 * queue stream data for. The stream data being queued
 	 * is returned by a call to this._streamData().
-	 * @param {String} streamRoomId The id of the room the entity belongs
+	 * @param {String} streamRoomIds The ids of the rooms the entity belongs
 	 * in (can be undefined or null if no room assigned).
 	 * @private
 	 */
-	_streamSync: function (recipientArr, streamRoomId) {
+	_streamSync: function (recipientArr, streamRoomIds) {
 		var arrCount = recipientArr.length,
 			arrIndex,
 			clientId,

@@ -141,6 +141,8 @@ var Player = IgeEntity.extend({
             });
             this._threeObj.setAngularFactor({ x: 0, y: 0, z: 0 });
             ige.server.scene1._threeObj.add( this._threeObj );
+			
+			this.addComponent(LevelRoomComponent);
         }
 
 
