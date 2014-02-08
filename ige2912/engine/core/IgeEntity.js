@@ -3552,7 +3552,12 @@ var IgeEntity = IgeObject.extend({
 			if (this._streamRoomIds != undefined) {
 				//by rooms, if available
 				for (s in this._streamRoomIds) {
-					clientArr = clientArr.concat(ige.network.clients(s));
+                    var cArr = ige.network.clients(this._streamRoomIds[s]);
+                    if (cArr != undefined) {
+                        for (c in cArr) {
+                            if (c != undefined && clientArr.indexOf(c) == -1) clientArr[c] = cArr[c];
+                        }
+                    }
 				}
 			} else {
 				clientArr = ige.network.clients();
