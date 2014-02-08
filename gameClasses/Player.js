@@ -210,7 +210,7 @@ var Player = IgeEntity.extend({
         this._streamActions = {};
 
 		// Define the data sections that will be included in the stream
-		this.streamSections(['transform', 'actions']);
+		this.streamSections(['transform', 'playVoiceCommand']);
 	},
 
 	/**
@@ -225,19 +225,17 @@ var Player = IgeEntity.extend({
 	 */
 	streamSectionData: function (sectionId, data) {
 		// Check if the section is one that we are handling
-        if (!ige.isServer) console.log('I get stream data!');
-		if (sectionId === 'actions') {
-			// Check if the server sent us data, if not we are supposed
-			// to return the data instead of set it
-			if (data) {
-				// Analyze the given action data
-			} else {
-				// Return current data
-                var data = this._streamActions;
-                this._streamActions = {};
-				return data;
-			}
-		} else {
+        if (sectionId == 'playVoiceCommand') {
+            if (data) {
+                data = JSON.parse(data);
+                var p = ige.$(data.player);
+                if (p != undefined) {
+                    ige.client.playAttachedSound(p.faction + data.nr + '.mp3', p._threeObj);
+                }
+            } else {
+                return this._getJSONStreamActionData('playVoiceCommand');
+            }
+        } else {
 			// The section was not one that we handle here, so pass this
 			// to the super-class streamSectionData() method - it handles
 			// the "transform" section by itself
@@ -245,6 +243,13 @@ var Player = IgeEntity.extend({
 		}
 	},
 
+    _getJSONStreamActionData: function(property) {
+        if (this._streamActions.hasOwnProperty(property) && this._streamActions[property] != undefined) {
+            var data = this._streamActions[property];
+            delete this._streamActions[property];
+            return JSON.stringify(data);
+        }
+    },
 
     streamCreateData: function() {
 
@@ -859,7 +864,8 @@ var Player = IgeEntity.extend({
     },
 	playVoiceCommand: function(data) {
 		if (ige.isServer) {
-			ige.network.send('playVoiceCommand', data);
+			//ige.network.send('playVoiceCommand', data);
+            this.addStreamData('playVoiceCommand', data);
 		}
 	},
     /**
