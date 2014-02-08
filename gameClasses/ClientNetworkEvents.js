@@ -155,6 +155,7 @@ var ClientNetworkEvents = {
      * Set the model (faction + unit type) and display an animation
      */
     _onPlayerSpawn: function(data) {
+        console.log(data.player);
         var p = ige.$(data.player);
         p.faction = data.faction;
         console.log('playerSpawn');

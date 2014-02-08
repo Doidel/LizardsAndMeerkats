@@ -36,7 +36,7 @@ var LevelRoomComponent = IgeClass.extend({
 	
 	_clientLevelRoomChangedCheck: function() {
 		var roomPosX = Math.floor(this._player._translate.x / ige.server.gameOptions.networkLevelRoomSize),
-			roomPosY = Math.floor(this._player._translate.y / ige.server.gameOptions.networkLevelRoomSize);
+			roomPosY = Math.floor(this._player._translate.z / ige.server.gameOptions.networkLevelRoomSize);
 		if (roomPosX != this._clientRoomPosition.x && roomPosY != this._clientRoomPosition.y) {
 			var clientId = this._player._id,
 				streamRooms = [];
@@ -46,7 +46,7 @@ var LevelRoomComponent = IgeClass.extend({
 			for (var x = roomPosX - 1; x <= roomPosX + 1; x++) {
 				for (var y = roomPosY - 1; y <= roomPosY + 1; y++) {
 					//set the stream rooms for the actual socket, which is always in sync with the player's stream rooms
-					ige.network.clientJoinRoom(clientId, x + ':' + y);
+                    ige.network.clientJoinRoom(clientId, x + ':' + y);
 					streamRooms.push(x + ':' + y);
 				}
 			}
@@ -56,7 +56,7 @@ var LevelRoomComponent = IgeClass.extend({
 			for (e in this._attachedEntities) {
 				e.setStreamRooms(streamRooms);
 			}
-            console.log('entity rooms', this._player._streamRoomIds);
+            console.log('entity rooms', ige.network._socketsByRoomId); //this._player._streamRoomIds
             //console.log('clientId rooms', ige.network._socketsByRoomId);
 			
 			//save the new level room position

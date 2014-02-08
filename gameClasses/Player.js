@@ -149,7 +149,7 @@ var Player = IgeEntity.extend({
             setTimeout(function() {
                  //Call the spawn event AFTER the stream created the unit. It sets their model (faction + unit type) and displays an animation
                  ige.network.send('playerSpawn', {player: this._id, faction: this.faction}, this._id);
-            }, 3000);
+            }.bind(this), 10000);
         }
 
 
