@@ -13,6 +13,8 @@ var Player = IgeEntity.extend({
 		}
 
 		if (!ige.isServer) {
+
+            console.log('set model...');
             this._setPlayerModel();
 
             //Colors etc
@@ -141,8 +143,13 @@ var Player = IgeEntity.extend({
             });
             this._threeObj.setAngularFactor({ x: 0, y: 0, z: 0 });
             ige.server.scene1._threeObj.add( this._threeObj );
-			
-			this.addComponent(LevelRoomComponent);
+
+            self.addComponent(LevelRoomComponent);
+
+            setTimeout(function() {
+                 //Call the spawn event AFTER the stream created the unit. It sets their model (faction + unit type) and displays an animation
+                 ige.network.send('playerSpawn', {player: this._id, faction: this.faction}, this._id);
+            }, 3000);
         }
 
 
@@ -218,6 +225,7 @@ var Player = IgeEntity.extend({
 	 */
 	streamSectionData: function (sectionId, data) {
 		// Check if the section is one that we are handling
+        if (!ige.isServer) console.log('I get stream data!');
 		if (sectionId === 'actions') {
 			// Check if the server sent us data, if not we are supposed
 			// to return the data instead of set it

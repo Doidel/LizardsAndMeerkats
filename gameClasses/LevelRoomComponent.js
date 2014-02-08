@@ -10,6 +10,8 @@ var LevelRoomComponent = IgeClass.extend({
 			x: undefined,
 			y: undefined
 		};
+        player.addBehaviour('levelRoom', this._behaviour);
+        this._clientLevelRoomChangedCheck();
 		//per default we join a stream room "ige" which we'll keep. We will not stream this
 		//unit to "ige" though, "ige" will only be used for global streams.
     },
@@ -19,12 +21,12 @@ var LevelRoomComponent = IgeClass.extend({
      * scenegraph.
      * @param ctx The canvas context to render to.
      */
-    tick: function (ctx) {
-		this._tickTimer += ige._tickDelta;
+    _behaviour: function (ctx) {
+		this.levelRoom._tickTimer += ige._tickDelta;
 		//check for a level change every x miliseconds
-		if (this._tickTimer / ige.server.gameOptions.networkLevelRoomCheckInterval > 1) {
-			this._tickTimer -= ige.server.gameOptions.networkLevelRoomCheckInterval;
-			this._clientLevelRoomChangedCheck();
+		if (this.levelRoom._tickTimer / ige.server.gameOptions.networkLevelRoomCheckInterval > 1) {
+			this.levelRoom._tickTimer -= ige.server.gameOptions.networkLevelRoomCheckInterval;
+			this.levelRoom._clientLevelRoomChangedCheck();
 		}
     },
 	
@@ -33,13 +35,13 @@ var LevelRoomComponent = IgeClass.extend({
 	},
 	
 	_clientLevelRoomChangedCheck: function() {
-		var roomPosX = this._player._translate.x % ige.server.gameOptions.networkRoomSize,
-			roomPosY = this._player._translate.y % ige.server.gameOptions.networkRoomSize;
+		var roomPosX = Math.floor(this._player._translate.x / ige.server.gameOptions.networkLevelRoomSize),
+			roomPosY = Math.floor(this._player._translate.y / ige.server.gameOptions.networkLevelRoomSize);
 		if (roomPosX != this._clientRoomPosition.x && roomPosY != this._clientRoomPosition.y) {
 			var clientId = this._player._id,
 				streamRooms = [];
 			
-			this._leaveAbandonedLevelRooms(roomPosX, roomPosY, clientId);
+			if (this._clientRoomPosition.x != undefined && this._clientRoomPosition.y != undefined) this._leaveAbandonedLevelRooms(roomPosX, roomPosY, clientId);
 			
 			for (var x = roomPosX - 1; x <= roomPosX + 1; x++) {
 				for (var y = roomPosY - 1; y <= roomPosY + 1; y++) {
@@ -48,12 +50,14 @@ var LevelRoomComponent = IgeClass.extend({
 					streamRooms.push(x + ':' + y);
 				}
 			}
-			
+
 			//set the stream rooms for the player and all entities
 			this._player.setStreamRooms(streamRooms);
 			for (e in this._attachedEntities) {
 				e.setStreamRooms(streamRooms);
 			}
+            console.log('entity rooms', this._player._streamRoomIds);
+            //console.log('clientId rooms', ige.network._socketsByRoomId);
 			
 			//save the new level room position
 			this._clientRoomPosition.x = roomPosX;

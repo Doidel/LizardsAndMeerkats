@@ -381,7 +381,7 @@ var Levels = {
     loadImage: function(hMap, src, count, callback){
         hMap.src = src;
         hMap.onload = callback;
-    },
+    }
     // load server side image for nodejs !! needs to be in png format!!
     /*getImageDataSever: function(url) {
         var png = require('png-js');

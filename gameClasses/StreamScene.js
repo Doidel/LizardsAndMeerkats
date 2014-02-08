@@ -4,7 +4,7 @@ var StreamScene = IgeScene2d.extend({
     //Ask SavXR Natsu for balances
 
 	init: function() {
-		IgeEntity.prototype.init.call(this);
+		IgeScene2d.prototype.init.call(this);
 
 		if (ige.isServer) {
 			

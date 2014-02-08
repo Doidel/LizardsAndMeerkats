@@ -80,7 +80,6 @@ var Client = IgeClass.extend({
 						self.vp1 = new IgeViewport()
 							.id('vp1')
 							.autoSize(true)
-							.scene(self.scene1)
 							.mount(ige);
 
                         /*self.vp1.camera._threeObj.near = 1;

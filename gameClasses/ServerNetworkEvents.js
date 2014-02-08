@@ -33,11 +33,6 @@ var ServerNetworkEvents = {
 
 			// Tell the client to track their player entity
 			ige.network.send('playerEntity', ige.server.players[clientId].id(), clientId);
-
-            setTimeout(function() {
-                //Call the spawn event which sets their model (faction + unit type) and displays an animation
-                ige.network.send('playerSpawn', {player: ige.server.players[clientId]._id, faction: ige.server.players[clientId].faction}, clientId);
-            }, 200);
 		}
 	},
 
