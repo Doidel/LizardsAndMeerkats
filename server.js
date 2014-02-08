@@ -35,7 +35,7 @@ var Server = IgeClass.extend({
         };
 		
 		this.gameOptions = {
-			networkLevelRoomSize: 20,
+			networkLevelRoomSize: 10,
 			networkLevelRoomCheckInterval: 500
 		}
 

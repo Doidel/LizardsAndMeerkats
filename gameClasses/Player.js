@@ -245,6 +245,11 @@ var Player = IgeEntity.extend({
 		}
 	},
 
+
+    streamCreateData: function() {
+
+    },
+
     addStreamData: function(id, data) {
         this._streamActions[id] = data;
     },

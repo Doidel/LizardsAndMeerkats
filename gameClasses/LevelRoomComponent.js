@@ -6,7 +6,7 @@ var LevelRoomComponent = IgeClass.extend({
 		this._player = player;
 		this._tickTimer = ige.server.gameOptions.networkLevelRoomCheckInterval;
 		this._attachedEntities = [];
-		this._clientRoomPosition = {
+		this.clientRoomPosition = {
 			x: undefined,
 			y: undefined
 		};
@@ -37,11 +37,11 @@ var LevelRoomComponent = IgeClass.extend({
 	_clientLevelRoomChangedCheck: function() {
 		var roomPosX = Math.floor(this._player._translate.x / ige.server.gameOptions.networkLevelRoomSize),
 			roomPosY = Math.floor(this._player._translate.z / ige.server.gameOptions.networkLevelRoomSize);
-		if (roomPosX != this._clientRoomPosition.x && roomPosY != this._clientRoomPosition.y) {
+		if (roomPosX != this.clientRoomPosition.x || roomPosY != this.clientRoomPosition.y) {
 			var clientId = this._player._id,
 				streamRooms = [];
 			
-			if (this._clientRoomPosition.x != undefined && this._clientRoomPosition.y != undefined) this._leaveAbandonedLevelRooms(roomPosX, roomPosY, clientId);
+			if (this.clientRoomPosition.x != undefined && this.clientRoomPosition.y != undefined) this._leaveAbandonedLevelRooms(roomPosX, roomPosY, clientId);
 			
 			for (var x = roomPosX - 1; x <= roomPosX + 1; x++) {
 				for (var y = roomPosY - 1; y <= roomPosY + 1; y++) {
@@ -56,23 +56,67 @@ var LevelRoomComponent = IgeClass.extend({
 			for (e in this._attachedEntities) {
 				e.setStreamRooms(streamRooms);
 			}
-            console.log('entity rooms', ige.network._socketsByRoomId); //this._player._streamRoomIds
+            //console.log('entity rooms', ige.network._socketsByRoomId); //this._player._streamRoomIds
             //console.log('clientId rooms', ige.network._socketsByRoomId);
 			
 			//save the new level room position
-			this._clientRoomPosition.x = roomPosX;
-			this._clientRoomPosition.y = roomPosY;
+			this.clientRoomPosition.x = roomPosX;
+			this.clientRoomPosition.y = roomPosY;
 		}
 	},
 	
 	_leaveAbandonedLevelRooms: function(roomPosX, roomPosY, clientId) {
-		for (var x = this._clientRoomPosition.x - 1; x <= this._clientRoomPosition.x + 1; x++) {
-			for (var y = this._clientRoomPosition.y - 1; y <= this._clientRoomPosition.y + 1; y++) {
+        var roomsAbandoned = [];
+		for (var x = this.clientRoomPosition.x - 1; x <= this.clientRoomPosition.x + 1; x++) {
+			for (var y = this.clientRoomPosition.y - 1; y <= this.clientRoomPosition.y + 1; y++) {
 				if (x >= roomPosX - 1 && x <= roomPosX + 1 && y >= roomPosY - 1 && y <= roomPosY + 1) continue;
+                //add a stream entry saying that the entity left room XY
+                //flush the stream immediately
 				//set the stream rooms for the actual socket, which is always in sync with the player's stream rooms
 				ige.network.clientLeaveRoom(clientId, x + ':' + y);
+                roomsAbandoned.push(x + ':' + y);
 			}
 		}
+
+        //send a stream destroy command to all clients which listen to one of the rooms abandoned but listen to none
+        //of the new rooms
+        var clientArr = {};
+        //first, gather all clients of abandoned rooms
+        for (r in roomsAbandoned) {
+            var cArr = ige.network.clients(roomsAbandoned[r]);
+            if (cArr != undefined) {
+                for (c in cArr) {
+                    if (c != undefined && !clientArr.hasOwnProperty(c)) clientArr[c] = cArr[c];
+                }
+            }
+        }
+        //then check whether they listen to one of the new rooms
+        var newRooms = [
+            (roomPosX - 1) + ':' + (roomPosY - 1),
+            (roomPosX - 1) + ':' + roomPosY,
+            (roomPosX - 1) + ':' + (roomPosY + 1),
+            roomPosX + ':' + (roomPosY - 1),
+            roomPosX + ':' + roomPosY,
+            roomPosX + ':' + (roomPosY + 1),
+            (roomPosX + 1) + ':' + (roomPosY - 1),
+            (roomPosX + 1) + ':' + roomPosY,
+            (roomPosX + 1) + ':' + (roomPosY + 1)
+        ];
+        for (c in clientArr) {
+            var cRooms = ige.network.clientRooms(c);
+            var sendDestroy = true;
+            for (cR in cRooms) {
+                if (newRooms.indexOf(cRooms[cR]) != -1) {
+                    sendDestroy = false;
+                    break;
+                }
+            }
+
+            if (sendDestroy) {
+                this._player.streamDestroy(c);
+                console.log('destroy stream');
+            }
+        }
 	}
 });
 
