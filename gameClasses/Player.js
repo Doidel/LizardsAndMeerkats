@@ -12,6 +12,66 @@ var Player = IgeEntity.extend({
 			this.id(id);
 		}
 
+
+        this.states = {
+            canJump: true,
+            rockLastHarvested: ige._currentTime,
+            isJumping: false,
+            currentBlockFrame: 190,
+            isScratching: false,
+            isAttacking: false,
+            attackType: 0, //0-2
+            nextPossibleAttack: 0,
+            standingStage: 0,
+            nextStandingAnim: 0,
+            isDying: false,
+            noAnimation: false,
+            isCharging: false,
+            isBuilding: false,
+            isRunning: false,
+            isUsingVoice: false
+        };
+
+        this.controls = {
+            left: false,
+            right: false,
+            forwards: false,
+            backwards: false,
+            jump: false,
+            block: false,
+            chargeLeap: false,
+            attack: false,
+            rotation: 0,
+            key0: false,
+            key1: false,
+            key2: false,
+            key3: false,
+            key4: false,
+            key5: false,
+            key6: false,
+            key7: false,
+            key8: false,
+            key9: false,
+            build: false,
+            voice: false
+        };
+
+        this.values = {
+            currentStamina: 100,
+            maxStamina: 100,
+            staminaregeneration: 0.01,
+            health: 300,
+            maxhealth: 300,
+            healthregeneration: 0.005
+        };
+
+        //contains data and actions which have to be streamed to the client, e.g.
+        //_streamActions['uH'] =  299 // identifier = 'updateHealth', value = 299
+        this._streamActions = {};
+
+        // Define the data sections that will be included in the stream
+        this.streamSections(['transform', 'playVoiceCommand', 'playersTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent']);
+
 		if (!ige.isServer) {
 
             console.log('set model...');
@@ -149,66 +209,6 @@ var Player = IgeEntity.extend({
             //Set model (faction + unit type) and displays an animation
 			this.addStreamData('playerSpawn', {player: this._id, faction: this.faction}, this._id);
         }
-
-
-        this.states = {
-            canJump: true,
-            rockLastHarvested: ige._currentTime,
-            isJumping: false,
-            currentBlockFrame: 190,
-            isScratching: false,
-            isAttacking: false,
-            attackType: 0, //0-2
-            nextPossibleAttack: 0,
-            standingStage: 0,
-            nextStandingAnim: 0,
-            isDying: false,
-            noAnimation: false,
-            isCharging: false,
-            isBuilding: false,
-            isRunning: false,
-            isUsingVoice: false
-        };
-
-		this.controls = {
-			left: false,
-			right: false,
-			forwards: false,
-            backwards: false,
-            jump: false,
-            block: false,
-            chargeLeap: false,
-            attack: false,
-            rotation: 0,
-            key0: false,
-            key1: false,
-            key2: false,
-            key3: false,
-            key4: false,
-            key5: false,
-            key6: false,
-            key7: false,
-            key8: false,
-            key9: false,
-            build: false,
-            voice: false
-		};
-
-        this.values = {
-            currentStamina: 100,
-            maxStamina: 100,
-            staminaregeneration: 0.01,
-            health: 300,
-            maxhealth: 300,
-            healthregeneration: 0.005
-        };
-
-        //contains data and actions which have to be streamed to the client, e.g.
-        //_streamActions['uH'] =  299 // identifier = 'updateHealth', value = 299
-        this._streamActions = {};
-
-		// Define the data sections that will be included in the stream
-		this.streamSections(['transform', 'playVoiceCommand', 'playersTakeHit', 'playerHarvest'. 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent']);
 	},
 
 	/**
@@ -818,7 +818,7 @@ var Player = IgeEntity.extend({
                         if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
                         //ige.network.send('playerHarvest', {player: self._id, amount: 5}, key);
                     }*/
-					this.addStreamData('playerHarvest', {p: self._id, amount: 5}, key));
+					this.addStreamData('playerHarvest', {p: self._id, amount: 5}, key);
                     break;
                 }
             }
@@ -990,7 +990,7 @@ var Player = IgeEntity.extend({
             if (key === 'length' || !ige.server.players.hasOwnProperty(key) || (includeSelf != true && key == this._id)) continue;
             ige.network.send('playerAttributeUpdate', {player: this._id, group: group, name: name, value: value}, key);
         }*/
-        this.addStreamData('playerAttributeUpdate', {player: this._id, group: group, name: name, value: value}, key);
+        this.addStreamData('playerAttributeUpdate', {player: this._id, group: group, name: name, value: value});
     },
     _setPlayerModel: function(faction, unit) {
 
