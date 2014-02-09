@@ -1,5 +1,5 @@
 var levelUtils = {
-   Grass: function(positions) {
+   Grass: function(positions, mesh) {
        var textureAtlas = THREE.ImageUtils.loadTexture( './assets/textures/scenery/grassTextureAtlas.png', new THREE.UVMapping(), function() {
            arguments[0].flipY = false;
        }.bind(this));
@@ -50,6 +50,7 @@ var levelUtils = {
        );
        //this.particles.dynamic = false;
 
-       ige.client.scene1._threeObj.add(this.particles);
+       mesh.add(this.particles);
+       //ige.client.scene1._threeObj.add(this.particles);
    }
 };

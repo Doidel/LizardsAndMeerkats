@@ -216,7 +216,8 @@
 		
 		//if (length( mvPosition.xyz ) < 10.0) discard;
 
-        grassViewHeight = cos(atan(abs(cameraPosition.y - position.y) / length(position.xz - cameraPosition.xz)));
+        //grassViewHeight = cos(atan(abs(cameraPosition.y - position.y) / length(position.xz - cameraPosition.xz)));
+        grassViewHeight = cos(atan(abs(cameraPosition.y - position.z) / length(position.xy - cameraPosition.xz)));
 
         gl_PointSize = zoom * ( 180.0 / length( mvPosition.xyz ) );
 

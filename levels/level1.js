@@ -93,6 +93,12 @@ var Levels = {
     },
     // Level 2 with height map
     level2: function() {
+        /*
+        Consider that the level mesh is rotated to ensure, the physijs is working correctly.
+        - Height will be applied at the Z - axis
+        - Depth will be applied at the Y -  axis
+        - --> Y and Z are switched!
+         */
         if (ige.isServer) {
             //var hMapUrl = "./assets/heightmaps/NullHeight.png";
             var hMapUrl = "./assets/heightmaps/Botswana.png";
@@ -112,21 +118,20 @@ var Levels = {
                 var vAmountY = faces+1;
                 var multX = 1024 / vAmountX;
                 var mult = (pixels.length / 4)/ ((vAmountX)*(vAmountY));
-                var scale = 1;
+                var scale = 50;
 
 
                 var count = 0;
-                shape.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
                 for (var i = 0; i < vAmountY; ++i) {
                     for (var j = 0; j < vAmountX; ++j) {
                         var pixelIndex = (parseInt(j*multX) + 1024 * parseInt(i*multX)) * 4;
                         //console.log(pixelIndex, pixels.length, pixels.length - pixelIndex);
                         //var color = Levels.getPixel( imagedata, parseInt(j*multX), parseInt(i*multY) );
                         //var position = ( x + imagedata.width * y ) * 4;
-                        shape.vertices[i*vAmountX + j].y = ((pixels[pixelIndex]/255 + pixels[pixelIndex + 1]/255 + pixels[pixelIndex + 2]/255)/3)*scale;
+                        shape.vertices[i*vAmountX + j].z = ((pixels[pixelIndex]/255 + pixels[pixelIndex + 1]/255 + pixels[pixelIndex + 2]/255)/3)*scale;
                     }
                 }
-                //shape.vertices[0].y = 51;
+                //shape.vertices[8320].z = -10;
                 shape.computeFaceNormals();
                 shape.computeVertexNormals();
                 var groundmat = Physijs.createMaterial(
@@ -137,14 +142,13 @@ var Levels = {
                 var pGround = new Physijs.HeightfieldMesh(
                     shape, groundmat, 0
                 );
-                //pGround.rotation.x = -Math.PI / 2;
+                pGround.rotation.x = -Math.PI / 2;
                 pGround.position.set(0,0,0);
                 ige.server.scene1._threeObj.add(pGround);
                 ige.server.scene1._terrain = pGround;
             });
         } else {
             // FLOOR
-
             var hMapUrl = "./assets/heightmaps/Botswana.png";
             //var hMapUrl = "./assets/heightmaps/NullHeight.png";
             // count of image borderlines - only used for lod
@@ -173,15 +177,14 @@ var Levels = {
                 var vAmountY = faces+1;
                 var multX = hMap.width / vAmountX;
                 var multY = hMap.height / vAmountY;
-                var scale = 1;
+                var scale = 50;
 
                 count = 0;
-                shape.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
+                //shape.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
                 for (var i = 0; i < vAmountY; ++i) {
                     for (var j = 0; j < vAmountX; ++j) {
                         var color = Levels.getPixel( imagedata, parseInt(j*multX), parseInt(i*multY) );
-                        shape.vertices[i*vAmountX + j].y = ((color.r/255 + color.g/255 + color.b/255)/3)*scale;
-                        //ige.log(shape.vertices[i*vAmountX + j].z, count++, "client");
+                        shape.vertices[i*vAmountX + j].z = ((color.r/255 + color.g/255 + color.b/255)/3)*scale;
                     }
                 }
                 //shape.vertices[0].y = 51;
@@ -189,7 +192,7 @@ var Levels = {
                 shape.computeFaceNormals();
                 shape.computeVertexNormals();
                 var ground = new THREE.Mesh(shape, cover);
-                //ground.rotation.x = -Math.PI / 2;
+                ground.rotation.x = -Math.PI / 2;
                 ground.receiveShadow = true;
                 //ground.castShadow = true;
                 ground.position.set(0,0,0);
@@ -266,10 +269,10 @@ var Levels = {
                     //take a random vertice
                     var randomShapeVertice = shape.vertices[Math.floor(Math.random() * amountOfShapeVertices)]
                     grassPositions[x * 3] = randomShapeVertice.x;
-                    grassPositions[x * 3 + 1] = randomShapeVertice.z + 0.5;
-                    grassPositions[x * 3 + 2] = randomShapeVertice.y;
+                    grassPositions[x * 3 + 1] = randomShapeVertice.y;
+                    grassPositions[x * 3 + 2] = randomShapeVertice.z + 0.5;
                 }
-                var grass = new levelUtils.Grass(grassPositions);
+                var grass = new levelUtils.Grass(grassPositions, ground);
 
                 // Create trees
                 var camelthornGeometry = ige.three._loader.parse(modelCamelthorn).geometry;
@@ -308,11 +311,29 @@ var Levels = {
                 //camelthorn.castShadow = true;
                 //camelthorn.position.set(0,200,0);
                 //camelthorn.rotation.x = Math.PI /2;
-                camelthorn.position.set(0,ground.geometry.vertices[parseInt(ground.geometry.vertices.length/2)].y,0);
-                //camelthorn.scale.set(50, 50, 50);
+                camelthorn.position.set(0,0,ground.geometry.vertices[parseInt(8320)].z);
+                //camelthorn.scale.set(10, 10, 10);
                 camelthorn.name = 'Camelthorn';
+
+                // add leaves
+                var leavesAmount = 1;
+                var leavesPositions = new Array();
+                var leavesRotations = new Array();
+                leavesPositions[0] = new THREE.Vector3(-2.12923, -1.65601, 2.66333);
+                leavesRotations[0] = new THREE.Vector3(Math.PI/2, 0.141829, 0);
+                var leavesMaxScale = 1.2;
+                var leavesMinScale = 0.8;
+                var leavesContainer = [];
+                for(var i=0; i<leavesAmount; ++i){
+                    var mesh = new THREE.Mesh(camelthornLeavesGeometry, camelthornLeavesMat);
+                    mesh.rotateY = leavesRotations[i].y;
+                    //mesh.rotateY = Math.PI/2;
+                    mesh.position = leavesPositions[i];
+                    camelthorn.add(mesh);
+                }
+
+
                 ground.add(camelthorn);
-                //ige.client.scene1._threeObj.add(camelthorn);
 
                 /*
                 // Create the water effect
@@ -361,7 +382,7 @@ var Levels = {
 
                  */
 
-                ground.position.set(0,0,0);
+                //ground.position.set(0,0,0);
                 ige.client.scene1._threeObj.add(ground);
 
                 // update content
