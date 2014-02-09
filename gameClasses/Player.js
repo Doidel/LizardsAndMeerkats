@@ -210,7 +210,7 @@ var Player = IgeEntity.extend({
         this._streamActions = {};
 
 		// Define the data sections that will be included in the stream
-		this.streamSections(['transform', 'playVoiceCommand']);
+		this.streamSections(['transform', 'playVoiceCommand', 'playersTakeHit', 'playerHarvest'. 'updateHealth', 'playerAttributeUpdate']);
 	},
 
 	/**
@@ -224,7 +224,7 @@ var Player = IgeEntity.extend({
 	 * @return {*}
 	 */
 	streamSectionData: function (sectionId, data) {
-		// Check if the section is one that we are handling
+		// Check if the section is one that we are handling		
         if (sectionId == 'playVoiceCommand') {
             if (data) {
                 data = JSON.parse(data);
@@ -234,6 +234,47 @@ var Player = IgeEntity.extend({
                 }
             } else {
                 return this._getJSONStreamActionData('playVoiceCommand');
+            }
+        } else if (sectionId == 'playersTakeHit') {
+            if (data) {
+                data = JSON.parse(data);
+				for (var x = 0; x < data.hit.length; x++) {
+					if (ige.$(data.hit[x])) {
+						ige.$(data.hit[x]).takeDamage(data.dmg);
+					}
+				}
+            } else {
+                return this._getJSONStreamActionData('playersTakeHit');
+            }
+        } else if (sectionId == 'playerHarvest') {
+            if (data) {
+                data = JSON.parse(data);
+				var p = ige.$(data.p);
+				if (data.amount > 0) {
+					p.states.isScratching = true;
+					if (p._id == ige._player._id) UI.notifications.displayHarvest(data.amount);
+				} else {
+					p.states.isScratching = false;
+				}
+            } else {
+                return this._getJSONStreamActionData('playerHarvest');
+            }
+        } else if (sectionId == 'updateHealth') {
+            if (data) {
+                data = JSON.parse(data);
+				if (ige.$(data.unit)) {
+					ige.$(data.unit)._updateHealth(data.health);
+				}
+            } else {
+                return this._getJSONStreamActionData('updateHealth');
+            }
+        } else if (sectionId == 'playerAttributeUpdate') {
+            if (data) {
+                data = JSON.parse(data);
+				var p = ige.$(data.player);
+				p[data.group][data.name] = data.value;
+            } else {
+                return this._getJSONStreamActionData('playerAttributeUpdate');
             }
         } else {
 			// The section was not one that we handle here, so pass this
@@ -251,6 +292,7 @@ var Player = IgeEntity.extend({
         }
     },
 
+	//called when a player is first created on a client through the stream
     streamCreateData: function() {
 
     },
@@ -732,7 +774,8 @@ var Player = IgeEntity.extend({
 				
             if (objectsTakenHit.length > 0) {
                 //send the hit to all players
-                ige.network.send('playersTakeHit', {hit: objectsTakenHit, rawDamage: 20});
+                //ige.network.send('playersTakeHit', {hit: objectsTakenHit, rawDamage: 20});
+				this.addStreamData('playersTakeHit', {hit: objectsTakenHit, dmg: 20});
             }
         }, 300);
 
@@ -750,10 +793,11 @@ var Player = IgeEntity.extend({
                     if (this._scratchStopTimeout) clearTimeout(self._scratchStopTimeout);
                     self._scratchStopTimeout = undefined;
                     //send update to all clients
-                    for (var key in ige.server.players) {
+                    /*for (var key in ige.server.players) {
                         if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
-                        ige.network.send('playerHarvest', {player: self._id, amount: 5}, key);
-                    }
+                        //ige.network.send('playerHarvest', {player: self._id, amount: 5}, key);
+                    }*/
+					this.addStreamData('playerHarvest', {p: self._id, amount: 5}, key));
                     break;
                 }
             }
@@ -885,7 +929,8 @@ var Player = IgeEntity.extend({
         else {
             if (synchronize) {
                 //send update to all clients
-                ige.network.send('updateHealth', {unit: this._id, health: health});
+                //ige.network.send('updateHealth', {unit: this._id, health: health});
+				this.addStreamData('updateHealth', {unit: this._id, health: health});
             }
         }
         /* CEXCLUDE */
@@ -912,17 +957,19 @@ var Player = IgeEntity.extend({
     _sendScratchStop: function() {
         this.states.isScratching = false;
         //send update to all clients
-        for (var key in ige.server.players) {
+        /*for (var key in ige.server.players) {
             if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
             ige.network.send('playerHarvest', {player: this._id, amount: 0}, key);
-        }
+        }*/
+		this.addStreamData('playerHarvest', {player: this._id, amount: 0}, key);
     },
     _forwardAttribute: function(group, name, value, includeSelf) {
         //send values to all other players
-        for (var key in ige.server.players) {
+        /*for (var key in ige.server.players) {
             if (key === 'length' || !ige.server.players.hasOwnProperty(key) || (includeSelf != true && key == this._id)) continue;
             ige.network.send('playerAttributeUpdate', {player: this._id, group: group, name: name, value: value}, key);
-        }
+        }*/
+        this.addStreamData('playerAttributeUpdate', {player: this._id, group: group, name: name, value: value}, key);
     },
     _setPlayerModel: function(faction, unit) {
 

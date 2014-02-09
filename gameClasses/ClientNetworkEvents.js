@@ -127,29 +127,16 @@ var ClientNetworkEvents = {
 		}
 	},
     _onPlayersTakeHit: function (data) {
-        for (var x = 0; x < data.hit.length; x++) {
-            if (ige.$(data.hit[x])) {
-                ige.$(data.hit[x]).takeDamage(data.rawDamage);
-            }
-        }
+		//revamped
     },
     _onUpdateHealth: function (data) {
-            if (ige.$(data.unit)) {
-                ige.$(data.unit)._updateHealth(data.health);
-            }
+		//revamped
     },
-    _onPlayerHarvest: function (data) {
-        var p = ige.$(data.player);
-        if (data.amount > 0) {
-            p.states.isScratching = true;
-            if (p._id == ige._player._id) UI.notifications.displayHarvest(data.amount);
-        } else {
-            p.states.isScratching = false;
-        }
+    _onPlayerHarvest: function (data) 
+		//revamped
     },
     _onPlayerAttributeUpdate: function (data) {
-        var p = ige.$(data.player);
-        p[data.group][data.name] = data.value;
+		//revamped
     },
     /**
      * Set the model (faction + unit type) and display an animation
