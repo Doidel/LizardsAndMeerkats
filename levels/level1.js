@@ -94,8 +94,8 @@ var Levels = {
     // Level 2 with height map
     level2: function() {
         if (ige.isServer) {
-            var hMapUrl = "./assets/heightmaps/NullHeight.png";
-            //var hMapUrl = "./assets/heightmaps/Botswana.png";
+            //var hMapUrl = "./assets/heightmaps/NullHeight.png";
+            var hMapUrl = "./assets/heightmaps/Botswana.png";
             //var hMapUrl = "./assets/heightmaps/hMapV3.png";
             // count of image borderlines - only used for lod
             var count = 1;
@@ -112,21 +112,21 @@ var Levels = {
                 var vAmountY = faces+1;
                 var multX = 1024 / vAmountX;
                 var mult = (pixels.length / 4)/ ((vAmountX)*(vAmountY));
-                var scale = 50;
+                var scale = 1;
 
 
                 var count = 0;
+                shape.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
                 for (var i = 0; i < vAmountY; ++i) {
                     for (var j = 0; j < vAmountX; ++j) {
                         var pixelIndex = (parseInt(j*multX) + 1024 * parseInt(i*multX)) * 4;
                         //console.log(pixelIndex, pixels.length, pixels.length - pixelIndex);
                         //var color = Levels.getPixel( imagedata, parseInt(j*multX), parseInt(i*multY) );
                         //var position = ( x + imagedata.width * y ) * 4;
-                        shape.vertices[i*vAmountX + j].z = ((pixels[pixelIndex]/255 + pixels[pixelIndex + 1]/255 + pixels[pixelIndex + 2]/255)/3)*scale;
+                        shape.vertices[i*vAmountX + j].y = ((pixels[pixelIndex]/255 + pixels[pixelIndex + 1]/255 + pixels[pixelIndex + 2]/255)/3)*scale;
                     }
                 }
-                shape.vertices[0].z = 51;
-
+                //shape.vertices[0].y = 51;
                 shape.computeFaceNormals();
                 shape.computeVertexNormals();
                 var groundmat = Physijs.createMaterial(
@@ -137,7 +137,7 @@ var Levels = {
                 var pGround = new Physijs.HeightfieldMesh(
                     shape, groundmat, 0
                 );
-                pGround.rotation.x = -Math.PI / 2;
+                //pGround.rotation.x = -Math.PI / 2;
                 pGround.position.set(0,0,0);
                 ige.server.scene1._threeObj.add(pGround);
                 ige.server.scene1._terrain = pGround;
@@ -145,8 +145,8 @@ var Levels = {
         } else {
             // FLOOR
 
-            //var hMapUrl = "./assets/heightmaps/Botswana.png";
-            var hMapUrl = "./assets/heightmaps/NullHeight.png";
+            var hMapUrl = "./assets/heightmaps/Botswana.png";
+            //var hMapUrl = "./assets/heightmaps/NullHeight.png";
             // count of image borderlines - only used for lod
             var count = 1;
             var hMap = new Image();
@@ -173,22 +173,23 @@ var Levels = {
                 var vAmountY = faces+1;
                 var multX = hMap.width / vAmountX;
                 var multY = hMap.height / vAmountY;
-                var scale = 50;
+                var scale = 1;
 
                 count = 0;
+                shape.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
                 for (var i = 0; i < vAmountY; ++i) {
                     for (var j = 0; j < vAmountX; ++j) {
                         var color = Levels.getPixel( imagedata, parseInt(j*multX), parseInt(i*multY) );
-                        shape.vertices[i*vAmountX + j].z = ((color.r/255 + color.g/255 + color.b/255)/3)*scale;
+                        shape.vertices[i*vAmountX + j].y = ((color.r/255 + color.g/255 + color.b/255)/3)*scale;
                         //ige.log(shape.vertices[i*vAmountX + j].z, count++, "client");
                     }
                 }
-                shape.vertices[0].z = 51;
+                //shape.vertices[0].y = 51;
 
                 shape.computeFaceNormals();
                 shape.computeVertexNormals();
                 var ground = new THREE.Mesh(shape, cover);
-                ground.rotation.x = -Math.PI / 2;
+                //ground.rotation.x = -Math.PI / 2;
                 ground.receiveShadow = true;
                 //ground.castShadow = true;
                 ground.position.set(0,0,0);
@@ -269,6 +270,49 @@ var Levels = {
                     grassPositions[x * 3 + 2] = randomShapeVertice.y;
                 }
                 var grass = new levelUtils.Grass(grassPositions);
+
+                // Create trees
+                var camelthornGeometry = ige.three._loader.parse(modelCamelthorn).geometry;
+                var camelthornLeavesGeometry = ige.three._loader.parse(modelCamelthornLeaves).geometry;
+
+                var camelthornBarkTexture = new THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornTreeBark.jpg' );
+                var camelthornBarkTextureNRM = new THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornTreeBark_NRM.jpg' );
+                var camelthornLeavesTexture = new THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornLeaves.png' );
+
+                var camelthornSpriteMat = new THREE.SpriteMaterial({
+                    //color: 0xffffff,
+                    map: savannahGrassTexture,
+                    useScreenCoordinates: false,
+                    transparent: true,
+                    depthWrite: false
+                    //depthTest: false
+                });
+
+                var camelthornBarkMat = new THREE.MeshPhongMaterial({
+                    //color: 0xffffff,
+                    map: camelthornBarkTexture,
+                    normalmap: camelthornBarkTextureNRM,
+                    side: 2
+                });
+
+                var camelthornLeavesMat = new THREE.MeshLambertMaterial({
+                    //color: 0xffffff,
+                    map: camelthornLeavesTexture,
+                    side: 2,
+                    transparent: true,
+                    depthWrite: false
+                });
+
+                var camelthorn = new THREE.Mesh(camelthornGeometry, camelthornBarkMat);
+                //camelthorn.receiveShadow = true;
+                //camelthorn.castShadow = true;
+                //camelthorn.position.set(0,200,0);
+                //camelthorn.rotation.x = Math.PI /2;
+                camelthorn.position.set(0,ground.geometry.vertices[parseInt(ground.geometry.vertices.length/2)].y,0);
+                //camelthorn.scale.set(50, 50, 50);
+                camelthorn.name = 'Camelthorn';
+                ground.add(camelthorn);
+                //ige.client.scene1._threeObj.add(camelthorn);
 
                 /*
                 // Create the water effect

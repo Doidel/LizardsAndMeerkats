@@ -31,6 +31,8 @@ var igeClientConfig = {
         './levels/LevelObjects/water-material.js',
         /* Vegetation */
         './models/vegetation/modelAngle60.js',
+        './models/vegetation/modelCamelthorn.js',
+        './models/vegetation/modelCamelthornLeaves.js',
 
 		/* 3d filters */
 		/*'../ige/engine/components/three/EffectComposer.js',
