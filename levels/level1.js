@@ -370,7 +370,6 @@ var Levels = {
                     mesh.name = 'leave';
                     mesh.rotation.z = Math.PI + leavesRotations[i];
                     mesh.position = leavesPositions[i];
-                    testcontainer.push(mesh);
                     camelthorn.add(mesh);
                 }
 

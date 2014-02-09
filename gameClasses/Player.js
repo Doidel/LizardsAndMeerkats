@@ -345,7 +345,7 @@ var Player = IgeEntity.extend({
             if (this.controls.jump && this.states.canJump) {
                 this.states.canJump = false;
                 //this._cannonBody.applyImpulse(new CANNON.Vec3(0,100,0), new CANNON.Vec3(0,0,0));
-                velocity.y = 20;
+                velocity.y = 7;
             }
 
 

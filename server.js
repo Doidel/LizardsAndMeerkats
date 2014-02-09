@@ -103,7 +103,7 @@ var Server = IgeClass.extend({
 							.streamMode(1);
 
                         self.scene1._threeObj = new Physijs.Scene({ fixedTimeStep: 1 / 120 });
-                        self.scene1._threeObj.setGravity(new THREE.Vector3(0, -60, 0));
+                        self.scene1._threeObj.setGravity(new THREE.Vector3(0, -20, 0));
                         self.scene1._threeObj.fog = new THREE.FogExp2(0x000000, 0.05);
                         ige.addBehaviour('physiStep', self.physibehaviour);
 
