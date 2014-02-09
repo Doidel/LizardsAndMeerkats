@@ -279,7 +279,11 @@ var Levels = {
                 var camelthornLeavesGeometry = ige.three._loader.parse(modelCamelthornLeaves).geometry;
 
                 var camelthornBarkTexture = new THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornTreeBark.jpg' );
+                camelthornBarkTexture.wrapS = grass.wrapT = THREE.RepeatWrapping;
+                //camelthornBarkTexture.repeat.set(64, 64);
                 var camelthornBarkTextureNRM = new THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornTreeBark_NRM.jpg' );
+                camelthornBarkTextureNRM.wrapS = grass.wrapT = THREE.RepeatWrapping;
+                //camelthornBarkTextureNRM.repeat.set(64, 64);
                 var camelthornLeavesTexture = new THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornLeaves.png' );
 
                 var camelthornSpriteMat = new THREE.SpriteMaterial({
@@ -316,19 +320,57 @@ var Levels = {
                 camelthorn.name = 'Camelthorn';
 
                 // add leaves
-                var leavesAmount = 1;
+                var leavesAmount = 19;
                 var leavesPositions = new Array();
                 var leavesRotations = new Array();
                 leavesPositions[0] = new THREE.Vector3(-2.12923, -1.65601, 2.66333);
-                leavesRotations[0] = new THREE.Vector3(Math.PI/2, 0.141829, 0);
+                leavesRotations[0] = 0.141829;
+                leavesPositions[1] = new THREE.Vector3(-2.94144, -0.37996, 2.60743);
+                leavesRotations[1] = 1.390845;
+                leavesPositions[2] = new THREE.Vector3(-3.08328, 0.38842, 3.01996);
+                leavesRotations[2] = 1.390845;
+                leavesPositions[3] = new THREE.Vector3(-2.80233, 2.73413, 3.25665);
+                leavesRotations[3] = 0.521703;
+                leavesPositions[4] = new THREE.Vector3(-2.61231, 4.82561, 3.79929);
+                leavesRotations[4] = 0.491529;
+                leavesPositions[5] = new THREE.Vector3(-0.04198, -2.72764, 3.55406);
+                leavesRotations[5] = 0.120163;
+                leavesPositions[6] = new THREE.Vector3(-0.28394, -0.26194, 3.63871);
+                leavesRotations[6] = 1.183909;
+                leavesPositions[7] = new THREE.Vector3(-1.05416, 1.1401, 3.94454);
+                leavesRotations[7] = 0.407492;
+                leavesPositions[8] = new THREE.Vector3(-0.91585, 2.20641, 4.16523);
+                leavesRotations[8] = 0.681693;
+                leavesPositions[9] = new THREE.Vector3(-0.66934, 4.19387, 3.32211);
+                leavesRotations[9] = 0.232447;
+                leavesPositions[10] = new THREE.Vector3(1.51587, -1.77674, 2.85479);
+                leavesRotations[10] = -0.589074;
+                leavesPositions[11] = new THREE.Vector3(2.2324, -1.26442, 3.71287);
+                leavesRotations[11] = -1.166013;
+                leavesPositions[12] = new THREE.Vector3(0.90551, 1.64486, 3.83025);
+                leavesRotations[12] = -0.807504;
+                leavesPositions[13] = new THREE.Vector3(1.52818, 4.54722, 3.79929);
+                leavesRotations[13] = -0.343747;
+                leavesPositions[14] = new THREE.Vector3(4.08731, -2.08478, 3.7624);
+                leavesRotations[14] = -0.454375;
+                leavesPositions[15] = new THREE.Vector3(2.97383, 1.57733, 3.92464);
+                leavesRotations[15] = -Math.PI/2;
+                leavesPositions[16] = new THREE.Vector3(2.52386, 3.46093, 3.4032);
+                leavesRotations[16] = -0.637328;
+                leavesPositions[17] = new THREE.Vector3(5.9039, -0.64078, 3.404);
+                leavesRotations[17] = -Math.PI/2;
+                leavesPositions[18] = new THREE.Vector3(3.77763, 1.94523, 2.86499);
+                leavesRotations[18] = -0.687253;
                 var leavesMaxScale = 1.2;
                 var leavesMinScale = 0.8;
                 var leavesContainer = [];
                 for(var i=0; i<leavesAmount; ++i){
                     var mesh = new THREE.Mesh(camelthornLeavesGeometry, camelthornLeavesMat);
-                    mesh.rotateY = leavesRotations[i].y;
-                    //mesh.rotateY = Math.PI/2;
+                    //mesh.rotateY = leavesRotations[i];
+                    mesh.name = 'leave';
+                    mesh.rotation.z = Math.PI + leavesRotations[i];
                     mesh.position = leavesPositions[i];
+                    testcontainer.push(mesh);
                     camelthorn.add(mesh);
                 }
 
