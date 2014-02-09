@@ -157,7 +157,7 @@ var Building = IgeEntity.extend({
         else {
             if (synchronize) {
                 //send update to all clients
-                ige.network.send('updateHealth', {unit: this._id, health: health});
+                //TODO: ige.network.send('updateHealth', {unit: this._id, health: health});
             }
         }
         /* CEXCLUDE */

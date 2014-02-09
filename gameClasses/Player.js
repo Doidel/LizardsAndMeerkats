@@ -145,11 +145,9 @@ var Player = IgeEntity.extend({
             ige.server.scene1._threeObj.add( this._threeObj );
 
             self.addComponent(LevelRoomComponent);
-
-            setTimeout(function() {
-                 //Call the spawn event AFTER the stream created the unit. It sets their model (faction + unit type) and displays an animation
-                 ige.network.send('playerSpawn', {player: this._id, faction: this.faction}, this._id);
-            }.bind(this), 10000);
+			
+            //Set model (faction + unit type) and displays an animation
+			this.addStreamData('playerSpawn', {player: this._id, faction: this.faction}, this._id);
         }
 
 
@@ -210,7 +208,7 @@ var Player = IgeEntity.extend({
         this._streamActions = {};
 
 		// Define the data sections that will be included in the stream
-		this.streamSections(['transform', 'playVoiceCommand', 'playersTakeHit', 'playerHarvest'. 'updateHealth', 'playerAttributeUpdate']);
+		this.streamSections(['transform', 'playVoiceCommand', 'playersTakeHit', 'playerHarvest'. 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent']);
 	},
 
 	/**
@@ -225,7 +223,30 @@ var Player = IgeEntity.extend({
 	 */
 	streamSectionData: function (sectionId, data) {
 		// Check if the section is one that we are handling		
-        if (sectionId == 'playVoiceCommand') {
+        if (sectionId == 'playerSetComponent') {
+            if (data) {
+                data = JSON.parse(data);
+				var p = ige.$(data.player);
+				if (p != undefined) {
+					if (data.add !== false) {
+						p.addComponent(window[data.component]);
+					} else {
+						//TODO: Remove component
+					}
+				}
+            } else {
+                return this._getJSONStreamActionData('playerSetComponent');
+            }
+        } else if (sectionId == 'playerSpawn') {
+            if (data) {
+                data = JSON.parse(data);
+				var p = ige.$(data.player);
+				p.faction = data.faction;
+				p._setPlayerModel(data.faction, data.unit);
+            } else {
+                return this._getJSONStreamActionData('playerSpawn');
+            }
+        } else if (sectionId == 'playVoiceCommand') {
             if (data) {
                 data = JSON.parse(data);
                 var p = ige.$(data.player);

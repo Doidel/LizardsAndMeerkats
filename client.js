@@ -52,14 +52,7 @@ var Client = IgeClass.extend({
 					ige.network.start('http://localhost:2000', function () {
 						// Setup the network command listeners
 						ige.network.define('playerEntity', self._onPlayerEntity); // Defined in ./gameClasses/ClientNetworkEvents.js
-                        ige.network.define('playersTakeHit', self._onPlayersTakeHit);
-                        ige.network.define('playerHarvest', self._onPlayerHarvest);
-                        ige.network.define('playerAttributeUpdate', self._onPlayerAttributeUpdate);
-                        ige.network.define('updateHealth', self._onUpdateHealth);
-                        ige.network.define('playerSpawn', self._onPlayerSpawn);
-                        ige.network.define('playerSetComponent', self._onPlayerSetComponent);
                         ige.network.define('setStreamBuildingBuildable', self._onSetStreamedBuildingBuildable);
-                        ige.network.define('playVoiceCommand', self._onPlayVoiceCommand);
 
 						// Setup the network stream handler
 						ige.network.addComponent(IgeStreamComponent)

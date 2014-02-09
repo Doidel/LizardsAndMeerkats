@@ -82,23 +82,16 @@ var Server = IgeClass.extend({
                         ige.network.define('playerTakesCommand', self._onPlayerTakesCommand);
                         ige.network.define('playerFinalBuild', self._onPlayerFinalBuild);
                         ige.network.define('playerPlayVoiceCommand', self._onPlayerPlayVoiceCommand);
-
-                        ige.network.define('updateHealth');
-                        ige.network.define('playersTakeHit');
-                        ige.network.define('playerHarvest');
-                        ige.network.define('playerAttributeUpdate');
-                        ige.network.define('playerSpawn');
-                        ige.network.define('playerSetComponent');
+						
                         ige.network.define('changeBuildingColor');
                         ige.network.define('setStreamBuildingBuildable');
-                        ige.network.define('playVoiceCommand');
 
 						ige.network.on('connect', self._onPlayerConnect); // Defined in ./gameClasses/ServerNetworkEvents.js
 						ige.network.on('disconnect', self._onPlayerDisconnect); // Defined in ./gameClasses/ServerNetworkEvents.js
 
 						// Add the network stream component
 						ige.network.addComponent(IgeStreamComponent)
-							.stream.sendInterval(20) // Send a stream update once every x milliseconds
+							.stream.sendInterval(1000 / 50) // Send a stream update once every x milliseconds
 							.stream.start(); // Start the stream
 
 						// Accept incoming network connections

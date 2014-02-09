@@ -126,44 +126,9 @@ var ClientNetworkEvents = {
 			});
 		}
 	},
-    _onPlayersTakeHit: function (data) {
-		//revamped
-    },
-    _onUpdateHealth: function (data) {
-		//revamped
-    },
-    _onPlayerHarvest: function (data) 
-		//revamped
-    },
-    _onPlayerAttributeUpdate: function (data) {
-		//revamped
-    },
-    /**
-     * Set the model (faction + unit type) and display an animation
-     */
-    _onPlayerSpawn: function(data) {
-        console.log(data.player);
-        var p = ige.$(data.player);
-        p.faction = data.faction;
-        console.log('playerSpawn');
-        p._setPlayerModel(data.faction, data.unit);
-    },
-    _onPlayerSetComponent: function(data) {
-        var p = ige.$(data.player);
-        if (p != undefined) {
-            if (data.add !== false) {
-                p.addComponent(window[data.component]);
-            } else {
-
-            }
-        }
-    },
     _onSetStreamedBuildingBuildable: function(data) {
         var streamBuilding = ige.$(data.id);
         if (streamBuilding) streamBuilding.isBuildable(data.color);
-    },
-    _onPlayVoiceCommand: function(data) {
-        //revamped
     }
 };
 
