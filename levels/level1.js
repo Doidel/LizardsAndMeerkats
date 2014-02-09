@@ -3,10 +3,10 @@ var Levels = {
     level1: function() {
         if (ige.isServer) {
             /*var groundShape = new CANNON.Plane();
-            var groundBody = new CANNON.RigidBody(0,groundShape,ige.cannon._slipperyMaterial);
-            groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0),-Math.PI/2);
+             var groundBody = new CANNON.RigidBody(0,groundShape,ige.cannon._slipperyMaterial);
+             groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0),-Math.PI/2);
 
-            ige.cannon._world.add(groundBody);*/
+             ige.cannon._world.add(groundBody);*/
 
             var groundmat = Physijs.createMaterial(
                 new THREE.MeshBasicMaterial(),
@@ -17,7 +17,7 @@ var Levels = {
             var geometry = new THREE.PlaneGeometry( 300, 300, 50, 50 );
             geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 
-           var ground = new Physijs.PlaneMesh(
+            var ground = new Physijs.PlaneMesh(
                 geometry,
                 groundmat,
                 0
@@ -47,22 +47,22 @@ var Levels = {
             grass.repeat.set( 32, 32 );
 
             /*var mapHeight = THREE.ImageUtils.loadTexture("./assets/textures/heightmap.png");
-            //mapHeight.anisotropy = 8;
+             //mapHeight.anisotropy = 8;
 
-            var uniforms = THREE.UniformsUtils.clone(THREE.ShaderLib['phong'].uniforms);
+             var uniforms = THREE.UniformsUtils.clone(THREE.ShaderLib['phong'].uniforms);
 
-            uniforms['map'].value = grass;
-            uniforms['offsetRepeat'].value = new THREE.Vector4( 0, 0, 8, 8 ); //offsetx, offsety, repeatx, repeaty
-            uniforms['u_height0'] = {type: "t", value: mapHeight};
+             uniforms['map'].value = grass;
+             uniforms['offsetRepeat'].value = new THREE.Vector4( 0, 0, 8, 8 ); //offsetx, offsety, repeatx, repeaty
+             uniforms['u_height0'] = {type: "t", value: mapHeight};
 
-            var material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: document.getElementById('vertexShaderHeight').textContent, //THREE.ShaderLib['phong'].vertexShader,
-                fragmentShader: THREE.ShaderLib['phong'].fragmentShader,
-                lights: true
-            });
+             var material = new THREE.ShaderMaterial({
+             uniforms: uniforms,
+             vertexShader: document.getElementById('vertexShaderHeight').textContent, //THREE.ShaderLib['phong'].vertexShader,
+             fragmentShader: THREE.ShaderLib['phong'].fragmentShader,
+             lights: true
+             });
 
-            material.map = true;*/
+             material.map = true;*/
 
             var material = new THREE.MeshPhongMaterial({
                 map: grass
@@ -94,10 +94,10 @@ var Levels = {
     // Level 2 with height map
     level2: function() {
         /*
-        Consider that the level mesh is rotated to ensure, the physijs is working correctly.
-        - Height will be applied at the Z - axis
-        - Depth will be applied at the Y -  axis
-        - --> Y and Z are switched!
+         Consider that the level mesh is rotated to ensure, the physijs is working correctly.
+         - Height will be applied at the Z - axis
+         - Depth will be applied at the Y -  axis
+         - --> Y and Z are switched!
          */
         if (ige.isServer) {
             //var hMapUrl = "./assets/heightmaps/NullHeight.png";
@@ -223,44 +223,44 @@ var Levels = {
                 });
 
                 /*for(var i=0; i<ground.geometry.vertices.length; ++i){
-                    // low
-                    var lod = new THREE.LOD();
-                    var savannahGrassMeshLOW = new THREE.Mesh();
-                    savannahGrassMeshLOW.updateMatrix();
-                    savannahGrassMeshLOW.matrixAutoUpdate = false;
-                    // medium
-                    var savannahGrassMeshMED = new THREE.Mesh(savannahGrassGeomMED, savannahGrassMat);
-                    if(i==4){
-                        console.log('test');
-                        savannahGrassMeshMED = new THREE.Mesh(savannahGrassGeomMED, new THREE.MeshBasicMaterial({color: 0xff0000, side: 2}));
-                    };
-                    savannahGrassMeshMED.name = "med";
-                    savannahGrassMeshMED.rotation.x = Math.PI * 0.5;
-                    savannahGrassMeshMED.position.z += savannahGrassGeomMED.height * 0.5;
+                 // low
+                 var lod = new THREE.LOD();
+                 var savannahGrassMeshLOW = new THREE.Mesh();
+                 savannahGrassMeshLOW.updateMatrix();
+                 savannahGrassMeshLOW.matrixAutoUpdate = false;
+                 // medium
+                 var savannahGrassMeshMED = new THREE.Mesh(savannahGrassGeomMED, savannahGrassMat);
+                 if(i==4){
+                 console.log('test');
+                 savannahGrassMeshMED = new THREE.Mesh(savannahGrassGeomMED, new THREE.MeshBasicMaterial({color: 0xff0000, side: 2}));
+                 };
+                 savannahGrassMeshMED.name = "med";
+                 savannahGrassMeshMED.rotation.x = Math.PI * 0.5;
+                 savannahGrassMeshMED.position.z += savannahGrassGeomMED.height * 0.5;
 
-                    savannahGrassMeshMED.updateMatrix();
-                    savannahGrassMeshMED.matrixAutoUpdate = false;
-                    // high
-                   var savannahGrassMeshHIG = new THREE.Mesh(savannahGrassGeomHIG, savannahGrassMat);
-                    savannahGrassMeshHIG.rotation.x = Math.PI * 0.5;
-                    savannahGrassMeshHIG.position.z += savannahGrassGeomMED.height * 0.5;
-                    savannahGrassMeshHIG.updateMatrix();
-                    savannahGrassMeshHIG.matrixAutoUpdate = false;
+                 savannahGrassMeshMED.updateMatrix();
+                 savannahGrassMeshMED.matrixAutoUpdate = false;
+                 // high
+                 var savannahGrassMeshHIG = new THREE.Mesh(savannahGrassGeomHIG, savannahGrassMat);
+                 savannahGrassMeshHIG.rotation.x = Math.PI * 0.5;
+                 savannahGrassMeshHIG.position.z += savannahGrassGeomMED.height * 0.5;
+                 savannahGrassMeshHIG.updateMatrix();
+                 savannahGrassMeshHIG.matrixAutoUpdate = false;
 
-                    lod.addLevel(savannahGrassMeshHIG, 5);
-                    lod.addLevel(savannahGrassMeshMED, 15);
-                    lod.addLevel(savannahGrassMeshLOW, 100);
+                 lod.addLevel(savannahGrassMeshHIG, 5);
+                 lod.addLevel(savannahGrassMeshMED, 15);
+                 lod.addLevel(savannahGrassMeshLOW, 100);
 
-                    lod.position.x = ground.geometry.vertices[i].x;
-                    lod.position.y =  ground.geometry.vertices[i].y;
-                    lod.position.z = ground.geometry.vertices[i].z;
+                 lod.position.x = ground.geometry.vertices[i].x;
+                 lod.position.y =  ground.geometry.vertices[i].y;
+                 lod.position.z = ground.geometry.vertices[i].z;
 
-                    lod.updateMatrix();
-                    lod.matrixAutoUpdate = false;
+                 lod.updateMatrix();
+                 lod.matrixAutoUpdate = false;
 
-                    ground.add(lod);
-                    savannahGrassLODMeshes.push(lod);
-                }*/
+                 ground.add(lod);
+                 savannahGrassLODMeshes.push(lod);
+                 }*/
 
                 //Create grass
                 var grassPositions = new Float32Array( 30000 );
@@ -279,10 +279,10 @@ var Levels = {
                 var camelthornLeavesGeometry = ige.three._loader.parse(modelCamelthornLeaves).geometry;
 
                 var camelthornBarkTexture = new THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornTreeBark.jpg' );
-                camelthornBarkTexture.wrapS = grass.wrapT = THREE.RepeatWrapping;
+                camelthornBarkTexture.wrapS = camelthornBarkTexture.wrapT = THREE.RepeatWrapping;
                 //camelthornBarkTexture.repeat.set(64, 64);
                 var camelthornBarkTextureNRM = new THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornTreeBark_NRM.jpg' );
-                camelthornBarkTextureNRM.wrapS = grass.wrapT = THREE.RepeatWrapping;
+                camelthornBarkTextureNRM.wrapS = camelthornBarkTextureNRM.wrapT = THREE.RepeatWrapping;
                 //camelthornBarkTextureNRM.repeat.set(64, 64);
                 var camelthornLeavesTexture = new THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornLeaves.png' );
 
@@ -372,12 +372,22 @@ var Levels = {
                     mesh.position = leavesPositions[i];
                     camelthorn.add(mesh);
                 }
-
-
                 ground.add(camelthorn);
 
+                //Create camelthorn particle
+                var camelthornPositions = new Float32Array( 30000 );
+                //var amountOfShapeVertices = shape.vertices.length;
+                for (var x = 0; x < camelthornPositions.length / 3; x++) {
+                    //take a random vertice
+                    var randomShapeVertice = shape.vertices[Math.floor(Math.random() * amountOfShapeVertices)]
+                    camelthornPositions[x * 3] = randomShapeVertice.x;
+                    camelthornPositions[x * 3 + 1] = randomShapeVertice.y;
+                    camelthornPositions[x * 3 + 2] = randomShapeVertice.z + 0.5;
+                }
+                var camelthorns = new levelUtils.Camelthorn(camelthornPositions, ground);
+
                 /*
-                // Create the water effect
+                 // Create the water effect
 
                  // water
 
@@ -397,29 +407,29 @@ var Levels = {
                  var waterNormals = new THREE.ImageUtils.loadTexture( './assets/textures/waternormals.jpg' );
                  waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
 
-                watershader = new THREE.Water( ige._threeRenderer, ige._currentCamera._threeObj, ige.client.scene1._threeObj, {
-                    textureWidth: 512,
-                    textureHeight: 512,
-                    waterNormals: waterNormals,
-                    alpha: 	0.85,
-                    //sunDirection: sunlight.position.normalize(),
-                    sunDirection: new THREE.Vector3(10,10,10).normalize(),
-                    sunColor: 0xffffff,
-                    //waterColor: 0x001e0f,
-                    waterColor: 0xffffff,
-                    distortionScale: 50.0
-                } );
+                 watershader = new THREE.Water( ige._threeRenderer, ige._currentCamera._threeObj, ige.client.scene1._threeObj, {
+                 textureWidth: 512,
+                 textureHeight: 512,
+                 waterNormals: waterNormals,
+                 alpha: 	0.85,
+                 //sunDirection: sunlight.position.normalize(),
+                 sunDirection: new THREE.Vector3(10,10,10).normalize(),
+                 sunColor: 0xffffff,
+                 //waterColor: 0x001e0f,
+                 waterColor: 0xffffff,
+                 distortionScale: 50.0
+                 } );
 
-                watershader.material.side = 2;
+                 watershader.material.side = 2;
 
-                var aMeshMirror = new THREE.Mesh(
-                    new THREE.PlaneGeometry( parameters.width * 50, parameters.height * 50, 10, 10 ),
-                    watershader.material
-                );
-                aMeshMirror.add( watershader );
-                aMeshMirror.rotation.x = - Math.PI * 0.5;
-                aMeshMirror.position.y += 20;
-                ige.client.scene1._threeObj.add(aMeshMirror);
+                 var aMeshMirror = new THREE.Mesh(
+                 new THREE.PlaneGeometry( parameters.width * 50, parameters.height * 50, 10, 10 ),
+                 watershader.material
+                 );
+                 aMeshMirror.add( watershader );
+                 aMeshMirror.rotation.x = - Math.PI * 0.5;
+                 aMeshMirror.position.y += 20;
+                 ige.client.scene1._threeObj.add(aMeshMirror);
 
                  */
 
@@ -427,23 +437,23 @@ var Levels = {
                 ige.client.scene1._threeObj.add(ground);
 
                 // update content
-                    ige.addBehaviour('updateContent', function(){
-                        /*
-                         //watershader.material.uniforms.time.value += ige._tickDelta/1000;
-                         //watershader.render();
-                         */
-                        for(var i=0; i<savannahGrassLODMeshes.length; ++i){
-                            savannahGrassLODMeshes[i].update(ige._currentCamera._threeObj);
-                            if(savannahGrassLODMeshes[i].children[0].name == 'med'){
-                                // carefull y and z are switched
-                                var v1 = new THREE.Vector3(savannahGrassLODMeshes[i].position.x,0, savannahGrassLODMeshes[i].position.y);
-                                var v2 = new THREE.Vector3(ige._player._threeObj.position.x, 0, ige._player._threeObj.position.z);
-                                var angle = Math.acos(v1);
-                                savannahGrassLODMeshes[i].children[0].updateMatrix();
-                                savannahGrassLODMeshes[i].children[0].matrixAutoUpdate = false;
-                            }
+                ige.addBehaviour('updateContent', function(){
+                    /*
+                     //watershader.material.uniforms.time.value += ige._tickDelta/1000;
+                     //watershader.render();
+                     */
+                    for(var i=0; i<savannahGrassLODMeshes.length; ++i){
+                        savannahGrassLODMeshes[i].update(ige._currentCamera._threeObj);
+                        if(savannahGrassLODMeshes[i].children[0].name == 'med'){
+                            // carefull y and z are switched
+                            var v1 = new THREE.Vector3(savannahGrassLODMeshes[i].position.x,0, savannahGrassLODMeshes[i].position.y);
+                            var v2 = new THREE.Vector3(ige._player._threeObj.position.x, 0, ige._player._threeObj.position.z);
+                            var angle = Math.acos(v1);
+                            savannahGrassLODMeshes[i].children[0].updateMatrix();
+                            savannahGrassLODMeshes[i].children[0].matrixAutoUpdate = false;
                         }
-                    });
+                    }
+                });
             });
         }
 
@@ -490,15 +500,15 @@ var Levels = {
     }
     // load server side image for nodejs !! needs to be in png format!!
     /*getImageDataSever: function(url) {
-        var png = require('png-js');
+     var png = require('png-js');
 
-        var pixels = [];
-        png.decode(url, function(pixels){
-            console.log(pixels);
-        });
+     var pixels = [];
+     png.decode(url, function(pixels){
+     console.log(pixels);
+     });
 
-        return pixels;
-    }*/
+     return pixels;
+     }*/
 };
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = Levels; }
