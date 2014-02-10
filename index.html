@@ -218,9 +218,7 @@
 		//if (length( mvPosition.xyz ) < 10.0) discard;
 
         //grassViewHeight = cos(atan(abs(cameraPosition.y - position.y) / length(position.xz - cameraPosition.xz)));
-        //grassViewHeight = cos(atan(abs(cameraPosition.y - position.z) / length(position.xy - cameraPosition.xz)));
-        //viewHeight = cos(atan(abs(cameraPosition.y - position.z) / length(position.xy - cameraPosition.xz)));
-        viewHeight = 1.0 / length(position.xy - cameraPosition.xz);
+        viewHeight = cos(atan(abs(cameraPosition.y - position.y) / length(vec2(position.x - cameraPosition.x, -position.y - cameraPosition.z))));
 
         gl_PointSize = zoom * ( 180.0 / length( mvPosition.xyz ) );
 
@@ -254,10 +252,6 @@
                 gl_FragColor.b = 1.0;
                 gl_FragColor.a = 0.0;
             }
-                gl_FragColor.r = viewHeight;
-                gl_FragColor.g = viewHeight;
-                gl_FragColor.b = viewHeight;
-                gl_FragColor.a = 1.0;
         }
 
     </script>
