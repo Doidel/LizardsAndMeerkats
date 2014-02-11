@@ -748,7 +748,7 @@ var Player = IgeEntity.extend({
         var PI_2 = Math.PI * 2;
         var blockHitAngle = Math.PI * 0.35;
         var rot = (self._rotate.y % PI_2 + PI_2) % PI_2;
-        var enemyrot, t, localEnemyPosition, angle, isBlocked;
+        var enemyrot, angle, isBlocked;
         var objectsTakenHit = [];
         var enemyAround = self._isEnemyAround();
 
@@ -765,10 +765,12 @@ var Player = IgeEntity.extend({
                     enemyrot = (possibleEnemies[x]._rotate.y % PI_2 + PI_2 + Math.PI) % PI_2; //+Math.PI because we want the enemy to face you in order to block
                     isBlocked = Math.abs(enemyrot - rot) < blockHitAngle;
                 }
-                t = possibleEnemies[x]._translate;
-                //localEnemyPosition = self._threeObj.worldToLocal(new THREE.Vector3(t.x, t.y, t.z));
-                localEnemyPosition = new THREE.Vector3(t.x, t.y, t.z).sub(self._translate);
-                angle = Math.atan2(localEnemyPosition.x, localEnemyPosition.z);
+
+                angle = Math.atan2(
+                    possibleEnemies[x]._translate.x - self._translate.x,
+                    possibleEnemies[x]._translate.z - self._translate.z
+                ) + Math.PI; //Math.atan2 goes from -Math.PI to +Math.PI, we want everything to be positive though
+
                 if (Math.abs(angle - rot) < blockHitAngle && !isBlocked) {
                     //hit
                     objectsTakenHit.push(possibleEnemies[x]._id);
@@ -780,6 +782,7 @@ var Player = IgeEntity.extend({
 			var buildingsHit = self.getBuildingsHit();
 			if (buildingsHit.length > 0) console.log('player hits buildings: ', buildingsHit);
 			for (var x = 0; x < buildingsHit.length; x++) {
+                console.log('Hit a building!');
 				objectsTakenHit.push(buildingsHit[x]._id);
 				objectsTakenHit.takeDamage(20);
 			}
@@ -861,7 +864,7 @@ var Player = IgeEntity.extend({
 		var buildingsLength = ige.server.levelObjects.buildings.length;
 		for (var x = 0; x < buildingsLength; x++) {
 			var building = ige.server.levelObjects.buildings[x];
-			var buildingMatrix = building.matrixWorld;
+			var buildingMatrix = building._threeObj.matrixWorld;
 			
 			if (building._threeObj.geometry.boundingBox) {
 				//Rectangle x1, x2, y1, y2
