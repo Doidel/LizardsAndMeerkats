@@ -15,7 +15,7 @@ var StreamScene = IgeScene2d.extend({
         this._streamActions = {};
 
 		// Define the data sections that will be included in the stream
-		this.streamSections(['actions']);
+		this.streamSections(['commanderChange']);
 	},
 
 	/**
@@ -30,24 +30,28 @@ var StreamScene = IgeScene2d.extend({
 	 */
 	streamSectionData: function (sectionId, data) {
 		// Check if the section is one that we are handling
-		if (sectionId === 'actions') {
-			// Check if the server sent us data, if not we are supposed
-			// to return the data instead of set it
-			if (data) {
-				// Analyze the given action data
-			} else {
-				// Return current data
-                var data = this._streamActions;
-                this._streamActions = {};
-				return data;
-			}
-		} else {
+		if (sectionId == 'commanderChange') {
+            if (data) {
+                data = JSON.parse(data);
+				UI.notifications.commanderChange(data.val);
+            } else {
+                return this._getJSONStreamActionData('commanderChange');
+            }
+        } else {
 			// The section was not one that we handle here, so pass this
 			// to the super-class streamSectionData() method - it handles
 			// the "transform" section by itself
 			return IgeEntity.prototype.streamSectionData.call(this, sectionId, data);
 		}
 	},
+	
+    _getJSONStreamActionData: function(property) {
+        if (this._streamActions.hasOwnProperty(property) && this._streamActions[property] != undefined) {
+            var data = this._streamActions[property];
+            delete this._streamActions[property];
+            return JSON.stringify(data);
+        }
+    },
 
     addStreamData: function(id, data) {
         this._streamActions[id] = data;

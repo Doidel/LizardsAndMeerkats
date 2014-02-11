@@ -57,6 +57,7 @@ var Player = IgeEntity.extend({
         };
 
         this.values = {
+			name: 'player' + this.id(),
             currentStamina: 100,
             maxStamina: 100,
             staminaregeneration: 0.01,
@@ -767,17 +768,7 @@ var Player = IgeEntity.extend({
                 t = possibleEnemies[x]._translate;
                 //localEnemyPosition = self._threeObj.worldToLocal(new THREE.Vector3(t.x, t.y, t.z));
                 localEnemyPosition = new THREE.Vector3(t.x, t.y, t.z).sub(self._translate);
-                angle = Math.atan(localEnemyPosition.x / localEnemyPosition.z);
-				//TODO: Math.atan2 ?
-                if (localEnemyPosition.x <= 0 && localEnemyPosition.z <= 0) {
-                    //change nothing
-                } else if (localEnemyPosition.x <= 0 && localEnemyPosition.z >= 0) {
-                    angle = Math.PI + angle;
-                } else if (localEnemyPosition.x >= 0 && localEnemyPosition.z >= 0) {
-                    angle += Math.PI;
-                } else {
-                    angle = 2*Math.PI + angle;
-                }
+                angle = Math.atan2(localEnemyPosition.x, localEnemyPosition.z);
                 if (Math.abs(angle - rot) < blockHitAngle && !isBlocked) {
                     //hit
                     objectsTakenHit.push(possibleEnemies[x]._id);
@@ -897,7 +888,7 @@ var Player = IgeEntity.extend({
 					}
 				}
 			} else if (building._threeObj.geometry.boundingSphere) {
-				//Wenn die Distanz zwischen den Mittelpunkten zweier Kreise kleiner ist als die Summe ihrer Radien, so liegt eine Kollision vor			
+				//TODO: Wenn die Distanz zwischen den Mittelpunkten zweier Kreise kleiner ist als die Summe ihrer Radien, so liegt eine Kollision vor			
 			}
 		}
 		return hitBuildings;
@@ -917,8 +908,19 @@ var Player = IgeEntity.extend({
         this._updateHealth(this.values.health - damage, false);
     },
     takeCommander: function() {
-        //try to take the commander spot. If it works, replace unit (ClientNetworkEvents)
-        ige.network.send('playerTakesCommand');
+        if (!ige.isServer) {
+			//try to take the commander spot. If it works, replace unit (ClientNetworkEvents)
+			ige.network.send('playerTakesCommand');
+		} else {
+			if (ige.server.commanders[this.faction] == undefined) {
+				ige.server.commanders[this.faction] = this.id();
+				//give player commander abilities
+				this.addComponent(PlayerCommanderComponent);
+				this.addStreamData('playerSetComponent', {p: this.id(), add: true, component: 'PlayerCommanderComponent'});
+				//promote commander change to players
+				ige.server.addStreamDataToAll('commanderChange', {val: this.values.name});
+			}
+		}
     },
     toggleVoiceMode: function() {
         if (!ige.isServer) {

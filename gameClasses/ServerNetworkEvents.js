@@ -135,13 +135,7 @@ var ServerNetworkEvents = {
 
     _onPlayerTakesCommand: function (data, clientId) {
 		var p = ige.server.players[clientId];
-        if (ige.server.commanders[p.faction] == undefined) {
-            ige.server.commanders[p.faction] = clientId;
-            //give player commander abilities
-			ige.server.players[clientId].addComponent(PlayerCommanderComponent);
-            //ige.network.send('playerSetComponent', {player: clientId, add: true, component: 'PlayerCommanderComponent'});
-			p.addStreamData('playerSetComponent', {p: clientId, add: true, component: 'PlayerCommanderComponent'});
-        }
+		if (p) p.takeCommander();
     },
 	
 	_onPlayerFinalBuild: function (data, clientId) {

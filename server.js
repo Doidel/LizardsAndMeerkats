@@ -5,20 +5,6 @@ var Server = IgeClass.extend({
 	init: function (options) {
 		var self = this;
 
-
-
-        //ige.addComponent(IgeCannonComponent);
-        //ige.cannon.createWorld();
-        //ige.cannon.gravity(0, -40, 0); // m / s^2
-        //ige.cannon._world.allowSleep = false;
-        //ige.cannon.createFloor(0, 1, 0);
-
-        /*var solver = new CANNON.GSSolver();
-        solver.iterations = 7;
-        solver.tolerance = 0.1;
-        ige.cannon._world.solver = new CANNON.SplitSolver(solver);
-        ige.cannon._slipperyNormalCm.friction = 0.0;*/
-
 		// Define an object to hold references to our player entities
 		this.players = {};
 
@@ -139,11 +125,7 @@ var Server = IgeClass.extend({
     },
 	//TODO: Create an always streamed entity where no transform will be streamed. 
     addStreamDataToAll: function(id, data) {
-		
-        /*for (var key in ige.server.players) {
-            if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
-            ige.server.players[key].addStreamData(id, data);
-        }*/
+		ige.server.scene1.addStreamData(id, data);
     },
     physibehaviour: function (ctx) {
         ige.server.scene1._threeObj.simulate(); //ige._tickDelta/1000, 5

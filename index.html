@@ -112,18 +112,25 @@
             color: rgb(80, 9, 9);
         }
 
-        #goldHarvestElement {
+        #goldHarvestElement, #commanderChangeNotificationElement {
             color: #ffff00;
             font-weight: bold;
             font-size: 2.4em;
             position: absolute;
+			text-align: center;
             top: 50%;
-            left: 50%;
+			width: 100%;
             margin-top: -40px;
             padding-top: 40px;
             opacity: 1;
             text-shadow: 0.05em 0.05em 0.1em rgb(122, 91, 24);
         }
+		
+		#commanderChangeNotificationElement {
+			font-size: 3em;
+            margin-top: -40px;
+			top: 15%;
+		}
 
         #statusbar {
             position: absolute;
@@ -313,9 +320,8 @@
             <img src="./assets/ui/blockbar_outer.png" style="width: 100%; height: 100%;" />
             <div id="blockbarInner" style="background-image: url(./assets/ui/blockbar_inner.png); width: 126px; height:100%; background-size: 126px 40px; background-repeat: no-repeat;"></div>
         </div>
-        <div id="goldHarvestElement">
-
-        </div>
+        <div id="goldHarvestElement"></div>
+		<div id="commanderChangeNotificationElement"></div>
 
         <div id="healthbar">
             <div id="healthbarInner" style="background-color: #FF3300;"></div>
@@ -363,20 +369,25 @@
                         $('#goldHarvestElement').css('padding-top', '40px');
                     }
                 );
-               /* $('goldHarvestElement')
-                        .set('text', amount)
-                        .setStyle('opacity', 1);
-                (function() {
-                    this.harvestFx.start({
-                        'padding-top': 0,
-                        'opacity': 0
-                    }).chain(function() {
-                        $('goldHarvestElement').setStyles({
-                            'padding-top': 40
-                        })
-                    });
-                }).delay(200, this);*/
-            }
+            },
+			commanderChange: function(val) {
+				$('#commanderChangeNotificationElement')
+                    .finish()
+                    .html(val == false ? 'Your commander has resigned!' : 'Player "' + val + '" is your new commander!')
+                    .css('opacity', 1);
+				setTimeout(function() {
+					$('#commanderChangeNotificationElement')	
+						.animate({
+							'padding-top': 0,
+							'opacity': 0
+						},
+						1000,
+						function() {
+							$('#commanderChangeNotificationElement').css('padding-top', '40px');
+						}
+					);
+				}, 2000);
+			}
         },
         healthBar: {
             //health will be sent with commands, not streamed. Health regen is done by periodicals both on server and client. Only heals and dmgs are sent and informed about.
