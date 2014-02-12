@@ -225,7 +225,6 @@
 		//if (length( mvPosition.xyz ) < 10.0) discard;
 
         viewHeight = cos(atan(abs(cameraPosition.y - position.y) / length(position.xz - cameraPosition.xz)));
-        //viewHeight = cos(atan(abs(cameraPosition.y - position.y) / length(vec2(position.x - cameraPosition.x, -position.y - cameraPosition.z))));
 
         gl_PointSize = zoom * ( 180.0 / length( mvPosition.xyz ) );
 

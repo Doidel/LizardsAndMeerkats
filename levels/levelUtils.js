@@ -50,8 +50,8 @@ var levelUtils = {
        );
        //this.particles.dynamic = false;
 
-       mesh.add(this.particles);
-       //ige.client.scene1._threeObj.add(this.particles);
+       //mesh.add(this.particles);
+       ige.client.scene1._threeObj.add(this.particles);
    },
 
     Camelthorn: function(positions, mesh) {
