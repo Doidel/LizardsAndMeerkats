@@ -17,7 +17,21 @@ var Server = IgeClass.extend({
             playerCounts: {
                 lizards: 0,
                 meerkats: 0
-            }
+            },
+			resources: {
+				gold: {
+					lizards: 0,
+					meerkats: 0
+				},
+				woodOrStone: {
+					lizards: 0,
+					meerkats: 0
+				}
+			},
+			votes: {
+				lizards: undefined,
+				meerkats: undefined
+			}
         };
 		
 		this.gameOptions = {
@@ -68,6 +82,8 @@ var Server = IgeClass.extend({
                         ige.network.define('playerTakesCommand', self._onPlayerTakesCommand);
                         ige.network.define('playerFinalBuild', self._onPlayerFinalBuild);
                         ige.network.define('playerPlayVoiceCommand', self._onPlayerPlayVoiceCommand);
+                        ige.network.define('playerStartVote', self._onPlayerStartVote);
+                        ige.network.define('playerVote', self._onPlayerVote);
 						
                         ige.network.define('changeBuildingColor');
                         ige.network.define('setStreamBuildingBuildable');
@@ -127,6 +143,50 @@ var Server = IgeClass.extend({
     addStreamDataToAll: function(id, data) {
 		ige.server.scene1.addStreamData(id, data);
     },
+	startVote: function(data) {
+		var player = ige.server.players[data.player];
+		if (player && player.faction && ige.server.gameStates.votes[player.faction] == undefined) {
+			var voteFactions = {lizards: false, meerkats: false};
+			switch (data.type) {
+				case 'impeach':
+					voteFactions.lizards = true;
+					voteFactions.meerkats = true;
+					//what happens if the vote gets accepted?
+					data.onYes = function() {
+						ige.server.commanders[player.faction] = undefined;
+						//remove player's commander abilities
+						player.removeComponent('commander');
+						player.addStreamData('playerSetComponent', {p: player.id(), add: false, component: 'commander'});
+						//promote commander change to players
+						ige.server.addStreamDataToAll('commanderChange', {val: false});
+					};
+				break;
+			}
+			
+			if ((!voteFactions.lizards || ige.server.gameStates.votes['lizards'] == undefined) && (!voteFactions.meerkats || ige.server.gameStates.votes['meerkats'] == undefined)) {
+				data.startTime = ige._currentTime;
+				data.votes = {
+					yes: 0,
+					no: 0
+				};
+				data.playersVoted = [];
+				data.voteTimeout = setTimeout(function() { ige.server.terminateVote(data); }, 30000);
+				if (voteFactions.lizards) ige.server.gameStates.votes['lizards'] = data;
+				if (voteFactions.meerkats) ige.server.gameStates.votes['meerkats'] = data;
+				//TODO: Send vote to the factions and make it pop up at their screen
+			}
+		}
+		return false;
+	},
+	terminateVote: function(data) {
+		if (data.votes.yes > data.votes.no) {
+			if (data.onYes) data.onYes(data);
+		} else {
+			if (data.onNo) data.onNo(data);
+		}
+		if (ige.server.gameStates.votes['lizards'] == data) ige.server.gameStates.votes['lizards'] = undefined;
+		if (ige.server.gameStates.votes['meerkats'] == data) ige.server.gameStates.votes['meerkats'] = undefined;
+	},
     physibehaviour: function (ctx) {
         ige.server.scene1._threeObj.simulate(); //ige._tickDelta/1000, 5
     }

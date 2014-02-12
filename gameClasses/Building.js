@@ -33,11 +33,26 @@ var Building = IgeEntity.extend({
 			this.visuals.materialAmbientBackup.setRGB(0,0,0);
 		} else {
             ige.server.levelObjects.buildings.push(this);
-        }
+        }		
 
-
+        //contains data and actions which have to be streamed to the client, e.g.
+        //_streamActions['uH'] =  299 // identifier = 'updateHealth', value = 299
+        this._streamActions = {};
+		
         this.streamSyncInterval(200);
         this.streamSections(['transform']);
+    },
+	
+    _getJSONStreamActionData: function(property) {
+        if (this._streamActions.hasOwnProperty(property) && this._streamActions[property] != undefined) {
+            var data = this._streamActions[property];
+            delete this._streamActions[property];
+            return JSON.stringify(data);
+        }
+    },
+
+    addStreamData: function(id, data) {
+        this._streamActions[id] = data;
     },
 
     /**

@@ -591,6 +591,9 @@ var Client = IgeClass.extend({
 
         }
     },
+	startVote: function(type) {
+		ige.network.send('playerStartVote', {type: type});
+	},
     initAudio: function() {
         /**** AUDIO ****/
 

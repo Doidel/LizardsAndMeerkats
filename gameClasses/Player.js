@@ -227,13 +227,11 @@ var Player = IgeEntity.extend({
         if (sectionId == 'playerSetComponent') {
             if (data) {
                 data = JSON.parse(data);
-				var p = ige.$(data.player);
-				if (p != undefined) {
-					if (data.add !== false) {
-						p.addComponent(window[data.component]);
-					} else {
-						//TODO: Remove component
-					}
+				if (data.add !== false) {
+					this.addComponent(window[data.component]);
+				} else {
+					//TODO: Remove component
+					this.removeComponent(data.component);
 				}
             } else {
                 return this._getJSONStreamActionData('playerSetComponent');
@@ -919,7 +917,8 @@ var Player = IgeEntity.extend({
 				ige.server.commanders[this.faction] = this.id();
 				//give player commander abilities
 				this.addComponent(PlayerCommanderComponent);
-				this.addStreamData('playerSetComponent', {p: this.id(), add: true, component: 'PlayerCommanderComponent'});
+				console.log('this', this._id);
+				this.addStreamData('playerSetComponent', {add: true, component: 'PlayerCommanderComponent'});
 				//promote commander change to players
 				ige.server.addStreamDataToAll('commanderChange', {val: this.values.name});
 			}
@@ -934,8 +933,18 @@ var Player = IgeEntity.extend({
     },
 	playVoiceCommand: function(data) {
 		if (ige.isServer) {
-			//ige.network.send('playVoiceCommand', data);
             this.addStreamData('playVoiceCommand', data);
+		}
+	},
+	vote: function(isYes) {
+		if (!ige.isServer) {
+			ige.network.send('playerVote', isYes);
+		} else {
+			var voteData = ige.server.gameStates.votes[this.faction];
+			if (voteData && voteData.playersVoted.indexOf(this.id() == -1)) {
+				voteData.votes[isYes ? 'yes' : 'no']++;
+				voteData.playersVoted.push(this.id());
+			}			
 		}
 	},
     /**

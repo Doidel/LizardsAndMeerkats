@@ -1,14 +1,8 @@
 var StreamScene = IgeScene2d.extend({
 	classId: 'StreamScene',
 
-    //Ask SavXR Natsu for balances
-
 	init: function() {
 		IgeScene2d.prototype.init.call(this);
-
-		if (ige.isServer) {
-			
-		}
 
         //contains data and actions which have to be streamed to the client, e.g.
         //_streamActions['uH'] =  299 // identifier = 'updateHealth', value = 299

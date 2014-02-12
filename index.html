@@ -224,8 +224,8 @@
 		
 		//if (length( mvPosition.xyz ) < 10.0) discard;
 
-        //grassViewHeight = cos(atan(abs(cameraPosition.y - position.y) / length(position.xz - cameraPosition.xz)));
-        viewHeight = cos(atan(abs(cameraPosition.y - position.y) / length(vec2(position.x - cameraPosition.x, -position.y - cameraPosition.z))));
+        viewHeight = cos(atan(abs(cameraPosition.y - position.y) / length(position.xz - cameraPosition.xz)));
+        //viewHeight = cos(atan(abs(cameraPosition.y - position.y) / length(vec2(position.x - cameraPosition.x, -position.y - cameraPosition.z))));
 
         gl_PointSize = zoom * ( 180.0 / length( mvPosition.xyz ) );
 
@@ -284,7 +284,11 @@
     <div id="blocker">
 
         <div id="gameMenu">
-            <li><a href="#"><span class="ui-icon ui-icon-carat-1-e"></span>Start vote</a></li>
+            <li><a href="#"><span class="ui-icon ui-icon-carat-1-e"></span>Start vote</a>
+				<ul style="width: 140px;">
+					<li><a href="#" onclick="javascript:ige.client.startVote('impeach')"><span class="ui-icon ui-icon-carat-1-e"></span>Impeach commander</a></li>
+				</ul>
+			</li>
             <li><a href="#" onclick="javascript:ige._player.takeCommander()"><span class="ui-icon ui-icon-carat-1-e"></span>Take Commander</a></li> <!-- class="ui-state-disabled" -->
             <li><a href="#"><span class="ui-icon ui-icon-gear"></span>Options</a></li>
         </div>
@@ -300,8 +304,8 @@
     <div id="interface">
 
         <div id="statusbar">
-            0 <img src="./assets/ui/icon_gold.png" />
-            0 <img src="./assets/ui/icon_wood.png" />
+            <span id="resource1">0</span> <img src="./assets/ui/icon_gold.png" />
+            <span id="resource2">0</span> <img src="./assets/ui/icon_wood.png" />
 
             <div id="voiceCommands">
                 Voice Commands (V)
@@ -315,6 +319,10 @@
                 </div>
             </div>
         </div>
+		
+		<div id="vote-dialog" title="Impeach commander?">
+		  <p>Impeach the current commander?</p>
+		</div>
 
         <div id="blockbar" style="width: 126px; height: 40px;">
             <img src="./assets/ui/blockbar_outer.png" style="width: 100%; height: 100%;" />
@@ -413,7 +421,44 @@
             display: function(isDisplayed) {
                 $('#voiceCommands > div').css('display', isDisplayed ? 'block' : 'none');
             }
-        }
+        },
+		voting: {
+			openDialog: function(type) {
+				var title = '', text = '', no = 'No (F2)', yes = 'Yes (F3)',
+					onNo = function(){}, onYes = function(){};
+				switch (type) {
+					case 'impeach':
+						title = 'Impeach commander?';
+						text = 'Should the current commander be relieved from his burden?';
+						onNo = function() {
+							$( this ).dialog( "close" );
+						};
+						onYes = function() {
+							$( this ).dialog( "close" );
+						};
+					break;
+				}
+		
+				$( "#vote-dialog" ).dialog({
+					resizable: false,
+					height: "auto",
+					modal: false,
+					title: title,
+					buttons: {
+						"No (F2)": onNo,
+						"Yes (F3)": onYes
+					}
+				})
+				.dialog("open")
+				.children('p')
+				.html(text);
+			}
+		},
+		resources: {
+			setResource: function(nr, amount) {
+				$('#resource'+nr).html(amount);
+			}
+		}
     };
 
     $(function() {

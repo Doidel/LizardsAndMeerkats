@@ -144,6 +144,14 @@ var ServerNetworkEvents = {
 	
 	_onPlayerPlayVoiceCommand: function (data, clientId) {
 		ige.server.players[clientId].playVoiceCommand({player: clientId, nr: data});
+    },
+	
+	_onPlayerStartVote: function (data, clientId) {
+		ige.server.startVote({player: clientId, type: data.type});
+    },
+	
+	_onPlayerStartVote: function (data, clientId) {
+		ige.server.players[clientId].vote(data);
     }
 };
 

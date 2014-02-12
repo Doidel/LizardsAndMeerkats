@@ -131,7 +131,66 @@ var MainBuildingLizards = Building.extend({
             this._threeObj.position = position;
             this.translateTo(position.x, position.y, position.z);
         }
-    }
+		
+		//Attention:
+		//this stream is for streaming to lizard players only
+
+		//We need no transform for the main building
+		this.streamSections(['setResources']);
+		//this.streamSections(this._streamSections.concat(['setResources']));
+		
+		//send only to members of the own faction
+		this.streamControl(function (clientId) {
+			if (ige.server.players[clientId] && ige.server.players[clientId].faction === 'lizards') {
+				return true;
+			} else {
+				return false;
+			}
+		});
+    },
+
+	/**
+	 * Override the default IgeEntity class streamSectionData() method
+	 * so that we can check for the custom1 section and handle how we deal
+	 * with it.
+	 * @param {String} sectionId A string identifying the section to
+	 * handle data get / set for.
+	 * @param {*=} data If present, this is the data that has been sent
+	 * from the server to the client for this entity.
+	 * @return {*}
+	 */
+	streamSectionData: function (sectionId, data) {
+		// Check if the section is one that we are handling
+		if (sectionId == 'setResources') {
+            if (data) {
+                data = JSON.parse(data);
+				UI.resources.setResource(0, data[0]);
+				UI.resources.setResource(1, data[1]);
+            } else {
+                return this._getJSONStreamActionData('setResources');
+            }
+        } else {
+			// The section was not one that we handle here, so pass this
+			// to the super-class streamSectionData() method - it handles
+			// the "transform" section by itself
+			return Building.prototype.streamSectionData.call(this, sectionId, data);
+		}
+	},
+	
+	tick: function (ctx) {
+		if (ige.isServer) {
+			this._tickTimer += ige._tickDelta;
+			if (this._tickTimer / 3000 > 1) {
+				this._tickTimer -= 3000;
+				this.addStreamData('setResources', [
+					ige.server.gameStates.gold['lizards'], 
+					ige.server.gameStates.woodOrStone['lizards']
+				]);
+			}
+		}
+		
+		Building.prototype.tick.call(this, ctx);
+	}
 });
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = MainBuildingLizards; }
