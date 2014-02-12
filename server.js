@@ -107,7 +107,7 @@ var Server = IgeClass.extend({
                         self.scene1._threeObj = new Physijs.Scene({ fixedTimeStep: 1 / 120 });
                         self.scene1._threeObj.setGravity(new THREE.Vector3(0, -20, 0));
                         self.scene1._threeObj.fog = new THREE.FogExp2(0x000000, 0.05);
-                        ige.addBehaviour('physiStep', self.physibehaviour);
+                        ige.addBehaviour('physiStep', self.physibehaviour, true);
 
 						// Create the main viewport and set the scene
 						// it will "look" at as the new scene1 we just

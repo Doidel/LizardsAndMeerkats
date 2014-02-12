@@ -179,10 +179,9 @@ var Player = IgeEntity.extend({
 
             var playerMaterial = Physijs.createMaterial(
                 new THREE.MeshBasicMaterial(),
-                0, // friction
+                0.99, // friction
                 0 // restitution
             );
-
             /*var physicalGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.0);
             //physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
             physicalGeometry.computeBoundingBox();
@@ -203,6 +202,7 @@ var Player = IgeEntity.extend({
                     self.states.canJump = true;
             });
             this._threeObj.setAngularFactor({ x: 0, y: 0, z: 0 });
+			this._threeObj.setLinearFactor(new THREE.Vector3(0.0000001,0.9,0.0000001));
             ige.server.scene1._threeObj.add( this._threeObj );
 
             self.addComponent(LevelRoomComponent);

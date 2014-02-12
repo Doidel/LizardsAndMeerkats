@@ -136,7 +136,7 @@ var Levels = {
                 shape.computeVertexNormals();
                 var groundmat = Physijs.createMaterial(
                     new THREE.MeshBasicMaterial(),
-                    0, // high friction
+                    0.99, // high friction
                     0 // low restitution
                 );
                 var pGround = new Physijs.HeightfieldMesh(
