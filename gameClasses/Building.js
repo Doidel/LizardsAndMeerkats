@@ -114,7 +114,7 @@ var Building = IgeEntity.extend({
                     builder._translate.x - ( this._threeObj.geometry.boundingBox.max.z + 2) * Math.sin(builder._rotate.y),
                     this._translate.y,
                     builder._translate.z - ( this._threeObj.geometry.boundingBox.max.z + 2) * Math.cos(builder._rotate.y)
-                ); //TODO Currently exactly at player position
+                );
                 this.rotateTo(0, builder._rotate.y, 0);
 
                 //(check for resources made before building selection)
@@ -233,9 +233,9 @@ var Building = IgeEntity.extend({
             deltaY = Math.sin(this._rotate.y),
 			_compareTerrainHeight = function(pos) {
 				pos.x += midPosX;
-				pos.y += midPosY;
+				pos.z += midPosY;
 				//take 2 diagonal vertices and compute average (which is not fully correct but less complicated)
-				var height = (vList[Math.ceil(pos.y) * 257 + Math.ceil(pos.x)].z + vList[Math.floor(pos.y) * 257 + Math.floor(pos.x)].z) / 2;
+				var height = (vList[Math.ceil(pos.z) * 257 + Math.ceil(pos.x)].z + vList[Math.floor(pos.z) * 257 + Math.floor(pos.x)].z) / 2;
 				if (height > maxGroundHeight) {
                     maxGroundHeight = height;
                 }
@@ -245,25 +245,30 @@ var Building = IgeEntity.extend({
 			};
 			
 		
-		var currentPosInObjectCoordinates = new THREE.Vector2(0,0),
+		var currentPosInObjectCoordinates = new THREE.Vector3(0,0,0),
 			currentPosInTerrainCoordinates = new THREE.Vector2(0,0),
+			buildingRotationMatrix = new THREE.Matrix4().extractRotation(this._threeObj.matrixWorld),
 			halfObjectHeight = - (height / 2 / terrainDistanceUnit),
 			halfObjectWidth = - (width / 2 / terrainDistanceUnit);
 		
 		//iterate in steps of terrainDistanceUnit from the object's left to right
-		for (var y = 0; y <= Math.ceil(height / terrainDistanceUnit); y+= terrainDistanceUnit) {
+		for (var z = 0; z <= Math.ceil(height / terrainDistanceUnit); z+= terrainDistanceUnit) {
             //for (var y = 0; y <= Math.ceil(height / terrainDistanceUnit); y+= terrainDistance) {
-			currentPosInObjectCoordinates.y = halfObjectHeight + y; //TODO: cut last iteration
+			currentPosInObjectCoordinates.z = -halfObjectHeight + z; //TODO: cut last iteration
 			//and the object's top to bottom
 			for (var x = 0; x <= Math.ceil(width / terrainDistanceUnit); x++) {
 				//(x, y) is now a point
-				currentPosInObjectCoordinates.x = halfObjectWidth + x; //TODO: cut last iteration
+				currentPosInObjectCoordinates.x = -halfObjectWidth + x; //TODO: cut last iteration
 				//Apply the rotation to figure out the point in terrain coordinates
+				var terrainPos = currentPosInObjectCoordinates.clone().applyMatrix4(buildingRotationMatrix);
+				
 				var distanceToMid = currentPosInObjectCoordinates.length();
 				currentPosInTerrainCoordinates.x = distanceToMid * deltaX;
 				currentPosInTerrainCoordinates.y = distanceToMid * deltaY;
 				
-				_compareTerrainHeight(currentPosInTerrainCoordinates);
+				_compareTerrainHeight(terrainPos);
+				
+				//currentPosInObjectCoordinates.applyMatrix4(this._threeObj.matrixWorld);
 			}
 		}
 
