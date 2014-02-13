@@ -11,9 +11,6 @@ var Game = IgeClass.extend({
 
 		if (ige.isServer) {
 			ige.server = new App(options);
-            /*ige.addComponent(IgeCannonComponent)
-                .cannon.gravity(0, 0, -600)
-                .cannon.createWorld();*/
 		}
 	}
 });

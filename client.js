@@ -121,12 +121,10 @@ var Client = IgeClass.extend({
 
                         //Instantiate Level and World
 
-                        self.implement(Levels);
-
                         // World details
                         ige.gameWorld = {
                             //level: self.level1()
-                            level: new self.level2()
+                            level: new Level2()
                         };
 
 

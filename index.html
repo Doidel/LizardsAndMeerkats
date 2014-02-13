@@ -422,12 +422,12 @@
             }
         },
 		voting: {
-			openDialog: function(type) {
+			openDialog: function(data) {
 				var title = '', text = '', no = 'No (F2)', yes = 'Yes (F3)',
 					onNo = function(){}, onYes = function(){};
-				switch (type) {
+				switch (data.t) {
 					case 'impeach':
-						title = 'Impeach commander?';
+						title = data.p + ' requests an impeach!';
 						text = 'Should the current commander be relieved from his burden?';
 						onNo = function() {
 							$( this ).dialog( "close" );

@@ -1,7 +1,8 @@
 var MainBuildingLizards = Building.extend({
     classId: 'MainBuildingLizards',
 
-    init: function (id, position) {
+    init: function (position) {
+        var id = 'mainBuildingLizards';
         Building.prototype.init.call(this, id);
 
         if (!ige.isServer) {
@@ -124,6 +125,8 @@ var MainBuildingLizards = Building.extend({
             if (this._id.indexOf('Stream') == -1) this.activatePhysics();
 
             this.mount(ige.server.scene1);
+
+            ige.server.levelObjects[0] = this;
         }
 
         if (position) {
@@ -136,7 +139,7 @@ var MainBuildingLizards = Building.extend({
 		//this stream is for streaming to lizard players only
 
 		//We need no transform for the main building
-		this.streamSections(['setResources']);
+		this.streamSections(['setResources', 'startVote']);
 		//this.streamSections(this._streamSections.concat(['setResources']));
 		
 		//send only to members of the own faction

@@ -180,7 +180,7 @@ var Player = IgeEntity.extend({
             var playerMaterial = Physijs.createMaterial(
                 new THREE.MeshBasicMaterial(),
                 0.99, // friction
-                0 // restitution
+                0.01 // restitution
             );
             /*var physicalGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.0);
             //physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
@@ -188,12 +188,18 @@ var Player = IgeEntity.extend({
             physicalGeometry.boundingBox.max.y += physicalGeometry.boundingBox.min.y;
             physicalGeometry.boundingBox.min.y = 0;*/
             this._threeObj = new Physijs.CapsuleMesh(
-                new THREE.CylinderGeometry(0.6, 0.3, 0.1),
+                new THREE.CylinderGeometry(0.5, 0.5, 1),
                 playerMaterial,
-                5 //mass
+                5 * 1000000 //mass
             );
             this._threeObj.geometry.dynamic = false;
-            this._threeObj.position.set(0,100,0);
+            var spawnBuilding = ige.server.levelObjects.buildings[this.faction == 'lizards' ? 0 : 1];
+            spawnBuilding._threeObj.updateMatrixWorld(true);
+            this._threeObj.rotation.setFromRotationMatrix(spawnBuilding._threeObj.matrixWorld);
+            this._threeObj.rotation.y -= Math.PI / 2;
+            this._rotate.y = this._threeObj.rotation.y;
+            this._threeObj.position.set(5, 5, 0).applyMatrix4(spawnBuilding._threeObj.matrixWorld);
+            console.log('rotation', this._threeObj.rotation.y);
 
             var upAxis = new THREE.Vector3(0,1,0);
             this._threeObj.addEventListener('collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
@@ -201,8 +207,10 @@ var Player = IgeEntity.extend({
                 if(contact_normal.dot(upAxis) > 0.5) // Use a "good" threshold value between 0 and 1 here!
                     self.states.canJump = true;
             });
-            this._threeObj.setAngularFactor({ x: 0, y: 0, z: 0 });
-			this._threeObj.setLinearFactor(new THREE.Vector3(0.0000001,0.9,0.0000001));
+            setTimeout(function() {
+                this._threeObj.setAngularFactor({ x: 0, y: 0, z: 0 });
+                this._threeObj.setLinearFactor(new THREE.Vector3(0.0000001,0.9,0.0000001));
+            }.bind(this), 2000);
             ige.server.scene1._threeObj.add( this._threeObj );
 
             self.addComponent(LevelRoomComponent);
@@ -344,7 +352,7 @@ var Player = IgeEntity.extend({
             if (this.controls.jump && this.states.canJump) {
                 this.states.canJump = false;
                 //this._cannonBody.applyImpulse(new CANNON.Vec3(0,100,0), new CANNON.Vec3(0,0,0));
-                velocity.y = 7;
+                velocity.y = 20;
             }
 
 
@@ -424,7 +432,9 @@ var Player = IgeEntity.extend({
 
             currentVelocity.z = inputVelocity.z;
             currentVelocity.x = inputVelocity.x;
+            currentVelocity.y = Math.round(currentVelocity.y * 1000000) / 1000000; //rounding y fluctuation to prevent streaming of very small numbers
             if (velocity.y > 0) currentVelocity.y = velocity.y;
+            console.log(currentVelocity.y);
 
             this._threeObj.setLinearVelocity(currentVelocity);
 

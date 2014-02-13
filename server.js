@@ -41,7 +41,7 @@ var Server = IgeClass.extend({
 
         this.levelObjects = {
             goldRocks: [],
-			buildings: []
+			buildings: [] /* 0: lizardsMainBuilding, 1: meerkatsMainBuilding */
         };
 
 		// Add the server-side game methods / event handlers
@@ -105,7 +105,7 @@ var Server = IgeClass.extend({
 							.streamMode(1);
 
                         self.scene1._threeObj = new Physijs.Scene({ fixedTimeStep: 1 / 120 });
-                        self.scene1._threeObj.setGravity(new THREE.Vector3(0, -20, 0));
+                        self.scene1._threeObj.setGravity(new THREE.Vector3(0, -60, 0));
                         self.scene1._threeObj.fog = new THREE.FogExp2(0x000000, 0.05);
                         ige.addBehaviour('physiStep', self.physibehaviour, true);
 
@@ -121,12 +121,12 @@ var Server = IgeClass.extend({
 
                         //Instantiate Level and World
 
-                        self.implement(Levels);
+                        //self.implement(Levels);
 
                         // World details
                         ige.gameWorld = {
                             //level: self.level1()
-                            level: self.level2()
+                            level: new Level2()
                         };
 					}
 				});
@@ -139,14 +139,18 @@ var Server = IgeClass.extend({
         }
         return false;
     },
-	//TODO: Create an always streamed entity where no transform will be streamed. 
     addStreamDataToAll: function(id, data) {
 		ige.server.scene1.addStreamData(id, data);
     },
+    addStreamDataToFaction: function(id, data, faction) {
+        ige.server.levelObjects.buildings[faction == 'lizards' ? 0 : 1].addStreamData(id, data);
+    },
 	startVote: function(data) {
 		var player = ige.server.players[data.player];
+        console.log('start vote 1');
 		if (player && player.faction && ige.server.gameStates.votes[player.faction] == undefined) {
 			var voteFactions = {lizards: false, meerkats: false};
+            console.log('start vote 2');
 			switch (data.type) {
 				case 'impeach':
 					voteFactions.lizards = true;
@@ -164,6 +168,7 @@ var Server = IgeClass.extend({
 			}
 			
 			if ((!voteFactions.lizards || ige.server.gameStates.votes['lizards'] == undefined) && (!voteFactions.meerkats || ige.server.gameStates.votes['meerkats'] == undefined)) {
+                console.log('start vote 3');
 				data.startTime = ige._currentTime;
 				data.votes = {
 					yes: 0,
@@ -171,9 +176,16 @@ var Server = IgeClass.extend({
 				};
 				data.playersVoted = [];
 				data.voteTimeout = setTimeout(function() { ige.server.terminateVote(data); }, 30000);
-				if (voteFactions.lizards) ige.server.gameStates.votes['lizards'] = data;
-				if (voteFactions.meerkats) ige.server.gameStates.votes['meerkats'] = data;
+				if (voteFactions.lizards) {
+                    ige.server.gameStates.votes['lizards'] = data;
+                    ige.server.addStreamDataToFaction('startVote', {t: data.type, p: player.values.name}, 'lizards');
+                }
+				if (voteFactions.meerkats) {
+                    ige.server.gameStates.votes['meerkats'] = data;
+                    ige.server.addStreamDataToFaction('startVote', {t: data.type, p: data.player}, 'meerkats');
+                }
 				//TODO: Send vote to the factions and make it pop up at their screen
+
 			}
 		}
 		return false;

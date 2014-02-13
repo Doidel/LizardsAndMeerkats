@@ -150,7 +150,7 @@ var ServerNetworkEvents = {
 		ige.server.startVote({player: clientId, type: data.type});
     },
 	
-	_onPlayerStartVote: function (data, clientId) {
+	_onPlayerVote: function (data, clientId) {
 		ige.server.players[clientId].vote(data);
     }
 };
