@@ -664,14 +664,22 @@ var Player = IgeEntity.extend({
                     }
                 } else if (this.states.isAttacking) {
                     this._checkResetAnimation('attack' + this.states.attackType, 1);
-                    var start = 430, end = 480, speedUp = 2.4;
+                    var start = 430, end = 480, speedUp = 1.5;
                     if (this.states.attackType == 1) {
-                            start = 510; end = 580; speedUp = 4;
+                            start = 510; end = 580; speedUp = 2;
                     } else if (this.states.attackType == 2) {
-                            start = 610; end = 680; speedUp = 3;
+                            start = 610; end = 680; speedUp = 1.5;
                     }
                     var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 1, false, ige.client.legBones);
-                    if (frame >= end) this.states.isAttacking = false;
+                    if (frame >= end) {
+                        // increment attackType
+                        if(this.states.attackType > 1){
+                            this.states.attackType = 0;
+                        } else {
+                            ++this.states.attackType;
+                        }
+                        this.states.isAttacking = false;
+                    }
                 } else if (this.controls.block) {
                     //if he's raising the block, start the raising animation. If not, do no animation.
                     if (this.states.currentBlockFrame < 210) {
