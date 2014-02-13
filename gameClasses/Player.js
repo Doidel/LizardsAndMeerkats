@@ -199,7 +199,6 @@ var Player = IgeEntity.extend({
             this._threeObj.rotation.y -= Math.PI / 2;
             this._rotate.y = this._threeObj.rotation.y;
             this._threeObj.position.set(5, 5, 0).applyMatrix4(spawnBuilding._threeObj.matrixWorld);
-            console.log('rotation', this._threeObj.rotation.y);
 
             var upAxis = new THREE.Vector3(0,1,0);
             this._threeObj.addEventListener('collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
@@ -434,7 +433,6 @@ var Player = IgeEntity.extend({
             currentVelocity.x = inputVelocity.x;
             currentVelocity.y = Math.round(currentVelocity.y * 1000000) / 1000000; //rounding y fluctuation to prevent streaming of very small numbers
             if (velocity.y > 0) currentVelocity.y = velocity.y;
-            console.log(currentVelocity.y);
 
             this._threeObj.setLinearVelocity(currentVelocity);
 

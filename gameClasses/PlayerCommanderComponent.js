@@ -43,9 +43,12 @@ var PlayerCommanderComponent = IgeClass.extend({
 				//Select the building according to buildingNr
 				//Create a streamed building entity in front of the player
 				//the newly initialized Building.js calls isBuildable each tick on the server while it's not built
-                console.log('create stream');
-				this.streamedBuilding = new MainBuildingLizards(this._player.faction + 'StreamBuilding', new THREE.Vector3(0, 10, 0))
-					.streamMode(1)
+                if (this._player.faction == 'lizards') {
+				    this.streamedBuilding = new OutpostLizards(this._player.faction + 'StreamBuilding', new THREE.Vector3(0, 10, 0));
+                } else {
+                    this.streamedBuilding = new OutpostMeerkats(this._player.faction + 'StreamBuilding', new THREE.Vector3(0, 10, 0));
+                }
+                this.streamedBuilding .streamMode(1)
 					.mount(ige.server.scene1);
 				this.streamedBuilding.values.builderId = this._player._id;
                 this.streamedBuilding.states.isBuilt = false;
