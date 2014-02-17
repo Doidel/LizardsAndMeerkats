@@ -642,15 +642,15 @@ var Player = IgeEntity.extend({
                     if (this._previousAnimation[0].indexOf('standing') == -1) this.states.nextStandingAnim = 0;
                     this._checkResetAnimation('standing' + this.states.standingStage, 0);
                     if (this.states.nextStandingAnim <= ige._currentTime) {
-                        var start = 830, end = 840;
-                        if (this.states.standingStage == 1) {
+                        var start = 830, end = 870;
+                        /*if (this.states.standingStage == 1) {
                             start = 840; end = 860;
                         } else if (this.states.standingStage == 2) {
                             start = 860; end = 870;
-                        }
+                        }*/
                         var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, start, end, 0, false, ige.client.armBones);
-                        if (frame == 840 || frame == 860) this.states.nextStandingAnim = ige._currentTime + 3000;
-                        if (frame >= end) this.states.standingStage = (this.states.standingStage + 1) % 3;
+                        //if (frame == 840 || frame == 860) this.states.nextStandingAnim = ige._currentTime + 3000;
+                        //if (frame >= end) this.states.standingStage = (this.states.standingStage + 1) % 3;
                     }
                 }
 
@@ -664,11 +664,11 @@ var Player = IgeEntity.extend({
                     }
                 } else if (this.states.isAttacking) {
                     this._checkResetAnimation('attack' + this.states.attackType, 1);
-                    var start = 430, end = 480, speedUp = 1.5;
+                    var start = 430, end = 480, speedUp = 2.4;
                     if (this.states.attackType == 1) {
-                            start = 510; end = 580; speedUp = 2;
+                            start = 510; end = 580; speedUp = 4;
                     } else if (this.states.attackType == 2) {
-                            start = 610; end = 680; speedUp = 1.5;
+                            start = 610; end = 680; speedUp = 3;
                     }
                     var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 1, false, ige.client.legBones);
                     if (frame >= end) {

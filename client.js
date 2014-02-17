@@ -28,8 +28,10 @@ var Client = IgeClass.extend({
             healthbarOuter: new IgeTexture('assets/ui/healthbarOuter.png')
 		};
 
-        this.armBones = ["Shoulder_L", "Arm_L", "ArmLower_L", "Hand_L", "Shoulder_R", "Arm_R", "ArmLower_R", "Hand_R", "Back", "NeckLower", "NeckUpper", "Head"];
-        this.legBones = ["Root", "Hip_L", "LegUpper_L", "LegLower_L", "Foot_L", "Hip_R", "LegUpper_R", "LegLower_R", "Foot_R", "BackRoot", "BackRoot1", "BackRoot2", "BackRoot3"];
+        //this.armBones = ["Shoulder_L", "Arm_L", "ArmLower_L", "Hand_L", "Shoulder_R", "Arm_R", "ArmLower_R", "Hand_R", "Back", "NeckLower", "NeckUpper", "Head"];
+        this.armBones = ["Shoulder_L", "Arm_L", "ArmLower_L", "Hand_L", "Shoulder_R", "Arm_R", "ArmLower_R", "Hand_R", "Back", "NeckLower", "NeckUpper", "Head", "BackRoot", "BackRoot1", "BackRoot2", "BackRoot3"];
+        //this.legBones = ["Root", "Hip_L", "LegUpper_L", "LegLower_L", "Foot_L", "Hip_R", "LegUpper_R", "LegLower_R", "Foot_R", "BackRoot", "BackRoot1", "BackRoot2", "BackRoot3"];
+        this.legBones = ["Root", "Hip_L", "LegUpper_L", "LegLower_L", "Foot_L", "Hip_R", "LegUpper_R", "LegLower_R", "Foot_R"];
 
 
         ige.on('texturesLoaded', function () {
@@ -328,7 +330,6 @@ var Client = IgeClass.extend({
                         }
 
                         frame = parseInt(Math.min(currentTime * this.data.fps, endTime * this.data.fps), 10);
-                        // console.log(currentTime);
 
                         for (var h = 0, hl = this.hierarchy.length; h < hl; h++) {
 
@@ -374,8 +375,8 @@ var Client = IgeClass.extend({
                                     // switch keys?
                                     // switch when next key isn't enough to display the time delta or when the currentTime was moduled i.e. looped
 
-                                    //if (nextKey.time <= unloopedCurrentTime) {
-                                    if (nextKey.time <= unloopedCurrentTime || currentTime < unloopedCurrentTime) {
+                                    if (nextKey.time <= unloopedCurrentTime) {
+                                    //if (nextKey.time <= unloopedCurrentTime || currentTime < unloopedCurrentTime) {
 
                                         // did we loop?
 
