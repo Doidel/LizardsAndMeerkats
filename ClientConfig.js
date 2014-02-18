@@ -10,6 +10,7 @@ var igeClientConfig = {
         './gameClasses/OutpostLizards.js',
         './gameClasses/OutpostMeerkats.js',
         './gameClasses/Healthbar.js',
+        './gameClasses/Nametag.js',
         './gameClasses/StreamScene.js',
         './levels/LevelUtils.js',
         './levels/Level1.js',

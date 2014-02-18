@@ -1104,6 +1104,11 @@ var Player = IgeEntity.extend({
             healthPercent: 100
         });
 
+        this._nametag = new Nametag({
+            entity: this,
+            scale: 1
+        });
+
         if (isPlayer) ige.client.vp1.camera.mount(this);
     },
     _checkResetAnimation: function(selectedAnimation, layer) {
