@@ -1040,6 +1040,7 @@ var Player = IgeEntity.extend({
 
         //var parsedModel = ige.three._loader.parse(modelLizard);
         var parsedModel = ige.three._loader.parse(modelMeerkat);
+
         this._threeObj = new THREE.SkinnedMesh(
             parsedModel.geometry,
             mat,
@@ -1068,7 +1069,9 @@ var Player = IgeEntity.extend({
 
         THREE.AnimationHandler.add(this._threeObj.geometry.animation); //Overwrites existing animation
 
-        this._threeObj.animation = new THREE.Animation(this._threeObj, "ArmatureAction", THREE.AnimationHandler.CATMULLROM);
+        // CATMULLROM is not working with our method
+        //this._threeObj.animation = new THREE.Animation(this._threeObj, "ArmatureAction", THREE.AnimationHandler.CATMULLROM);
+        this._threeObj.animation = new THREE.Animation(this._threeObj, "ArmatureAction", THREE.AnimationHandler.LINEAR);
 
         this._threeObj.animation.play();
 
