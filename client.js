@@ -286,7 +286,8 @@ var Client = IgeClass.extend({
                     THREE.Animation.prototype.rangeUpdate = function(deltaTimeMS, startKey, endKey, layer, repeat, updatableBones) {
 
                         // vars
-                        var types = ["pos", "rot", "scl"];
+                        //var types = ["pos", "rot", "scl"];
+                        var types = ["pos", "rot"]; // we just need pos and rot, we don't scale bones
                         var type;
                         var scale;
                         var vector;
@@ -348,20 +349,21 @@ var Client = IgeClass.extend({
 
                                 // loop through pos/rot/scl
 
-                                for (var t = 0; t < 3; t++) {
+                                //for (var t = 0; t < 3; t++) {
+                                for (var t = 0; t < types.length; t++) {
 
                                     // get keys
                                     type = types[ t ];
+
+                                    var flag = false;
 
                                     if (firstLoop) {
                                         prevKey = this.data.hierarchy[ h ].keys[ 0 ];
                                         nextKey = this.getNextKeyWith(type, h, 1);
 
                                         while (nextKey.time < currentTime) {
-
-                                            prevKey = nextKey;
-                                            nextKey = this.getNextKeyWith(type, h, nextKey.index + 1);
-
+                                             prevKey = nextKey;
+                                             nextKey = this.getNextKeyWith(type, h, nextKey.index + 1);
                                         }
 
                                         animationCache.prevKey[ type ] = prevKey;
@@ -370,13 +372,12 @@ var Client = IgeClass.extend({
                                         prevKey = animationCache.prevKey[ type ];
                                         nextKey = animationCache.nextKey[ type ];
                                     }
-                                    //if (t == 0) console.log('nextKey', nextKey.time);
 
                                     // switch keys?
                                     // switch when next key isn't enough to display the time delta or when the currentTime was moduled i.e. looped
 
-                                    if (nextKey.time <= unloopedCurrentTime) {
-                                    //if (nextKey.time <= unloopedCurrentTime || currentTime < unloopedCurrentTime) {
+                                    //if (nextKey.time <= unloopedCurrentTime) {
+                                    if (nextKey.time <= unloopedCurrentTime || currentTime < unloopedCurrentTime) {
 
                                         // did we loop?
 
@@ -391,7 +392,6 @@ var Client = IgeClass.extend({
 
                                                     prevKey = nextKey;
                                                     nextKey = this.getNextKeyWith(type, h, nextKey.index + 1);
-
                                                 }
 
                                             } else {
@@ -402,17 +402,18 @@ var Client = IgeClass.extend({
                                             }
 
                                         } else {
-                                            //find a next key which is above the unlooped current time
-                                            do {
+                                            prevKey = this.data.hierarchy[ h ].keys[ 0 ];
+                                            nextKey = this.getNextKeyWith(type, h, 1);
+
+                                            while (nextKey.time < currentTime) {
+
                                                 prevKey = nextKey;
                                                 nextKey = this.getNextKeyWith(type, h, nextKey.index + 1);
-
-                                            } while (nextKey.time < currentTime)
+                                            }
                                         }
 
                                         animationCache.prevKey[ type ] = prevKey;
                                         animationCache.nextKey[ type ] = nextKey;
-                                        //console.log('prev', prevKey, 'next', nextKey);
 
                                     }
 
