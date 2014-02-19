@@ -82,7 +82,7 @@ var Player = IgeEntity.extend({
             this.visuals = {
                 hitColor: new THREE.Color()
             };
-            this.visuals.hitColor.setRGB(0.3,0.3,0);
+            this.visuals.hitColor.setRGB(3,0,0);
             this._materialAmbientBackup = this._threeObj.material.ambient;
 
             ige.client.addAudioPannerToMesh(this._threeObj);
@@ -804,9 +804,9 @@ var Player = IgeEntity.extend({
             if (objectsTakenHit.length > 0) {
                 //send the hit to all players
                 //ige.network.send('playersTakeHit', {hit: objectsTakenHit, rawDamage: 20});
-				this.addStreamData('playersTakeHit', {hit: objectsTakenHit, dmg: 20});
+				self.addStreamData('playersTakeHit', {hit: objectsTakenHit, dmg: 20});
             }
-        }, 300);
+        }, 100); //TODO: Deduct the latency from the hit delay?
 
         var rockFound = false;
         if (!enemyAround) {
@@ -980,7 +980,6 @@ var Player = IgeEntity.extend({
         else {
             if (synchronize) {
                 //send update to all clients
-                //ige.network.send('updateHealth', {unit: this._id, health: health});
 				this.addStreamData('updateHealth', {unit: this._id, health: health});
             }
         }
