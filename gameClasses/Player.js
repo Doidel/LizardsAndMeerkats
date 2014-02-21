@@ -776,16 +776,17 @@ var Player = IgeEntity.extend({
                 if (possibleEnemies[x]._id == self._id) continue;
                 isBlocked = false;
                 if (possibleEnemies[x].controls.block) {
-                    enemyrot = (possibleEnemies[x]._rotate.y % PI_2 + PI_2 + Math.PI) % PI_2; //+Math.PI because we want the enemy to face you in order to block
-                    isBlocked = Math.abs(enemyrot - rot) < blockHitAngle;
+                    //enemyrot = (possibleEnemies[x]._rotate.y % PI_2 + PI_2 + Math.PI) % PI_2; //+Math.PI because we want the enemy to face you in order to block
+					enemyrot = possibleEnemies[x]._rotate.y + Math.PI;
+                    isBlocked = self._angleDistance(enemyrot - rot) < blockHitAngle;
                 }
 
                 angle = Math.atan2(
                     possibleEnemies[x]._translate.x - self._translate.x,
                     possibleEnemies[x]._translate.z - self._translate.z
                 ) + Math.PI; //Math.atan2 goes from -Math.PI to +Math.PI, we want everything to be positive though
-
-                if (Math.abs(angle - rot) < blockHitAngle && !isBlocked) {
+				
+                if (self._angleDistance(angle, rot) < blockHitAngle && !isBlocked) {
                     //hit
                     objectsTakenHit.push(possibleEnemies[x]._id);
                     possibleEnemies[x].takeDamage(20);
@@ -993,6 +994,9 @@ var Player = IgeEntity.extend({
 
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     },
+	_angleDistance: function(x1, x2) { 
+		return Math.abs((x1 + Math.PI * 3 - x2) % (Math.PI * 2) - Math.PI); 
+	},
     _updateThreeTransform: function() {
         this._threeObj.position.x = this._translate.x;
         this._threeObj.position.y = this._translate.y;

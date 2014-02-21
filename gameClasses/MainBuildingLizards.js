@@ -127,6 +127,15 @@ var MainBuildingLizards = Building.extend({
             this.mount(ige.server.scene1);
 
             ige.server.levelObjects[0] = this;
+		
+			//send only to members of the own faction
+			this.streamControl(function (clientId) {
+				if (ige.server.players[clientId] && ige.server.players[clientId].faction === 'lizards') {
+					return true;
+				} else {
+					return false;
+				}
+			});
         }
 
         if (position) {
@@ -141,15 +150,6 @@ var MainBuildingLizards = Building.extend({
 		//We need no transform for the main building
 		this.streamSections(['setResources', 'startVote']);
 		//this.streamSections(this._streamSections.concat(['setResources']));
-		
-		//send only to members of the own faction
-		this.streamControl(function (clientId) {
-			if (ige.server.players[clientId] && ige.server.players[clientId].faction === 'lizards') {
-				return true;
-			} else {
-				return false;
-			}
-		});
     },
 
 	/**

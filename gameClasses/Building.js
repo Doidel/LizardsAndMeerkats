@@ -33,13 +33,13 @@ var Building = IgeEntity.extend({
 			this.visuals.materialAmbientBackup.setRGB(0,0,0);
 		} else {
             ige.server.levelObjects.buildings.push(this);
+			this.streamSyncInterval(200);
         }		
 
         //contains data and actions which have to be streamed to the client, e.g.
         //_streamActions['uH'] =  299 // identifier = 'updateHealth', value = 299
         this._streamActions = {};
 		
-        this.streamSyncInterval(200);
         this.streamSections(['transform']);
     },
 	
