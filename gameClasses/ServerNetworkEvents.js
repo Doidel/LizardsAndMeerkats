@@ -36,24 +36,28 @@ var ServerNetworkEvents = {
 	_onPlayerLeftDown: function (data, clientId) {
         var p = ige.server.players[clientId];
         p.controls.left = true;
+        //console.log('send left down');
         p._forwardAttribute('controls', 'left', true);
 	},
 
 	_onPlayerLeftUp: function (data, clientId) {
         var p = ige.server.players[clientId];
         p.controls.left = false;
+        //console.log('send left up');
         p._forwardAttribute('controls', 'left', false);
 	},
 
 	_onPlayerRightDown: function (data, clientId) {
         var p = ige.server.players[clientId];
         p.controls.right = true;
+        console.log('send right down');
         p._forwardAttribute('controls', 'right', true);
 	},
 
 	_onPlayerRightUp: function (data, clientId) {
         var p = ige.server.players[clientId];
         p.controls.right = false;
+        console.log('send right up');
         p._forwardAttribute('controls', 'right', false);
 	},
 

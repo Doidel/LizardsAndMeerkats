@@ -71,7 +71,8 @@ var Player = IgeEntity.extend({
         this._streamActions = {};
 
         // Define the data sections that will be included in the stream
-        this.streamSections(['transform', 'playVoiceCommand', 'playersTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent']);
+        this._streamActionSections = ['playVoiceCommand', 'playersTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent', 'playerSetControlLeft'];
+        this.streamSections(['transform'].concat(this._streamActionSections));
 
 		if (!ige.isServer) {
 
@@ -230,78 +231,59 @@ var Player = IgeEntity.extend({
 	 * @return {*}
 	 */
 	streamSectionData: function (sectionId, data) {
-		// Check if the section is one that we are handling		
-        if (sectionId == 'playerSetComponent') {
-            if (data) {
-                data = JSON.parse(data);
-				if (data.add !== false) {
-					this.addComponent(window[data.component]);
-				} else {
-					//TODO: Remove component
-					this.removeComponent(data.component);
-				}
-            } else {
-                return this._getJSONStreamActionData('playerSetComponent');
-            }
-        } else if (sectionId == 'playerSpawn') {
-            if (data) {
-                data = JSON.parse(data);
-				var p = ige.$(data.player);
-				p.faction = data.faction;
-				p._setPlayerModel(data.faction, data.unit);
-            } else {
-                return this._getJSONStreamActionData('playerSpawn');
-            }
-        } else if (sectionId == 'playVoiceCommand') {
-            if (data) {
-                data = JSON.parse(data);
-                var p = ige.$(data.player);
-                if (p != undefined) {
-                    ige.client.playAttachedSound(p.faction + data.nr + '.mp3', p._threeObj);
+		// Check if the section is one that we are handling
+        if (this._streamActionSections.indexOf(sectionId) != -1) {
+            if (!data) {
+                if (ige.isServer) {
+                    return this._getJSONStreamActionData(sectionId);
+                } else {
+                    return;
                 }
-            } else {
-                return this._getJSONStreamActionData('playVoiceCommand');
             }
-        } else if (sectionId == 'playersTakeHit') {
-            if (data) {
-                data = JSON.parse(data);
-				for (var x = 0; x < data.hit.length; x++) {
-					if (ige.$(data.hit[x])) {
-						ige.$(data.hit[x]).takeDamage(data.dmg);
-					}
-				}
-            } else {
-                return this._getJSONStreamActionData('playersTakeHit');
-            }
-        } else if (sectionId == 'playerHarvest') {
-            if (data) {
-                data = JSON.parse(data);
-				var p = ige.$(data.p);
-				if (data.amount > 0) {
-					p.states.isScratching = true;
-					if (p._id == ige._player._id) UI.notifications.displayHarvest(data.amount);
-				} else {
-					p.states.isScratching = false;
-				}
-            } else {
-                return this._getJSONStreamActionData('playerHarvest');
-            }
-        } else if (sectionId == 'updateHealth') {
-            if (data) {
-                data = JSON.parse(data);
-				if (ige.$(data.unit)) {
-					ige.$(data.unit)._updateHealth(data.health);
-				}
-            } else {
-                return this._getJSONStreamActionData('updateHealth');
-            }
-        } else if (sectionId == 'playerAttributeUpdate') {
-            if (data) {
-                data = JSON.parse(data);
-				var p = ige.$(data.player);
-				p[data.group][data.name] = data.value;
-            } else {
-                return this._getJSONStreamActionData('playerAttributeUpdate');
+            var dataArr = JSON.parse(data);
+            for (var dataId in dataArr) {
+                data = dataArr[dataId];
+
+                //execute section handlers
+                if (sectionId == 'playerSetComponent') {
+                    if (data.add !== false) {
+                        this.addComponent(window[data.component]);
+                    } else {
+                        //TODO: Remove component
+                        this.removeComponent(data.component);
+                    }
+                } else if (sectionId == 'playerSpawn') {
+                    var p = ige.$(data.player);
+                    p.faction = data.faction;
+                    p._setPlayerModel(data.faction, data.unit);
+                } else if (sectionId == 'playVoiceCommand') {
+                    var p = ige.$(data.player);
+                    if (p != undefined) {
+                        ige.client.playAttachedSound(p.faction + data.nr + '.mp3', p._threeObj);
+                    }
+                } else if (sectionId == 'playersTakeHit') {
+                    for (var x = 0; x < data.hit.length; x++) {
+                        if (ige.$(data.hit[x])) {
+                            ige.$(data.hit[x]).takeDamage(data.dmg);
+                        }
+                    }
+                } else if (sectionId == 'playerHarvest') {
+                    var p = ige.$(data.p);
+                    if (data.amount > 0) {
+                        p.states.isScratching = true;
+                        if (p._id == ige._player._id) UI.notifications.displayHarvest(data.amount);
+                    } else {
+                        p.states.isScratching = false;
+                    }
+                } else if (sectionId == 'updateHealth') {
+                    if (ige.$(data.unit)) {
+                        ige.$(data.unit)._updateHealth(data.health);
+                    }
+                } else if (sectionId == 'playerAttributeUpdate') {
+                    var p = ige.$(data.player);
+                    p[data.group][data.name] = data.value;
+                    //console.log(data, dataArr.length);
+                }
             }
         } else {
 			// The section was not one that we handle here, so pass this
@@ -312,6 +294,7 @@ var Player = IgeEntity.extend({
 	},
 
     _getJSONStreamActionData: function(property) {
+        //console.log('get data');
         if (this._streamActions.hasOwnProperty(property) && this._streamActions[property] != undefined) {
             var data = this._streamActions[property];
             delete this._streamActions[property];
@@ -324,8 +307,14 @@ var Player = IgeEntity.extend({
 
     },
 
-    addStreamData: function(id, data) {
-        this._streamActions[id] = data;
+    addStreamData: function(id, data, keepOld) {
+        //console.log(keepOld, typeof(this._streamActions[id]));
+        if (keepOld === true && typeof(this._streamActions[id]) == 'array') {
+            console.log('push data');
+            this._streamActions[id].push(data);
+        } else {
+            this._streamActions[id] = [data];
+        }
     },
 
 	/**
@@ -769,9 +758,8 @@ var Player = IgeEntity.extend({
         //check for the actual hit 300ms later
         setTimeout(function() {
             self._updateThreeTransform();
-            //self._threeObj.updateMatrix();
             self._threeObj.updateMatrixWorld();
-            var possibleEnemies = self.getPlayersWithinRadius(2);
+            var possibleEnemies = self.getPlayersWithinRadius(1.4);
             for (var x = 0; x < possibleEnemies.length; x++) {
                 if (possibleEnemies[x]._id == self._id) continue;
                 isBlocked = false;
@@ -836,8 +824,8 @@ var Player = IgeEntity.extend({
         //if it was a normal attack i.e. he wasn't just scratching...
         if (!rockFound && !self.states.isScratching) {
             //...add a timeout for the next attack, change the attack type and forward the values to the players
-            self._forwardAttribute('states', 'attackType', self.states.attackType, true);
-            self._forwardAttribute('states', 'isAttacking', true, true);
+            self._forwardAttribute('states', 'attackType', self.states.attackType);
+            self._forwardAttribute('states', 'isAttacking', true);
             //pause langer before the third hit from above
             var attackPause = 500;
             if (self.states.attackType == 2) attackPause = 750;
@@ -1017,13 +1005,9 @@ var Player = IgeEntity.extend({
         }*/
 		this.addStreamData('playerHarvest', {player: this._id, amount: 0}, key);
     },
-    _forwardAttribute: function(group, name, value, includeSelf) {
+    _forwardAttribute: function(group, name, value, dontOverride) {
         //send values to all other players
-        /*for (var key in ige.server.players) {
-            if (key === 'length' || !ige.server.players.hasOwnProperty(key) || (includeSelf != true && key == this._id)) continue;
-            ige.network.send('playerAttributeUpdate', {player: this._id, group: group, name: name, value: value}, key);
-        }*/
-        this.addStreamData('playerAttributeUpdate', {player: this._id, group: group, name: name, value: value});
+        this.addStreamData('playerAttributeUpdate', {player: this._id, group: group, name: name, value: value}, !dontOverride);
     },
     _setPlayerModel: function(faction, unit) {
 
