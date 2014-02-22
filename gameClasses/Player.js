@@ -282,7 +282,7 @@ var Player = IgeEntity.extend({
                 } else if (sectionId == 'playerAttributeUpdate') {
                     var p = ige.$(data.player);
                     p[data.group][data.name] = data.value;
-                    //console.log(data, dataArr.length);
+                    console.log(data, dataArr.length);
                 }
             }
         } else {
@@ -294,7 +294,6 @@ var Player = IgeEntity.extend({
 	},
 
     _getJSONStreamActionData: function(property) {
-        //console.log('get data');
         if (this._streamActions.hasOwnProperty(property) && this._streamActions[property] != undefined) {
             var data = this._streamActions[property];
             delete this._streamActions[property];

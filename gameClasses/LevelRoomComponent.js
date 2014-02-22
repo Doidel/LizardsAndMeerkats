@@ -56,8 +56,6 @@ var LevelRoomComponent = IgeClass.extend({
 			for (e in this._attachedEntities) {
 				e.setStreamRooms(streamRooms);
 			}
-            //console.log('entity rooms', ige.network._socketsByRoomId); //this._player._streamRoomIds
-            //console.log('clientId rooms', ige.network._socketsByRoomId);
 			
 			//save the new level room position
 			this.clientRoomPosition.x = roomPosX;
