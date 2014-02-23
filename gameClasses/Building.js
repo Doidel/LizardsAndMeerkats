@@ -13,7 +13,7 @@ var Building = IgeEntity.extend({
             health: 300,
             maxhealth: 300,
             healthregeneration: 0.005,
-            groundHeightDifferenceThreshold: 0.3,
+            groundHeightDifferenceThreshold: 0.1,
 			builderId: 0
         };
 
@@ -21,7 +21,7 @@ var Building = IgeEntity.extend({
             isBuilt: true,
             nextBuildableCheck: 0,
             isBuildableAtCurrentPosition: false
-        }
+        };
 		
 		if (!ige.isServer) {
 			//Colors etc
@@ -126,7 +126,7 @@ var Building = IgeEntity.extend({
                 //check for collisions
 
                 //set the new building position (+ half of object's height)
-                this.translateTo(this._translate.x, flatTerrainData.minGroundHeight + this._threeObj.geometry.boundingBox.max.y, this._translate.z);
+                this.translateTo(this._translate.x, flatTerrainData.minGroundHeight, this._translate.z); // + this._threeObj.geometry.boundingBox.max.y
 
                 //send client network command to execute client's "isBuildable" if "isGreen" changes
                 ige.network.send('setStreamBuildingBuildable', {id: this._id, color: buildable});
@@ -217,32 +217,41 @@ var Building = IgeEntity.extend({
             width = this._threeObj._physijs.width,
             height = this._threeObj._physijs.depth,
             xPos = Math.floor((this._translate.x + terrainHalfWidth - width / 2) / terrainDistanceUnit), //assumes terrain is at 0/0
-            yPos = Math.floor((this._translate.z + terrainHalfHeight - height / 2) / terrainDistanceUnit), //assumes terrain is at 0/0
-            xSearchStart = Math.max(0, xPos),
-            xSearchEnd = Math.min(256, xPos + Math.ceil(width / terrainDistanceUnit)),
-            ySearchStart = Math.max(0, yPos),
-            ySearchEnd = Math.min(256, yPos + Math.ceil(height / terrainDistanceUnit));
+            yPos = Math.floor((this._translate.z + terrainHalfHeight - height / 2) / terrainDistanceUnit); //assumes terrain is at 0/0
 
         var minGroundHeight = 99999, maxGroundHeight = -99999;
 		
 		//new attempt with rotation
 		
-		var midPosX = Math.floor((this._translate.x + terrainHalfWidth) / terrainDistanceUnit), //assumes terrain is at 0/0
-            midPosY = Math.floor((this._translate.z + terrainHalfHeight) / terrainDistanceUnit), //assumes terrain is at 0/0
+		var buildingCenterPosX = Math.floor((this._translate.x + terrainHalfWidth) / terrainDistanceUnit), //assumes terrain is at 0/0
+            buildingCenterPosZ = Math.floor((this._translate.z + terrainHalfHeight) / terrainDistanceUnit), //assumes terrain is at 0/0
             deltaX = Math.cos(this._rotate.y),
-            deltaY = Math.sin(this._rotate.y),
-			_compareTerrainHeight = function(pos) {
-				pos.x += midPosX;
-				pos.z += midPosY;
-				//take 2 diagonal vertices and compute average (which is not fully correct but less complicated)
-				var height = (vList[Math.ceil(pos.z) * 257 + Math.ceil(pos.x)].z + vList[Math.floor(pos.z) * 257 + Math.floor(pos.x)].z) / 2;
-				if (height > maxGroundHeight) {
-                    maxGroundHeight = height;
-                }
-                if (height < minGroundHeight) {
-                    minGroundHeight = height;
-                }
-			};
+            deltaY = Math.sin(this._rotate.y);
+
+        //get the height of the provided point and compare it to the min and max
+		var	_compareTerrainHeight = function(pos) {
+            pos.x += buildingCenterPosX;
+            pos.z += buildingCenterPosZ;
+            //take 2 diagonal vertices and compute average (which is not fully correct but less complicated)
+            var modifierZ = pos.z % 1, modifierX = pos.x % 1;
+            var verticeHeights =
+                (vList[Math.floor(pos.z) * 129 + Math.floor(pos.x)].z * modifierX +
+                vList[Math.floor(pos.z) * 129 + Math.ceil(pos.x)].z * (1 - modifierX)) * modifierZ
+                +
+                (vList[Math.ceil(pos.z) * 129 + Math.floor(pos.x)].z * modifierX +
+                vList[Math.ceil(pos.z) * 129 + Math.ceil(pos.x)].z * (1 - modifierX)) * (1 - modifierZ)
+            ;
+            /*var height = (
+                vList[Math.ceil(pos.z) * 129 + Math.ceil(pos.x)].z * modifier1 +
+                vList[Math.floor(pos.z) * 129 + Math.floor(pos.x)].z * (1-modifier1)
+                );*/
+            if (verticeHeights > maxGroundHeight) {
+                maxGroundHeight = verticeHeights;
+            }
+            if (verticeHeights < minGroundHeight) {
+                minGroundHeight = verticeHeights;
+            }
+        };
 			
 		
 		var currentPosInObjectCoordinates = new THREE.Vector3(0,0,0),
@@ -253,13 +262,14 @@ var Building = IgeEntity.extend({
 		
 		//iterate in steps of terrainDistanceUnit from the object's left to right
 		for (var z = 0; z <= Math.ceil(height / terrainDistanceUnit); z+= terrainDistanceUnit) {
-            //for (var y = 0; y <= Math.ceil(height / terrainDistanceUnit); y+= terrainDistance) {
 			currentPosInObjectCoordinates.z = -halfObjectHeight + z; //TODO: cut last iteration
+
 			//and the object's top to bottom
 			for (var x = 0; x <= Math.ceil(width / terrainDistanceUnit); x++) {
 				//(x, y) is now a point
 				currentPosInObjectCoordinates.x = -halfObjectWidth + x; //TODO: cut last iteration
-				//Apply the rotation to figure out the point in terrain coordinates
+
+				//Apply the rotation to figure out the rotated point in terrain coordinates
 				var terrainPos = currentPosInObjectCoordinates.clone().applyMatrix4(buildingRotationMatrix);
 				
 				var distanceToMid = currentPosInObjectCoordinates.length();
@@ -271,6 +281,9 @@ var Building = IgeEntity.extend({
 				//currentPosInObjectCoordinates.applyMatrix4(this._threeObj.matrixWorld);
 			}
 		}
+
+        console.log(minGroundHeight, maxGroundHeight);
+
 
         //is the building height difference within the threshold?
         return {
