@@ -703,7 +703,7 @@ var Player = IgeEntity.extend({
                     //standing
                     this._checkResetAnimation('standing', 1);
                     //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 830, 831, 1, true, ige.client.legBones);
-                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 830, 870, 1, true, ige.client.legBones);
+                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 0.5, 830, 950, 1, true, ige.client.legBones);
 
                 }
             }
@@ -714,9 +714,9 @@ var Player = IgeEntity.extend({
             //hit: 430 - 480, 510 - 580, 610 - 680
             //scratch: 710 - 725
             //death: 760 - 800
-            //idle: 830-840, 840-860, 860-870
-            //run left: 900 - 1059
-            //run right: 1090 - 1249
+            //idle: 830-870, 870-910, 910-950
+            //run left: 980 - 1139
+            //run right: 1170 - 1329
         }
 
 
