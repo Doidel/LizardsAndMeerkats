@@ -431,6 +431,7 @@ var Client = IgeClass.extend({
                                         console.log(currentTime, nextKey.time, prevKey.time);
                                         console.warn("THREE.Animation.update: Warning! Scale out of bounds:" + scale + " on bone " + h);
                                         scale = scale < 0 ? 0 : 1;
+                                        //debugger;
                                     }
 
                                     // interpolate
