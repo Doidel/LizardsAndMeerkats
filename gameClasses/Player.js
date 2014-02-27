@@ -30,7 +30,8 @@ var Player = IgeEntity.extend({
             isCharging: false,
             isBuilding: false,
             isRunning: false,
-            isUsingVoice: false
+            isUsingVoice: false,
+            runDirection: 0
         };
 
         this.controls = {
@@ -73,7 +74,7 @@ var Player = IgeEntity.extend({
 
         // Define the data sections that will be included in the stream
         this._streamActionSections = ['playVoiceCommand', 'playersTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent', 'playerSetControlLeft'];
-        this.streamSections(['transform'].concat(this._streamActionSections));
+        this.streamSections(['transform', 'runDirection'].concat(this._streamActionSections));
 
 		if (!ige.isServer) {
 
@@ -233,7 +234,30 @@ var Player = IgeEntity.extend({
 	 */
 	streamSectionData: function (sectionId, data) {
 		// Check if the section is one that we are handling
-        if (this._streamActionSections.indexOf(sectionId) != -1) {
+        if(sectionId == 'runDirection'){
+            if(!data){
+                if(ige.isServer){
+                    return this.states.runDirection;
+                } else {
+                    return;
+                }
+            } else {
+                if (data != 0){
+                    //running
+                    var direction = 1, start = 10, end = 170;
+                    if (this.controls.left) {
+                        direction = 2; start = 1030; end = 1190;
+                    } else if (this.controls.right) {
+                        direction = 3; start = 1220; end = 1380;
+                    }
+                    this.states.isRunning = [direction, start, end];
+                    console.log('test1', this.states.isRunning, data);
+                } else {
+                    this.states.isRunning = false;
+                    console.log('test2', this.states.isRunning, data);
+                }
+            }
+        } else if (this._streamActionSections.indexOf(sectionId) != -1) {
             if (!data) {
                 if (ige.isServer) {
                     return this._getJSONStreamActionData(sectionId);
@@ -280,6 +304,7 @@ var Player = IgeEntity.extend({
                     if (ige.$(data.unit)) {
                         ige.$(data.unit)._updateHealth(data.health);
                     }
+
                 } else if (sectionId == 'playerAttributeUpdate') {
                     var p = ige.$(data.player);
                     p[data.group][data.name] = data.value;
@@ -517,19 +542,18 @@ var Player = IgeEntity.extend({
                 }
 
                 //which animation will have to be run?
-                if (this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right) {
+                /*if (this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right) {
                     //running
-                    var direction = 1, start = 1, end = 160;
+                    var direction = 0, start = 10, end = 170;
                     if (this.controls.left && !this.controls.right) {
-                        direction = 2; start = 900; end = 1059;
+                        direction = 1; start = 1030; end = 1190;
                     } else if (this.controls.right && !this.controls.left) {
-                        direction = 3; start = 1090; end = 1249;
+                        direction = 2; start = 1220; end = 1380;
                     }
-
-                    setTimeout(function() {self.states.isRunnig = [direction, start, end];}, 2*ige.network._latency + 130); //latency + halfOfStreamInterval + renderLatency + 30
+                    setTimeout(function() {self.states.isRunning = [direction, start, end];}, 2*ige.network._latency + 130); //latency + halfOfStreamInterval + renderLatency + 30
                 } else {
-                    setTimeout(function() {self.states.isRunnig = false;}, 2*ige.network._latency + 130); //latency + halfOfStreamInterval + renderLatency
-                }
+                    setTimeout(function() {self.states.isRunning = false;}, 2*ige.network._latency + 130); //latency + halfOfStreamInterval + renderLatency
+                }*/
 
                 if (ige.input.actionState('jump')) {
                     if (!this.controls.jump) {
@@ -618,18 +642,32 @@ var Player = IgeEntity.extend({
                     this._checkResetAnimation('jumping', 0);
                     var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 0, false, ige.client.armBones);
                     if (frame >= 400) this.states.isJumping = false;
+                /*} else if (this.states.isAttacking) {
+                    // attacking
+                    var start = 1410, end = 1510, speedUp = 2.4, direction = 0;
+                    if(this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right){
+                        start = 1540, end = 1590, speedUp = 2.4, direction = 1;
+                        if (this.controls.left && !this.controls.right) {
+                            start = 1620, end = 1670, speedUp = 2.4, direction = 2;
+                        } else if (this.controls.right && !this.controls.left) {
+                            start = 1700, end = 1750, speedUp = 2.4, direction = 3;
+                        }
+                    }
+                    this._checkResetAnimation('attack' + this.states.attackType + direction, 0);
+
+                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 0, false, ige.client.armBones);
+*/
                 } else if (this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right) {
-                    var direction = 1, start = 10, end = 170;
+                    var direction = 0, start = 10, end = 170;
                     if (this.controls.left && !this.controls.right) {
-                        direction = 2; start = 1030; end = 1190;
+                        direction = 1; start = 1030; end = 1190;
                     } else if (this.controls.right && !this.controls.left) {
-                        direction = 3; start = 1220; end = 1380;
+                        direction = 2; start = 1220; end = 1380;
                     }
                     this._checkResetAnimation('running' + direction, 0);
                     this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 4, start, end, 0, true, ige.client.armBones);
                 } else {
                     if (this._previousAnimation[0].indexOf('standing') == -1) this.states.nextStandingAnim = 0;
-                        this._checkResetAnimation('standing' + this.states.standingStage, 0);
                         var start = 840, end = 880;
                         var repeat = true;
                         var speed = 0.5;
@@ -646,6 +684,7 @@ var Player = IgeEntity.extend({
                             speed = 1.5;
                             repeat = false;
                         }
+                        this._checkResetAnimation('standing' + this.states.standingStage, 0);
                         var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 0, repeat, ige.client.armBones);
 
                         var standingControlTimeMin = 1000 * 5;
@@ -674,21 +713,23 @@ var Player = IgeEntity.extend({
                         this.states.noAnimation = true;
                     }
                 } else if (this.states.isAttacking) {
-                    this._checkResetAnimation('attack' + this.states.attackType, 1);
-                    var start = 440, end = 490, speedUp = 2.4;
-                    if (this.states.attackType == 1) {
+                    //var start = 440, end = 490, speedUp = 0.5, type=0;
+                    var start = 620, end = 690, speedUp = 0.5, type=0;
+                    //var start = 1410, end = 1510, speedUp = 2.4;
+                    /*if (this.states.attackType == 1) {
                             start = 520; end = 590; speedUp = 4;
                     } else if (this.states.attackType == 2) {
                             start = 620; end = 690; speedUp = 3;
-                    }
+                    }*/
+                    this._checkResetAnimation('attack' + this.states.attackType, 1);
                     var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 1, false, ige.client.legBones);
                     if (frame >= end) {
                         // increment attackType
-                        if(this.states.attackType > 1){
+                        /*if(this.states.attackType > 1){
                             this.states.attackType = 0;
                         } else {
                             ++this.states.attackType;
-                        }
+                        }*/
                         this.states.isAttacking = false;
                     }
                 } else if (this.controls.block) {
@@ -722,12 +763,12 @@ var Player = IgeEntity.extend({
                 } else if (this.states.isJumping) {
                     this._checkResetAnimation('jumping', 1);
                     this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 1, false, ige.client.legBones);
-                } else if (this.states.isRunnig != false) {
+                } else if (this.states.isRunning != false) {
                     //running
-                    if(this.states.isRunnig){
-                        this._checkResetAnimation('running' + this.states.isRunnig[0], 1);
-                        this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 4, this.states.isRunnig[1], this.states.isRunnig[2], 1, true, ige.client.legBones);
-                    }
+                    //if(this.states.isRunning){
+                        this._checkResetAnimation('running' + this.states.isRunning[0], 1);
+                        this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 4, this.states.isRunning[1], this.states.isRunning[2], 1, true, ige.client.legBones);
+                    //}
                 } else {
                     //standing
                     this._checkResetAnimation('standing' + this.states.standingStage, 1);
@@ -1164,6 +1205,20 @@ var Player = IgeEntity.extend({
 
 		if (this.commander) this.commander._numKeyChanged(keyNr, isUp);
 	},
+    _setRunDirection: function() {
+        this.states.runDirection = 0;
+        if(this.controls.forwards){
+            this.states.runDirection = 1;
+        } else if (this.controls.backwards) {
+            this.states.runDirection = 3;
+        }
+
+        if(this.controls.left) {
+            this.states.runDirection = 4;
+        } else if (this.controls.right) {
+            this.states.runDirection = 2;
+        }
+    },
     /* CEXCLUDE */
     _findPhysijsObjectById: function(id) {
         var obj;

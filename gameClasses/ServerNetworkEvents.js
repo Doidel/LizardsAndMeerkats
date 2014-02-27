@@ -36,29 +36,25 @@ var ServerNetworkEvents = {
 	_onPlayerLeftDown: function (data, clientId) {
         var p = ige.server.players[clientId];
         p.controls.left = true;
-        //console.log('send left down');
-        p._forwardAttribute('controls', 'left', true);
+        p._setRunDirection();
 	},
 
 	_onPlayerLeftUp: function (data, clientId) {
         var p = ige.server.players[clientId];
         p.controls.left = false;
-        //console.log('send left up');
-        p._forwardAttribute('controls', 'left', false);
+        p._setRunDirection();
 	},
 
 	_onPlayerRightDown: function (data, clientId) {
         var p = ige.server.players[clientId];
         p.controls.right = true;
-        console.log('send right down');
-        p._forwardAttribute('controls', 'right', true);
+        p._setRunDirection();
 	},
 
 	_onPlayerRightUp: function (data, clientId) {
         var p = ige.server.players[clientId];
         p.controls.right = false;
-        console.log('send right up');
-        p._forwardAttribute('controls', 'right', false);
+        p._setRunDirection();
 	},
 
     _onPlayerRotation: function (data, clientId) {
@@ -68,25 +64,25 @@ var ServerNetworkEvents = {
 	_onPlayerBackwardsDown: function (data, clientId) {
         var p = ige.server.players[clientId];
         p.controls.backwards = true;
-        p._forwardAttribute('controls', 'backwards', true);
+        p._setRunDirection();
 	},
 
 	_onPlayerBackwardsUp: function (data, clientId) {
         var p = ige.server.players[clientId];
         p.controls.backwards = false;
-        p._forwardAttribute('controls', 'backwards', false);
+        p._setRunDirection();
 	},
 
     _onPlayerForwardsDown: function (data, clientId) {
         var p = ige.server.players[clientId];
         p.controls.forwards = true;
-        p._forwardAttribute('controls', 'forwards', true);
+        p._setRunDirection();
     },
 
     _onPlayerForwardsUp: function (data, clientId) {
         var p = ige.server.players[clientId];
         p.controls.forwards = false;
-        p._forwardAttribute('controls', 'forwards', false);
+        p._setRunDirection();
     },
 
     _onPlayerJumpDown: function (data, clientId) {
