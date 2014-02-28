@@ -65,6 +65,7 @@ var igeCoreConfig = {
 		['csap', 'IgeUiPositionExtension', 'extensions/IgeUiPositionExtension.js'],
 		['csap', 'IgeUiStyleExtension', 'extensions/IgeUiStyleExtension.js'],
 		/* Main Engine Classes */
+		['csap', 'IgeFSM', 'core/IgeFSM.js'],
 		['csap', 'IgeSceneGraph', 'core/IgeSceneGraph.js'],
 		['csap', 'IgeBaseScene', 'core/IgeBaseScene.js'],
 		['csap', 'IgeDummyCanvas', 'core/IgeDummyCanvas.js'],
@@ -85,7 +86,6 @@ var igeCoreConfig = {
 		['csap', 'IgeParticleEmitter', 'core/IgeParticleEmitter.js'],
 		['csap', 'IgeParticle', 'core/IgeParticle.js'],
 		['csap', 'IgeMap2d', 'core/IgeMap2d.js'],
-		['csap', 'IgeMapStack2d', 'core/IgeMapStack2d.js'],
 		['csap', 'IgeTileMap2d', 'core/IgeTileMap2d.js'],
 		['csap', 'IgeTextureMap', 'core/IgeTextureMap.js'],
 		['csap', 'IgeTileMap2dSmartTexture', 'assets/IgeTileMap2dSmartTexture.js'],
@@ -99,6 +99,9 @@ var igeCoreConfig = {
 		['csap', 'IgeCuboidSmartTexture', 'assets/IgeCuboidSmartTexture.js'],
 		['csap', 'IgeCuboid', 'primitives/IgeCuboid.js'],
 		['csap', 'IgeArray', 'core/IgeArray.js'],
+		/* Audio Components */
+		['csap', 'IgeAudioComponent', 'components/audio/IgeAudioComponent.js'],
+		['csap', 'IgeAudio', 'components/audio/IgeAudio.js'],
 		/* Physics to Entity Components */
 		['csap', 'IgeBox2dComponent', 'components/physics/box2d/IgeBox2dComponent.js'],
 		['csap', 'IgeBox2dMultiWorldComponent', 'components/physics/box2d/IgeBox2dMultiWorldComponent.js'],

@@ -21,6 +21,7 @@ var IgeEntity = IgeObject.extend({
 		this._cell = 1;
 
 		this._deathTime = undefined;
+		this._bornTime = ige._currentTime;
 
 		this._translate = new IgePoint3d(0, 0, 0);
 		this._oldTranslate = new IgePoint3d(0, 0, 0);
@@ -36,6 +37,8 @@ var IgeEntity = IgeObject.extend({
 
 		this._highlight = false;
 		this._mouseEventsActive = false;
+		
+		this._velocity = new IgePoint3d(0, 0, 0);
 
         this._localMatrix = new IgeMatrix2d();
         this._worldMatrix = new IgeMatrix2d();
@@ -59,6 +62,9 @@ var IgeEntity = IgeObject.extend({
         this._streamDataSent = {};
         // Object to save custom comparisons in
         this._streamDataSectionsComparison = {};
+
+        this._streamRoomIds = ['ige'];
+        this._streamRoomIdManuallySet = false;
 	},
 
 	/**
@@ -374,44 +380,6 @@ var IgeEntity = IgeObject.extend({
 			this._rotate.y,
 			(Math.atan2(worldPos.y - point.y, worldPos.x - point.x) - this._parent._rotate.z) + Math.radians(270)
 		);
-
-		return this;
-	},
-
-	/**
-	 * Translates the object to the tile co-ordinates passed.
-	 * @param {Number} x The x tile co-ordinate.
-	 * @param {Number} y The y tile co-ordinate.
-	 * @param {Number=} z The z tile co-ordinate.
-	 * @example #Translate entity to tile
-	 *     // Create a tile map
-	 *     var tileMap = new IgeTileMap2d()
-	 *         .tileWidth(40)
-	 *         .tileHeight(40);
-	 *     
-	 *     // Mount our entity to the tile map
-	 *     entity.mount(tileMap);
-	 *     
-	 *     // Translate the entity to the tile x:10, y:12
-	 *     entity.translateToTile(10, 12, 0);
-	 * @return {*} The object this method was called from to allow
-	 * method chaining.
-	 */
-	translateToTile: function (x, y, z) {
-		if (this._parent && this._parent._tileWidth !== undefined && this._parent._tileHeight !== undefined) {
-			var finalZ;
-
-			// Handle being passed a z co-ordinate
-			if (z !== undefined) {
-				finalZ = z * this._parent._tileWidth;
-			} else {
-				finalZ = this._translate.z;
-			}
-
-			this.translateTo((x * this._parent._tileWidth) + this._parent._tileWidth / 2, (y * this._parent._tileHeight) + this._parent._tileWidth / 2, finalZ);
-		} else {
-			this.log('Cannot translate to tile because the entity is not currently mounted to a tile map or the tile map has no tileWidth or tileHeight values.', 'warning');
-		}
 
 		return this;
 	},
@@ -1605,30 +1573,45 @@ var IgeEntity = IgeObject.extend({
 			// The entity should be removed because it has died
 			this.destroy();
 		} else {
-
-			// Process any behaviours assigned to the entity
-			this._processUpdateBehaviours(ctx, tickDelta);
-
-			if (this._timeStream.length) {
-				// Process any interpolation
-				this._processInterpolate(ige._tickStart - ige.network.stream._renderLatency);
+			// Check that the entity has been born
+			if (this._bornTime === undefined || ige._currentTime >= this._bornTime) {
+	
+				// Process any behaviours assigned to the entity
+				this._processUpdateBehaviours(ctx, tickDelta);
+				
+				// Process velocity
+				if (this._velocity.x || this._velocity.y) {
+					this._translate.x += (this._velocity.x / 16) * tickDelta;
+					this._translate.y += (this._velocity.y / 16) * tickDelta;
+				}
+	
+				if (this._timeStream.length) {
+					// Process any interpolation
+					this._processInterpolate(ige._tickStart - ige.network.stream._renderLatency);
+				}
+	
+				// Check for changes to the transform values
+				// directly without calling the transform methods
+				this.updateTransform();
+	
+				if (!this._noAabb && this._aabbDirty) {
+					// Update the aabb
+					this.aabb();
+				}
+	
+				this._oldTranslate = this._translate.clone();
+	
+				// Update this object's current frame alternator value
+				// which allows us to determine if we are still on the
+				// same frame
+				this._frameAlternatorCurrent = ige._frameAlternator;
+			} else {
+				// The entity is not yet born, unmount it and add to the spawn queue
+				this._birthMount = this._parent.id();
+				this.unMount();
+				
+				ige.spawnQueue(this);
 			}
-
-			// Check for changes to the transform values
-			// directly without calling the transform methods
-			this.updateTransform();
-
-			if (!this._noAabb && this._aabbDirty) {
-				// Update the aabb
-				this.aabb();
-			}
-
-			this._oldTranslate = this._translate.clone();
-
-			// Update this object's current frame alternator value
-			// which allows us to determine if we are still on the
-			// same frame
-			this._frameAlternatorCurrent = ige._frameAlternator;
 		}
 
 		// Process super class
@@ -1650,15 +1633,17 @@ var IgeEntity = IgeObject.extend({
 			this._processTickBehaviours(ctx);
 			
 			// Process any mouse events we need to do
-			if (this._processTriggerHitTests()) {
-				// Point is inside the trigger bounds
-				ige.input.queueEvent(this, this._mouseInTrigger, null);
-			} else {
-				if (ige.input.mouseMove) {
-					// There is a mouse move event but we are not inside the entity
-					// so fire a mouse out event (_handleMouseOut will check if the
-					// mouse WAS inside before firing an out event).
-					this._handleMouseOut(ige.input.mouseMove);
+			if (this._mouseEventsActive) {
+				if (this._processTriggerHitTests()) {
+					// Point is inside the trigger bounds
+					ige.input.queueEvent(this, this._mouseInTrigger, null);
+				} else {
+					if (ige.input.mouseMove) {
+						// There is a mouse move event but we are not inside the entity
+						// so fire a mouse out event (_handleMouseOut will check if the
+						// mouse WAS inside before firing an out event).
+						this._handleMouseOut(ige.input.mouseMove);
+					}
 				}
 			}
 
@@ -1685,6 +1670,12 @@ var IgeEntity = IgeObject.extend({
 				}
 			}
 
+			//TODO: Find some place nicer to call this than in the tick method.
+            if (ige.isServer && this._streamMode != 0 && ige.network.stream && ige.network.stream._streamClientCreated[this.id()] == undefined) {
+				//add this entity to the _streamClientCreated. There it's needed for stream purposes, e.g. to figure out which client has this entity created and which not.
+                ige.network.stream._streamClientCreated[this.id()] = {};
+            }
+
 			// Process any automatic-mode stream updating required
 			if (this._streamMode === 1) {
 				this.streamSync();
@@ -1707,7 +1698,7 @@ var IgeEntity = IgeObject.extend({
 	_processTriggerHitTests: function () {
 		var mp, mouseTriggerPoly;
 
-		if (this._mouseEventsActive && ige._currentViewport) {
+		if (ige._currentViewport) {
 			if (!this._mouseAlwaysInside) {
 				mp = this.mousePosWorld();
 	
@@ -2587,6 +2578,30 @@ var IgeEntity = IgeObject.extend({
 		return this;
 	},
 	
+	velocityTo: function (x, y, z) {
+		if (x !== undefined && y!== undefined && z !== undefined) {
+			this._velocity.x = x;
+			this._velocity.y = y;
+			this._velocity.z = z;
+		} else {
+			this.log('velocityTo() called with a missing or undefined x, y or z parameter!', 'error');
+		}
+
+		return this._entity || this;
+	},
+	
+	velocityBy: function (x, y, z) {
+		if (x !== undefined && y!== undefined && z !== undefined) {
+			this._velocity.x += x;
+			this._velocity.y += y;
+			this._velocity.z += z;
+		} else {
+			this.log('velocityBy() called with a missing or undefined x, y or z parameter!', 'error');
+		}
+
+		return this._entity || this;
+	},
+	
 	/**
 	 * Translates the entity by adding the passed values to
 	 * the current translation values.
@@ -2650,6 +2665,44 @@ var IgeEntity = IgeObject.extend({
 		}
 
 		return this._entity || this;
+	},
+	
+	/**
+	 * Translates the object to the tile co-ordinates passed.
+	 * @param {Number} x The x tile co-ordinate.
+	 * @param {Number} y The y tile co-ordinate.
+	 * @param {Number=} z The z tile co-ordinate.
+	 * @example #Translate entity to tile
+	 *     // Create a tile map
+	 *     var tileMap = new IgeTileMap2d()
+	 *         .tileWidth(40)
+	 *         .tileHeight(40);
+	 *     
+	 *     // Mount our entity to the tile map
+	 *     entity.mount(tileMap);
+	 *     
+	 *     // Translate the entity to the tile x:10, y:12
+	 *     entity.translateToTile(10, 12, 0);
+	 * @return {*} The object this method was called from to allow
+	 * method chaining.
+	 */
+	translateToTile: function (x, y, z) {
+		if (this._parent && this._parent._tileWidth !== undefined && this._parent._tileHeight !== undefined) {
+			var finalZ;
+
+			// Handle being passed a z co-ordinate
+			if (z !== undefined) {
+				finalZ = z * this._parent._tileWidth;
+			} else {
+				finalZ = this._translate.z;
+			}
+
+			this.translateTo((x * this._parent._tileWidth) + this._parent._tileWidth / 2, (y * this._parent._tileHeight) + this._parent._tileWidth / 2, finalZ);
+		} else {
+			this.log('Cannot translate to tile because the entity is not currently mounted to a tile map or the tile map has no tileWidth or tileHeight values.', 'warning');
+		}
+
+		return this;
 	},
 
 	/**
@@ -3552,6 +3605,7 @@ var IgeEntity = IgeObject.extend({
 				clientArr = [],
 				i;
 			
+			
 			//get all recipients 
 			if (this._streamRoomIds != undefined) {
 				//by rooms, if available
@@ -3659,7 +3713,7 @@ var IgeEntity = IgeObject.extend({
 
         // Get the stream data, if any
         var data = this._streamData();
-        if (!data) return;
+        //if (!data) return;
 
 		// Loop the recipient array
 		for (arrIndex = 0; arrIndex < arrCount; arrIndex++) {
@@ -3671,6 +3725,8 @@ var IgeEntity = IgeObject.extend({
 			if (!stream._streamClientCreated[thisId][clientId]) {
 				createResult = this.streamCreate(clientId);
 			}
+			
+			if (!data) return;
 
 			// Make sure that if we had to create the entity for
 			// this client that the create worked before bothering
@@ -3709,16 +3765,6 @@ var IgeEntity = IgeObject.extend({
 	 */
 	streamForceUpdate: function () {
         this.streamSync();
-
-		/*if (ige.isServer) {
-			var thisId = this.id();
-			
-			// Invalidate the stream client data lookup to ensure
-			// the latest data will be pushed on the next stream sync
-			if (ige.network && ige.network.stream && ige.network.stream._streamClientData && ige.network.stream._streamClientData[thisId]) {
-				ige.network.stream._streamClientData[thisId] = {};
-			}
-		}*/
 		
 		return this;
 	},
