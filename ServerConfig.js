@@ -3,7 +3,7 @@ var config = {
 		{name: 'ServerNetworkEvents', path: './gameClasses/ServerNetworkEvents'},
 		{name: 'Player', path: './gameClasses/Player'},
         {name: 'PlayerCommanderComponent', path: './gameClasses/PlayerCommanderComponent'},
-		{name: 'LevelRoomComponent', path: './gameClasses/LevelRoomComponent'},
+		//{name: 'LevelRoomComponent', path: './gameClasses/LevelRoomComponent'},
 		{name: 'StreamScene', path: './gameClasses/StreamScene'},
         {name: 'Building', path: './gameClasses/Building'},
         {name: 'MainBuildingLizards', path: './gameClasses/MainBuildingLizards'},

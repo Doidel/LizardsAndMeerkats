@@ -65,6 +65,7 @@ var IgeEntity = IgeObject.extend({
 
         this._streamRoomIds = ['ige'];
         this._streamRoomIdManuallySet = false;
+        this._entityNeedsStreamRoomUpdate = false;
 	},
 
 	/**
@@ -1676,6 +1677,12 @@ var IgeEntity = IgeObject.extend({
                 ige.network.stream._streamClientCreated[this.id()] = {};
             }
 
+            // If the entity's stream rooms were changed we need to destroy and create entites on the clients appropriately
+            if (this._entityNeedsStreamRoomUpdate) {
+                ige.network.stream._updateStreamEntityForClients(this);
+                this._entityNeedsStreamRoomUpdate = false;
+            }
+
 			// Process any automatic-mode stream updating required
 			if (this._streamMode === 1) {
 				this.streamSync();
@@ -3255,7 +3262,7 @@ var IgeEntity = IgeObject.extend({
 				if (data) {
 					// We have received updated data
 					var dataArr = data.split(',');
-	
+
 					if (!this._disableInterpolation && !bypassTimeStream && !this._streamJustCreated) {
 						// Translate
 						if (dataArr[0]) { dataArr[0] = parseFloat(dataArr[0]); }
@@ -3295,7 +3302,7 @@ var IgeEntity = IgeObject.extend({
 						if (dataArr[6]) { this._rotate.x = parseFloat(dataArr[6]); }
 						if (dataArr[7]) { this._rotate.y = parseFloat(dataArr[7]); }
 						if (dataArr[8]) { this._rotate.z = parseFloat(dataArr[8]); }
-						
+
 						// If we are using composite caching ensure we update the cache
 						if (this._compositeCache) {
 							this.cacheDirty(true);
@@ -3487,6 +3494,7 @@ var IgeEntity = IgeObject.extend({
 				this._streamRoomIdManuallySet = true;
 				this._streamRoomIds = streamRoomIds;
 			}
+            this._entityNeedsStreamRoomUpdate = true;
 		}
 		return this;
 	},
@@ -3604,19 +3612,12 @@ var IgeEntity = IgeObject.extend({
 			var recipientArr = [],
 				clientArr = [],
 				i;
-			
-			
+
+
 			//get all recipients 
 			if (this._streamRoomIds != undefined) {
 				//by rooms, if available
-				for (s in this._streamRoomIds) {
-                    var cArr = ige.network.clients(this._streamRoomIds[s]);
-                    if (cArr != undefined) {
-                        for (c in cArr) {
-                            if (c != undefined && clientArr.indexOf(c) == -1) clientArr[c] = cArr[c];
-                        }
-                    }
-				}
+                clientArr = ige.network.clients(this._streamRoomIds);
 			} else {
 				clientArr = ige.network.clients();
 			}
@@ -3723,6 +3724,7 @@ var IgeEntity = IgeObject.extend({
 			// command for this entity
 			stream._streamClientCreated[thisId] = stream._streamClientCreated[thisId] || {};
 			if (!stream._streamClientCreated[thisId][clientId]) {
+                this.log('send create', 'warning');
 				createResult = this.streamCreate(clientId);
 			}
 			
@@ -3790,6 +3792,9 @@ var IgeEntity = IgeObject.extend({
 				arr,
 				i;
 
+
+            ige.network.stream._streamClientCreated[thisId] = ige.network.stream._streamClientCreated[thisId] || {};
+
 			// Send the client an entity create command first
 			ige.network.send('_igeStreamCreate', [
 				this.classId(),
@@ -3798,8 +3803,6 @@ var IgeEntity = IgeObject.extend({
 				this.streamSectionData('transform'),
 				this.streamCreateData()
 			], clientId);
-			
-			ige.network.stream._streamClientCreated[thisId] = ige.network.stream._streamClientCreated[thisId] || {};
 
 			if (clientId) {
 				// Mark the client as having received a create

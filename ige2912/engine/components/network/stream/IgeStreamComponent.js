@@ -32,6 +32,13 @@ var IgeStreamComponent = IgeEventingClass.extend({
 			// Set some stream data containers
 			this._streamClientData = {};
 			this._streamClientCreated = {};
+
+            // Temp tick-related lists
+            this._clientsWhichJoinedARoom = {};
+            this._clientsWhichLeftARoom = {};
+
+            // Add the behaviour
+            ige.addBehaviour('physiStep', this._streamEntityConsistencyBehaviour, true);
 		}
 		/* CEXCLUDE */
 
@@ -111,6 +118,28 @@ var IgeStreamComponent = IgeEventingClass.extend({
 		return this._entity;
 	},
 
+    _streamEntityConsistencyBehaviour: function() {
+        var self = ige.network.stream;
+        //get the current client lists which joined or left a room
+        var clientsWhichJoinedARoom =  self._clientsWhichJoinedARoom;
+        var clientsWhichLeftARoom = self._clientsWhichLeftARoom;
+        self._clientsWhichJoinedARoom = {};
+        self._clientsWhichLeftARoom = {};
+
+        //Execute the room checks
+        for (var clientId in clientsWhichJoinedARoom) {
+            if (clientsWhichJoinedARoom.hasOwnProperty(clientId)) {
+                self._createStreamEntitiesForClient(clientId);
+            }
+        }
+
+        for (var clientId in clientsWhichLeftARoom) {
+            if (clientsWhichLeftARoom.hasOwnProperty(clientId)) {
+                self._destroyStreamEntitiesForClient(clientId);
+            }
+        }
+    },
+
 	/**
 	 * Queues stream data to be sent during the next stream data interval.
 	 * @param {String} id The id of the entity that this data belongs to.
@@ -188,7 +217,7 @@ var IgeStreamComponent = IgeEventingClass.extend({
 					entity = new classConstructor(createData)
 						.id(entityId)
 						.mount(parent);
-					
+
 					entity.streamSectionData('transform', transformData, true);
 
 					// Set the just created flag which will stop the renderer
@@ -302,7 +331,7 @@ var IgeStreamComponent = IgeEventingClass.extend({
 		for (var entityId in this._streamClientCreated) {
 			if (this._streamClientCreated.hasOwnProperty(entityId)) {
 				//if it's not been already sent
-				if (this._streamClientCreated[entityId][clientId] == undefined) {
+				if (this._streamClientCreated[entityId][clientId] != true) {
 					//if the entity is within the same room
 					var entity = ige.$(entityId);
 					if (entity != undefined) {
@@ -348,7 +377,36 @@ var IgeStreamComponent = IgeEventingClass.extend({
 				}
 			}
 		}
-	}
+	},
+
+    _updateStreamEntityForClients: function(entity) {
+        var entityId = entity.id();
+        //get all clients that are in one of the entities' streamRoomIds
+        var clients = ige.network.clients(entity._streamRoomIds);
+        var clientIds = Object.keys(clients);
+
+        //send a stream destroy command to all clients which don't share a room with the entity anymore
+        for (var clientId in this._streamClientCreated[entityId]) {
+            if (this._streamClientCreated[entityId].hasOwnProperty(clientId)) {
+                //if the entity is created for the client but doesn't share a room anymore
+                if (this._streamClientCreated[entityId][clientId] == true && clientIds.indexOf(clientId) == -1) {
+                    //send a stream destroy command!
+                    entity.streamDestroy(clientId);
+                }
+            }
+        }
+
+        //send the stream create command to all clients which share a room with the entity but don't have the entity stream created yet!
+        for (var clientId in clients) {
+            if (clients.hasOwnProperty(clientId)) {
+                //if it's not been already sent
+                if (this._streamClientCreated[entityId][clientId] != true) {
+                    //send the stream create command!
+                    entity.streamCreate(clientId);
+                }
+            }
+        }
+    }
 });
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeStreamComponent; }

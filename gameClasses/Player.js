@@ -215,7 +215,10 @@ var Player = IgeEntity.extend({
             }.bind(this), 2000);
             ige.server.scene1._threeObj.add( this._threeObj );
 
-            self.addComponent(LevelRoomComponent);
+            self.addComponent(IgeLevelRoomComponent, {
+                networkLevelRoomCheckInterval: ige.server.gameOptions.networkLevelRoomCheckInterval,
+                networkLevelRoomSize: ige.server.gameOptions.networkLevelRoomSize
+            });
 			
             //Set model (faction + unit type) and displays an animation
 			this.addStreamData('playerSpawn', {player: this._id, faction: this.faction}, this._id);
@@ -232,7 +235,7 @@ var Player = IgeEntity.extend({
 	 * from the server to the client for this entity.
 	 * @return {*}
 	 */
-	streamSectionData: function (sectionId, data) {
+	streamSectionData: function (sectionId, data, bypassTimeStream) {
 		// Check if the section is one that we are handling
         if(sectionId == 'runDirection'){
             if(!data){
@@ -315,7 +318,7 @@ var Player = IgeEntity.extend({
 			// The section was not one that we handle here, so pass this
 			// to the super-class streamSectionData() method - it handles
 			// the "transform" section by itself
-			return IgeEntity.prototype.streamSectionData.call(this, sectionId, data);
+			return IgeEntity.prototype.streamSectionData.call(this, sectionId, data, bypassTimeStream);
 		}
 	},
 

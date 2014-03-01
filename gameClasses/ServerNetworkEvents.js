@@ -8,6 +8,9 @@ var ServerNetworkEvents = {
 	 * @private
 	 */
 	_onPlayerConnect: function (socket) {
+
+        ige.network.clientJoinRoom(socket.id, 'randomChannel');
+
 		// Don't reject the client connection
 		return false;
 	},
