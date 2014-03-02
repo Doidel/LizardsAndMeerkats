@@ -3493,7 +3493,18 @@ var IgeEntity = IgeObject.extend({
 			} else if (Array.isArray(streamRoomIds)) {
 				this._streamRoomIdManuallySet = true;
 				this._streamRoomIds = streamRoomIds;
-			}
+			} else if (typeof(streamRoomIds) == 'string') {
+                this._streamRoomIdManuallySet = true;
+                this._streamRoomIds = [streamRoomIds];
+            }
+
+            // Loop children and set _streamRoomIds to the same value, if they inherit
+            this._children.each(function () {
+                if (this._streamRoomIdManuallySet !== true) {
+                    this._streamRoomIds = this._parent._streamRoomIds;
+                }
+            });
+
             this._entityNeedsStreamRoomUpdate = true;
 		}
 		return this;
