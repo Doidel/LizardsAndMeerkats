@@ -1,16 +1,16 @@
 var Player = IgeEntity.extend({
-	classId: 'Player',
+    classId: 'Player',
 
     //Ask SavXR Natsu for balances
 
-	init: function (id) {
-		IgeEntity.prototype.init.call(this);
+    init: function (id) {
+        IgeEntity.prototype.init.call(this);
 
-		var self = this;
+        var self = this;
 
-		if (id) {
-			this.id(id);
-		}
+        if (id) {
+            this.id(id);
+        }
 
 
         this.states = {
@@ -59,7 +59,7 @@ var Player = IgeEntity.extend({
         };
 
         this.values = {
-			name: 'player' + this.id(),
+            name: 'player' + this.id(),
             currentStamina: 100,
             maxStamina: 100,
             staminaregeneration: 0.01,
@@ -76,7 +76,7 @@ var Player = IgeEntity.extend({
         this._streamActionSections = ['playVoiceCommand', 'playersTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent', 'playerSetControlLeft'];
         this.streamSections(['transform', 'runDirection'].concat(this._streamActionSections));
 
-		if (!ige.isServer) {
+        if (!ige.isServer) {
 
             console.log('set model...');
             this._setPlayerModel();
@@ -164,7 +164,7 @@ var Player = IgeEntity.extend({
                     }
                 }
             });
-		}
+        }
 
         if (ige.isServer) {
 
@@ -178,7 +178,7 @@ var Player = IgeEntity.extend({
             }
             ige.server.gameStates.playerCounts[this.faction]++;
 
-           // var parsedModel = loader.parse(modelLizard);
+            // var parsedModel = loader.parse(modelLizard);
 
             var playerMaterial = Physijs.createMaterial(
                 new THREE.MeshBasicMaterial(),
@@ -186,10 +186,10 @@ var Player = IgeEntity.extend({
                 0.01 // restitution
             );
             /*var physicalGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.0);
-            //physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
-            physicalGeometry.computeBoundingBox();
-            physicalGeometry.boundingBox.max.y += physicalGeometry.boundingBox.min.y;
-            physicalGeometry.boundingBox.min.y = 0;*/
+             //physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
+             physicalGeometry.computeBoundingBox();
+             physicalGeometry.boundingBox.max.y += physicalGeometry.boundingBox.min.y;
+             physicalGeometry.boundingBox.min.y = 0;*/
             this._threeObj = new Physijs.CapsuleMesh(
                 new THREE.CylinderGeometry(0.5, 0.5, 1),
                 playerMaterial,
@@ -215,28 +215,30 @@ var Player = IgeEntity.extend({
             }.bind(this), 2000);
             ige.server.scene1._threeObj.add( this._threeObj );
 
+            //self.addComponent(LevelRoomComponent);
             self.addComponent(IgeLevelRoomComponent, {
                 networkLevelRoomCheckInterval: ige.server.gameOptions.networkLevelRoomCheckInterval,
                 networkLevelRoomSize: ige.server.gameOptions.networkLevelRoomSize
             });
-			
-            //Set model (faction + unit type) and displays an animation
-			this.addStreamData('playerSpawn', {player: this._id, faction: this.faction}, this._id);
-        }
-	},
 
-	/**
-	 * Override the default IgeEntity class streamSectionData() method
-	 * so that we can check for the custom1 section and handle how we deal
-	 * with it.
-	 * @param {String} sectionId A string identifying the section to
-	 * handle data get / set for.
-	 * @param {*=} data If present, this is the data that has been sent
-	 * from the server to the client for this entity.
-	 * @return {*}
-	 */
-	streamSectionData: function (sectionId, data, bypassTimeStream) {
-		// Check if the section is one that we are handling
+            //Set model (faction + unit type) and displays an animation
+            this.addStreamData('playerSpawn', {player: this._id, faction: this.faction}, this._id);
+        }
+    },
+
+    /**
+     * Override the default IgeEntity class streamSectionData() method
+     * so that we can check for the custom1 section and handle how we deal
+     * with it.
+     * @param {String} sectionId A string identifying the section to
+     * handle data get / set for.
+     * @param {*=} data If present, this is the data that has been sent
+     * from the server to the client for this entity.
+     * @return {*}
+     */
+    //streamSectionData: function (sectionId, data) {
+    streamSectionData: function (sectionId, data, bypassTimeStream) {
+        // Check if the section is one that we are handling
         if(sectionId == 'runDirection'){
             if(!data){
                 if(ige.isServer){
@@ -315,12 +317,13 @@ var Player = IgeEntity.extend({
                 }
             }
         } else {
-			// The section was not one that we handle here, so pass this
-			// to the super-class streamSectionData() method - it handles
-			// the "transform" section by itself
-			return IgeEntity.prototype.streamSectionData.call(this, sectionId, data, bypassTimeStream);
-		}
-	},
+            // The section was not one that we handle here, so pass this
+            // to the super-class streamSectionData() method - it handles
+            // the "transform" section by itself
+            //return IgeEntity.prototype.streamSectionData.call(this, sectionId, data);
+            return IgeEntity.prototype.streamSectionData.call(this, sectionId, data, bypassTimeStream);
+        }
+    },
 
     _getJSONStreamActionData: function(property) {
         if (this._streamActions.hasOwnProperty(property) && this._streamActions[property] != undefined) {
@@ -330,7 +333,7 @@ var Player = IgeEntity.extend({
         }
     },
 
-	//called when a player is first created on a client through the stream
+    //called when a player is first created on a client through the stream
     streamCreateData: function() {
 
     },
@@ -345,25 +348,25 @@ var Player = IgeEntity.extend({
         }
     },
 
-	/**
-	 * Called every frame by the engine when this entity is mounted to the
-	 * scenegraph.
-	 * @param ctx The canvas context to render to.
-	 */
-	tick: function (ctx) {
+    /**
+     * Called every frame by the engine when this entity is mounted to the
+     * scenegraph.
+     * @param ctx The canvas context to render to.
+     */
+    tick: function (ctx) {
         var self = this;
-		/* CEXCLUDE */
-		if (ige.isServer) {
+        /* CEXCLUDE */
+        if (ige.isServer) {
 
             var inputVelocity = new THREE.Vector3(0,0,0);
             var velocity = new THREE.Vector3(0,0,0);
             var velocityFactor = 0.2;
 
-			/*if (this.controls.left) {
-				//this.rotateBy(0, Math.radians(0.2 * ige._tickDelta), 0);
-			} else if (this.controls.right) {
-				//this.rotateBy(0, Math.radians(-0.2 * ige._tickDelta), 0);
-			}*/
+            /*if (this.controls.left) {
+             //this.rotateBy(0, Math.radians(0.2 * ige._tickDelta), 0);
+             } else if (this.controls.right) {
+             //this.rotateBy(0, Math.radians(-0.2 * ige._tickDelta), 0);
+             }*/
 
             if (this.controls.jump && this.states.canJump) {
                 this.states.canJump = false;
@@ -427,8 +430,8 @@ var Player = IgeEntity.extend({
             if (this.states.isLeaping) {
 
                 /*var quatLeap = new THREE.Quaternion();
-                quatLeap.setFromEuler({x:self._rotate.x, y:self._rotate.y, z:0},"XYZ");
-                impulse.applyQuaternion(quatLeap);*/
+                 quatLeap.setFromEuler({x:self._rotate.x, y:self._rotate.y, z:0},"XYZ");
+                 impulse.applyQuaternion(quatLeap);*/
                 inputVelocity.x *= 5;
                 inputVelocity.z *= 5;
             }
@@ -463,10 +466,10 @@ var Player = IgeEntity.extend({
                 }, 1000); //duration of one scratch/harvest + 400, so the player can send another harvest after the first was done
                 //can be stopped/cleared in "executeAttack"
             }
-		}
-		/* CEXCLUDE */
+        }
+        /* CEXCLUDE */
 
-		if (!ige.isServer) {
+        if (!ige.isServer) {
 
             //player controls
             if (ige._player._id == this._id) {
@@ -546,17 +549,17 @@ var Player = IgeEntity.extend({
 
                 //which animation will have to be run?
                 /*if (this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right) {
-                    //running
-                    var direction = 0, start = 10, end = 170;
-                    if (this.controls.left && !this.controls.right) {
-                        direction = 1; start = 1030; end = 1190;
-                    } else if (this.controls.right && !this.controls.left) {
-                        direction = 2; start = 1220; end = 1380;
-                    }
-                    setTimeout(function() {self.states.isRunning = [direction, start, end];}, 2*ige.network._latency + 130); //latency + halfOfStreamInterval + renderLatency + 30
-                } else {
-                    setTimeout(function() {self.states.isRunning = false;}, 2*ige.network._latency + 130); //latency + halfOfStreamInterval + renderLatency
-                }*/
+                 //running
+                 var direction = 0, start = 10, end = 170;
+                 if (this.controls.left && !this.controls.right) {
+                 direction = 1; start = 1030; end = 1190;
+                 } else if (this.controls.right && !this.controls.left) {
+                 direction = 2; start = 1220; end = 1380;
+                 }
+                 setTimeout(function() {self.states.isRunning = [direction, start, end];}, 2*ige.network._latency + 130); //latency + halfOfStreamInterval + renderLatency + 30
+                 } else {
+                 setTimeout(function() {self.states.isRunning = false;}, 2*ige.network._latency + 130); //latency + halfOfStreamInterval + renderLatency
+                 }*/
 
                 if (ige.input.actionState('jump')) {
                     if (!this.controls.jump) {
@@ -614,9 +617,9 @@ var Player = IgeEntity.extend({
 
                             // Tell the server about our control change
                             if (!this.states.isUsingVoice) {
-								ige.network.send('playerControlNumKeyDown', i);
-								this._numKeyChanged(i, false);
-							}
+                                ige.network.send('playerControlNumKeyDown', i);
+                                this._numKeyChanged(i, false);
+                            }
                         }
                     } else {
                         if (this.controls['key' + i]) {
@@ -624,13 +627,13 @@ var Player = IgeEntity.extend({
                             this.controls['key' + i] = false;
 
                             // Tell the server about our control change
-							if (!this.states.isUsingVoice) {
-								ige.network.send('playerControlNumKeyUp', i);
-								this._numKeyChanged(i, true);
-							} else {
-								ige.network.send('playerPlayVoiceCommand', i);
+                            if (!this.states.isUsingVoice) {
+                                ige.network.send('playerControlNumKeyUp', i);
+                                this._numKeyChanged(i, true);
+                            } else {
+                                ige.network.send('playerPlayVoiceCommand', i);
                                 this.toggleVoiceMode();
-							}
+                            }
                         }
                     }
                 }
@@ -640,26 +643,28 @@ var Player = IgeEntity.extend({
                 //legs animation
                 if (this.states.isDying) {
                     this._checkResetAnimation('dying', 0);
-                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 770, 810, 0, false, ige.client.armBones);
+                    //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 770, 810, 0, false, ige.client.armBones);
+                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 770, 810, 0, false, ige.client.armBones2);
                 } else if (this.states.isJumping) {
                     this._checkResetAnimation('jumping', 0);
-                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 0, false, ige.client.armBones);
+                    //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 0, false, ige.client.armBones);
+                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 0, false, ige.client.armBones2);
                     if (frame >= 400) this.states.isJumping = false;
-                /*} else if (this.states.isAttacking) {
-                    // attacking
-                    var start = 1410, end = 1510, speedUp = 2.4, direction = 0;
-                    if(this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right){
-                        start = 1540, end = 1590, speedUp = 2.4, direction = 1;
-                        if (this.controls.left && !this.controls.right) {
-                            start = 1620, end = 1670, speedUp = 2.4, direction = 2;
-                        } else if (this.controls.right && !this.controls.left) {
-                            start = 1700, end = 1750, speedUp = 2.4, direction = 3;
-                        }
-                    }
-                    this._checkResetAnimation('attack' + this.states.attackType + direction, 0);
+                    /*} else if (this.states.isAttacking) {
+                     // attacking
+                     var start = 1410, end = 1510, speedUp = 2.4, direction = 0;
+                     if(this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right){
+                     start = 1540, end = 1590, speedUp = 2.4, direction = 1;
+                     if (this.controls.left && !this.controls.right) {
+                     start = 1620, end = 1670, speedUp = 2.4, direction = 2;
+                     } else if (this.controls.right && !this.controls.left) {
+                     start = 1700, end = 1750, speedUp = 2.4, direction = 3;
+                     }
+                     }
+                     this._checkResetAnimation('attack' + this.states.attackType + direction, 0);
 
-                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 0, false, ige.client.armBones);
-*/
+                     var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 0, false, ige.client.armBones);
+                     */
                 } else if (this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right) {
                     var direction = 0, start = 10, end = 170;
                     if (this.controls.left && !this.controls.right) {
@@ -668,49 +673,54 @@ var Player = IgeEntity.extend({
                         direction = 2; start = 1220; end = 1380;
                     }
                     this._checkResetAnimation('running' + direction, 0);
-                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 4, start, end, 0, true, ige.client.armBones);
+                    //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 0.5, start, end, 0, true, ige.client.armBones);
+                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 0.5, start, end, 0, true, ige.client.armBones2);
                 } else {
-                    if (this._previousAnimation[0].indexOf('standing') == -1) this.states.nextStandingAnim = 0;
-                        var start = 840, end = 880;
-                        var repeat = true;
-                        var speed = 0.5;
-                        if (this.states.standingStage == 1) {
-                            start = 880; end = 920;
-                            speed = 1.5;
-                            repeat = false;
-                        } else if (this.states.standingStage == 2) {
-                            start = 920; end = 960;
-                            speed = 1.5;
-                            repeat = false;
-                        } else if (this.states.standingStage == 3) {
-                            start = 960; end = 1000;
-                            speed = 1.5;
-                            repeat = false;
-                        }
-                        this._checkResetAnimation('standing' + this.states.standingStage, 0);
-                        var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 0, repeat, ige.client.armBones);
+                    //if (this._previousAnimation[0].indexOf('standing') == -1) this.states.nextStandingAnim = 0;
+                    var start = 840, end = 880;
+                    var repeat = true;
+                    var speed = 0.5;
+                    /*if (this.states.standingStage == 1) {
+                     start = 880; end = 920;
+                     speed = 1.5;
+                     repeat = false;
+                     } else if (this.states.standingStage == 2) {
+                     start = 920; end = 960;
+                     speed = 1.5;
+                     repeat = false;
+                     } else if (this.states.standingStage == 3) {
+                     start = 960; end = 1000;
+                     speed = 1.5;
+                     repeat = false;
+                     }*/
+                    //this._checkResetAnimation('standing' + this.states.standingStage, 0);
+                    this._checkResetAnimation('standing' + 0, 0);
+                    //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 0, repeat, ige.client.armBones);
+                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 0, repeat, ige.client.armBones1);
 
-                        var standingControlTimeMin = 1000 * 5;
-                        if(this.states.standingControlTime > standingControlTimeMin && this.states.standingStage == 0){
-                            this.states.standingStage = parseInt(Math.random()*4);
-                        }
+                    var standingControlTimeMin = 1000 * 5;
+                    if(this.states.standingControlTime > standingControlTimeMin && this.states.standingStage == 0){
+                        this.states.standingStage = parseInt(Math.random()*4);
+                        //this.states.standingStage = parseInt(Math.random()*1);
+                    }
 
-                        //if (frame >= end) this.states.standingStage = (this.states.standingStage + 1) % 4;
-                        if (this.states.standingStage > 0) {
-                            if(frame >= end){
-                                this.states.standingStage = 0;
-                                this.states.standingControlTime = 0;
-                            }
-                        } else {
-                            this.states.standingControlTime += ige._tickDelta / 1;
-                        }
+                    //if (frame >= end) this.states.standingStage = (this.states.standingStage + 1) % 4;
+                    //if (this.states.standingStage > 0) {
+                    if(frame >= end){
+                        this.states.standingStage = 0;
+                        this.states.standingControlTime = 0;
+                    }
+                    /*} else {
+                     this.states.standingControlTime += ige._tickDelta / 1;
+                     }*/
                     //}
                 }
 
                 //arms animation
                 if (this.states.isDying) {
                     this._checkResetAnimation('dying', 1);
-                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 760, 800, 1, false, ige.client.legBones);
+                    //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 760, 800, 1, false, ige.client.legBones);
+                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 760, 800, 1, false, ige.client.legBones2);
                     if (frame >= 810) {
                         this.states.isDying = false;
                         this.states.noAnimation = true;
@@ -720,39 +730,42 @@ var Player = IgeEntity.extend({
                     var start = 620, end = 690, speedUp = 0.5, type=0;
                     //var start = 1410, end = 1510, speedUp = 2.4;
                     /*if (this.states.attackType == 1) {
-                            start = 520; end = 590; speedUp = 4;
-                    } else if (this.states.attackType == 2) {
-                            start = 620; end = 690; speedUp = 3;
-                    }*/
+                     start = 520; end = 590; speedUp = 4;
+                     } else if (this.states.attackType == 2) {
+                     start = 620; end = 690; speedUp = 3;
+                     }*/
                     this._checkResetAnimation('attack' + this.states.attackType, 1);
-                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 1, false, ige.client.legBones);
+                    //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 1, false, ige.client.legBones);
+                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 1, false, ige.client.legBones2);
                     if (frame >= end) {
                         // increment attackType
                         /*if(this.states.attackType > 1){
-                            this.states.attackType = 0;
-                        } else {
-                            ++this.states.attackType;
-                        }*/
+                         this.states.attackType = 0;
+                         } else {
+                         ++this.states.attackType;
+                         }*/
                         this.states.isAttacking = false;
                     }
                 } else if (this.controls.block) {
                     /*
 
-                    TODO: Review section!
+                     TODO: Review section!
 
-                    */
+                     */
 
                     //if he's raising the block, start the raising animation. If not, do no animation.
                     if (this.states.currentBlockFrame < 230) {
                         if (this.states.currentBlockFrame == 200) this._resetAnimation(1);
-                        this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 200, 230, 1, false, ige.client.legBones);
+                        //this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 200, 230, 1, false, ige.client.legBones);
+                        this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 200, 230, 1, false, ige.client.legBones2);
                         console.log('firstBlock', this.states.currentBlockFrame);
                     }
                 } else if (this.states.currentBlockFrame > 200) {
                     //if (this.states.currentBlockFrame == 240) this._resetAnimation(1);
                     if (this.states.currentBlockFrame < 240) this._resetAnimation(1);
                     //lower-block animation
-                    this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 240, 270, 1, false, ige.client.legBones);
+                    //this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 240, 270, 1, false, ige.client.legBones);
+                    this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 240, 270, 1, false, ige.client.legBones2);
                     console.log('middleBlock', this.states.currentBlockFrame);
                     if (this.states.currentBlockFrame >= 270) {
                         //reset animation
@@ -762,38 +775,42 @@ var Player = IgeEntity.extend({
                     }
                 } else if (this.states.isScratching) {
                     this._checkResetAnimation('scratching', 1);
-                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 / 2, 720, 740, 1, true, ige.client.legBones);
+                    //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 / 2, 720, 740, 1, true, ige.client.legBones);
+                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 / 2, 720, 740, 1, true, ige.client.legBones2);
                 } else if (this.states.isJumping) {
                     this._checkResetAnimation('jumping', 1);
-                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 1, false, ige.client.legBones);
+                    //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 1, false, ige.client.legBones);
+                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 1, false, ige.client.legBones2);
                 } else if (this.states.isRunning != false) {
                     //running
                     //if(this.states.isRunning){
-                        this._checkResetAnimation('running' + this.states.isRunning[0], 1);
-                        this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 4, this.states.isRunning[1], this.states.isRunning[2], 1, true, ige.client.legBones);
+                    this._checkResetAnimation('running' + this.states.isRunning[0], 1);
+                    //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 0.5, this.states.isRunning[1], this.states.isRunning[2], 1, true, ige.client.legBones);
+                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 0.5, this.states.isRunning[1], this.states.isRunning[2], 1, true, ige.client.legBones2);
                     //}
                 } else {
                     //standing
                     this._checkResetAnimation('standing' + this.states.standingStage, 1);
-                    if (this.states.nextStandingAnim <= ige._currentTime) {
-                        var start = 840, end = 880;
-                        var speed = 0.5;
-                        var repeat = true;
-                        if (this.states.standingStage == 1) {
-                            start = 880; end = 920;
-                            speed = 1.5;
-                            repeat = false;
-                        } else if (this.states.standingStage == 2) {
-                            start = 920; end = 960;
-                            speed = 1.5;
-                            repeat = false;
-                        } else if (this.states.standingStage == 3) {
-                            start = 960; end = 1000;
-                            speed = 1.5;
-                            repeat = false;
-                        }
-                        var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 1, repeat, ige.client.legBones);
+                    //if (this.states.nextStandingAnim <= ige._currentTime) {
+                    var start = 840, end = 880;
+                    var speed = 0.5;
+                    var repeat = true;
+                    if (this.states.standingStage == 1) {
+                        start = 880; end = 920;
+                        speed = 1.5;
+                        repeat = false;
+                    } else if (this.states.standingStage == 2) {
+                        start = 920; end = 960;
+                        speed = 1.5;
+                        repeat = false;
+                    } else if (this.states.standingStage == 3) {
+                        start = 960; end = 1000;
+                        speed = 1.5;
+                        repeat = false;
                     }
+                    //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 1, repeat, ige.client.legBones);
+                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 1, repeat, ige.client.legBones1);
+                    //}
 
                 }
             }
@@ -830,12 +847,12 @@ var Player = IgeEntity.extend({
             this._updateHealth(this.values.health);
         }
 
-		// Call the IgeEntity (super-class) tick() method
-		IgeEntity.prototype.tick.call(this, ctx);
+        // Call the IgeEntity (super-class) tick() method
+        IgeEntity.prototype.tick.call(this, ctx);
 
         //update entity translations. needed for streaming.
         this.translateTo(this._threeObj.position.x, this._threeObj.position.y, this._threeObj.position.z); // - this._geometry.z2
-	},
+    },
     /* CEXCLUDE */
     executeAttack: function() {
         var self = this;
@@ -856,7 +873,7 @@ var Player = IgeEntity.extend({
                 isBlocked = false;
                 if (possibleEnemies[x].controls.block) {
                     //enemyrot = (possibleEnemies[x]._rotate.y % PI_2 + PI_2 + Math.PI) % PI_2; //+Math.PI because we want the enemy to face you in order to block
-					enemyrot = possibleEnemies[x]._rotate.y + Math.PI;
+                    enemyrot = possibleEnemies[x]._rotate.y + Math.PI;
                     isBlocked = self._angleDistance(enemyrot - rot) < blockHitAngle;
                 }
 
@@ -864,27 +881,27 @@ var Player = IgeEntity.extend({
                     possibleEnemies[x]._translate.x - self._translate.x,
                     possibleEnemies[x]._translate.z - self._translate.z
                 ) + Math.PI; //Math.atan2 goes from -Math.PI to +Math.PI, we want everything to be positive though
-				
+
                 if (self._angleDistance(angle, rot) < blockHitAngle && !isBlocked) {
                     //hit
                     objectsTakenHit.push(possibleEnemies[x]._id);
                     possibleEnemies[x].takeDamage(20);
                 }
             }
-				
-			//does he hit a building?
-			var buildingsHit = self.getBuildingsHit();
-			if (buildingsHit.length > 0) console.log('player hits buildings: ', buildingsHit);
-			for (var x = 0; x < buildingsHit.length; x++) {
+
+            //does he hit a building?
+            var buildingsHit = self.getBuildingsHit();
+            if (buildingsHit.length > 0) console.log('player hits buildings: ', buildingsHit);
+            for (var x = 0; x < buildingsHit.length; x++) {
                 console.log('Hit a building!');
-				objectsTakenHit.push(buildingsHit[x]._id);
-				objectsTakenHit.takeDamage(20);
-			}
-				
+                objectsTakenHit.push(buildingsHit[x]._id);
+                objectsTakenHit.takeDamage(20);
+            }
+
             if (objectsTakenHit.length > 0) {
                 //send the hit to all players
                 //ige.network.send('playersTakeHit', {hit: objectsTakenHit, rawDamage: 20});
-				self.addStreamData('playersTakeHit', {hit: objectsTakenHit, dmg: 20});
+                self.addStreamData('playersTakeHit', {hit: objectsTakenHit, dmg: 20});
             }
         }, 100); //TODO: Deduct the latency from the hit delay?
 
@@ -903,10 +920,10 @@ var Player = IgeEntity.extend({
                     self._scratchStopTimeout = undefined;
                     //send update to all clients
                     /*for (var key in ige.server.players) {
-                        if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
-                        //ige.network.send('playerHarvest', {player: self._id, amount: 5}, key);
-                    }*/
-					this.addStreamData('playerHarvest', {p: self._id, amount: 5}, key);
+                     if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
+                     //ige.network.send('playerHarvest', {player: self._id, amount: 5}, key);
+                     }*/
+                    this.addStreamData('playerHarvest', {p: self._id, amount: 5}, key);
                     break;
                 }
             }
@@ -954,41 +971,41 @@ var Player = IgeEntity.extend({
         return players;
     },
     getBuildingsHit: function(radius) {
-		var hitBuildings = [];
-		var buildingsLength = ige.server.levelObjects.buildings.length;
-		for (var x = 0; x < buildingsLength; x++) {
-			var building = ige.server.levelObjects.buildings[x];
-			var buildingMatrix = building._threeObj.matrixWorld;
-			
-			if (building._threeObj.geometry.boundingBox) {
-				//Rectangle x1, x2, y1, y2
-				var buildingCorner1 = new THREE.Vector3(building._threeObj.geometry.boundingBox.min.x, 0, building._threeObj.geometry.boundingBox.min.z).applyMatrix4(buildingMatrix),
-					buildingCorner2 = new THREE.Vector3(building._threeObj.geometry.boundingBox.max.x, 0, building._threeObj.geometry.boundingBox.max.z).applyMatrix4(buildingMatrix);
-				
-				//Fast check: is the player within the rectangle + radius area?
-				if (this._translate.x >= buildingCorner1.x - radius && this._translate.x <= buildingCorner2.x + radius &&
-					this._translate.y >= buildingCorner1.y - radius && this._translate.y <= buildingCorner2.y + radius) {
-					
-					//3 sensing devices as points. True, if one of the points is within the rectangle
-					var PI_2 = Math.PI * 2;
-					var rot = (self._rotate.y % PI_2 + PI_2) % PI_2;
-					var blockHitAngle = Math.PI * 0.35;
-					
-					//is one of the points in the rectangle?
-					for (var x = -0.5; x < 0.6; x+=0.5) {
-						var angle = rot + x * blockHitAngle;
-						var sensingPoint = new THREE.Vector2(Math.cos(angle) * radius, Math.sin(angle) * radius);
-						if (sensingPoint.x >= buildingCorner1.x && sensingPoint.x <= buildingCorner2.x && sensingPoint.y >= buildingCorner1.y && sensingPoint.y <= buildingCorner2.y) {
-							//sensing point is within the rectangle!
-							hitBuildings.push(building);
-						}
-					}
-				}
-			} else if (building._threeObj.geometry.boundingSphere) {
-				//TODO: Wenn die Distanz zwischen den Mittelpunkten zweier Kreise kleiner ist als die Summe ihrer Radien, so liegt eine Kollision vor			
-			}
-		}
-		return hitBuildings;
+        var hitBuildings = [];
+        var buildingsLength = ige.server.levelObjects.buildings.length;
+        for (var x = 0; x < buildingsLength; x++) {
+            var building = ige.server.levelObjects.buildings[x];
+            var buildingMatrix = building._threeObj.matrixWorld;
+
+            if (building._threeObj.geometry.boundingBox) {
+                //Rectangle x1, x2, y1, y2
+                var buildingCorner1 = new THREE.Vector3(building._threeObj.geometry.boundingBox.min.x, 0, building._threeObj.geometry.boundingBox.min.z).applyMatrix4(buildingMatrix),
+                    buildingCorner2 = new THREE.Vector3(building._threeObj.geometry.boundingBox.max.x, 0, building._threeObj.geometry.boundingBox.max.z).applyMatrix4(buildingMatrix);
+
+                //Fast check: is the player within the rectangle + radius area?
+                if (this._translate.x >= buildingCorner1.x - radius && this._translate.x <= buildingCorner2.x + radius &&
+                    this._translate.y >= buildingCorner1.y - radius && this._translate.y <= buildingCorner2.y + radius) {
+
+                    //3 sensing devices as points. True, if one of the points is within the rectangle
+                    var PI_2 = Math.PI * 2;
+                    var rot = (self._rotate.y % PI_2 + PI_2) % PI_2;
+                    var blockHitAngle = Math.PI * 0.35;
+
+                    //is one of the points in the rectangle?
+                    for (var x = -0.5; x < 0.6; x+=0.5) {
+                        var angle = rot + x * blockHitAngle;
+                        var sensingPoint = new THREE.Vector2(Math.cos(angle) * radius, Math.sin(angle) * radius);
+                        if (sensingPoint.x >= buildingCorner1.x && sensingPoint.x <= buildingCorner2.x && sensingPoint.y >= buildingCorner1.y && sensingPoint.y <= buildingCorner2.y) {
+                            //sensing point is within the rectangle!
+                            hitBuildings.push(building);
+                        }
+                    }
+                }
+            } else if (building._threeObj.geometry.boundingSphere) {
+                //TODO: Wenn die Distanz zwischen den Mittelpunkten zweier Kreise kleiner ist als die Summe ihrer Radien, so liegt eine Kollision vor
+            }
+        }
+        return hitBuildings;
     },
     takeDamage: function(damage) {
         if (!ige.isServer) {
@@ -1006,19 +1023,19 @@ var Player = IgeEntity.extend({
     },
     takeCommander: function() {
         if (!ige.isServer) {
-			//try to take the commander spot. If it works, replace unit (ClientNetworkEvents)
-			ige.network.send('playerTakesCommand');
-		} else {
-			if (ige.server.commanders[this.faction] == undefined) {
-				ige.server.commanders[this.faction] = this.id();
-				//give player commander abilities
-				this.addComponent(PlayerCommanderComponent);
-				console.log('this', this._id);
-				this.addStreamData('playerSetComponent', {add: true, component: 'PlayerCommanderComponent'});
-				//promote commander change to players
-				ige.server.addStreamDataToAll('commanderChange', {val: this.values.name});
-			}
-		}
+            //try to take the commander spot. If it works, replace unit (ClientNetworkEvents)
+            ige.network.send('playerTakesCommand');
+        } else {
+            if (ige.server.commanders[this.faction] == undefined) {
+                ige.server.commanders[this.faction] = this.id();
+                //give player commander abilities
+                this.addComponent(PlayerCommanderComponent);
+                console.log('this', this._id);
+                this.addStreamData('playerSetComponent', {add: true, component: 'PlayerCommanderComponent'});
+                //promote commander change to players
+                ige.server.addStreamDataToAll('commanderChange', {val: this.values.name});
+            }
+        }
     },
     toggleVoiceMode: function() {
         if (!ige.isServer) {
@@ -1027,22 +1044,22 @@ var Player = IgeEntity.extend({
             UI.voiceCommands.display(this.states.isUsingVoice);
         }
     },
-	playVoiceCommand: function(data) {
-		if (ige.isServer) {
+    playVoiceCommand: function(data) {
+        if (ige.isServer) {
             this.addStreamData('playVoiceCommand', data);
-		}
-	},
-	vote: function(isYes) {
-		if (!ige.isServer) {
-			ige.network.send('playerVote', isYes);
-		} else {
-			var voteData = ige.server.gameStates.votes[this.faction];
-			if (voteData && voteData.playersVoted.indexOf(this.id() == -1)) {
-				voteData.votes[isYes ? 'yes' : 'no']++;
-				voteData.playersVoted.push(this.id());
-			}			
-		}
-	},
+        }
+    },
+    vote: function(isYes) {
+        if (!ige.isServer) {
+            ige.network.send('playerVote', isYes);
+        } else {
+            var voteData = ige.server.gameStates.votes[this.faction];
+            if (voteData && voteData.playersVoted.indexOf(this.id() == -1)) {
+                voteData.votes[isYes ? 'yes' : 'no']++;
+                voteData.playersVoted.push(this.id());
+            }
+        }
+    },
     /**
      * Can be called for manually updating AND synchronizing health.
      * @param health
@@ -1060,7 +1077,7 @@ var Player = IgeEntity.extend({
         else {
             if (synchronize) {
                 //send update to all clients
-				this.addStreamData('updateHealth', {unit: this._id, health: health});
+                this.addStreamData('updateHealth', {unit: this._id, health: health});
             }
         }
         /* CEXCLUDE */
@@ -1073,9 +1090,9 @@ var Player = IgeEntity.extend({
 
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     },
-	_angleDistance: function(x1, x2) { 
-		return Math.abs((x1 + Math.PI * 3 - x2) % (Math.PI * 2) - Math.PI); 
-	},
+    _angleDistance: function(x1, x2) {
+        return Math.abs((x1 + Math.PI * 3 - x2) % (Math.PI * 2) - Math.PI);
+    },
     _updateThreeTransform: function() {
         this._threeObj.position.x = this._translate.x;
         this._threeObj.position.y = this._translate.y;
@@ -1091,10 +1108,10 @@ var Player = IgeEntity.extend({
         this.states.isScratching = false;
         //send update to all clients
         /*for (var key in ige.server.players) {
-            if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
-            ige.network.send('playerHarvest', {player: this._id, amount: 0}, key);
-        }*/
-		this.addStreamData('playerHarvest', {player: this._id, amount: 0}, key);
+         if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
+         ige.network.send('playerHarvest', {player: this._id, amount: 0}, key);
+         }*/
+        this.addStreamData('playerHarvest', {player: this._id, amount: 0}, key);
     },
     _forwardAttribute: function(group, name, value, dontOverride) {
         //send values to all other players
@@ -1124,6 +1141,7 @@ var Player = IgeEntity.extend({
             mat,
             false
         );
+        this._threeObj.name = 'meerkat';
         ige.client.scene1._threeObj.add( this._threeObj );
 
 
@@ -1198,16 +1216,16 @@ var Player = IgeEntity.extend({
         }
         this._previousAnimation[layer] = selectedAnimation;
     },
-	_numKeyChanged: function(keyNr, isUp) {
-		//how to react to a number (0..9) pressed? Override on sub classes
-		
-		if (!ige.isServer) {		
-			//display the key press graphics
-			UI.buildingMenu.displayPressed(keyNr, isUp);
-		}
+    _numKeyChanged: function(keyNr, isUp) {
+        //how to react to a number (0..9) pressed? Override on sub classes
 
-		if (this.commander) this.commander._numKeyChanged(keyNr, isUp);
-	},
+        if (!ige.isServer) {
+            //display the key press graphics
+            UI.buildingMenu.displayPressed(keyNr, isUp);
+        }
+
+        if (this.commander) this.commander._numKeyChanged(keyNr, isUp);
+    },
     _setRunDirection: function() {
         this.states.runDirection = 0;
         if(this.controls.forwards){
@@ -1227,10 +1245,10 @@ var Player = IgeEntity.extend({
         var obj;
         var list = ige.server.scene1._threeObj._objects;
         /*for (var key in list) {
-            if (key === 'length' || !list.hasOwnProperty(key)) continue;
-            obj = list[key];
-            if (obj && obj.id == id) return obj;
-        }*/
+         if (key === 'length' || !list.hasOwnProperty(key)) continue;
+         obj = list[key];
+         if (obj && obj.id == id) return obj;
+         }*/
         return list[id];
     }
     /* CEXCLUDE */
