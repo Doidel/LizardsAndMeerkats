@@ -28,9 +28,9 @@ var Client = IgeClass.extend({
             healthbarOuter: new IgeTexture('assets/ui/healthbarOuter.png')
 		};
 
-        this.armBones1 = ["Shoulder_L", "Arm_L", "ArmLower_L", "Hand_L", "Shoulder_R", "Arm_R", "ArmLower_R", "Hand_R", "Back", "NeckLower", "NeckUpper", "Head"];
+        //this.armBones1 = ["Shoulder_L", "Arm_L", "ArmLower_L", "Hand_L", "Shoulder_R", "Arm_R", "ArmLower_R", "Hand_R", "Back", "NeckLower", "NeckUpper", "Head"];
         this.armBones2 = ["Shoulder_L", "Arm_L", "ArmLower_L", "Hand_L", "Shoulder_R", "Arm_R", "ArmLower_R", "Hand_R", "Back", "NeckLower", "NeckUpper", "Head", "BackRoot", "BackRoot1", "BackRoot2", "BackRoot3"];
-        this.legBones1 = ["Root", "Hip_L", "LegUpper_L", "LegLower_L", "Foot_L", "Hip_R", "LegUpper_R", "LegLower_R", "Foot_R", "BackRoot", "BackRoot1", "BackRoot2", "BackRoot3"];
+        //this.legBones1 = ["Root", "Hip_L", "LegUpper_L", "LegLower_L", "Foot_L", "Hip_R", "LegUpper_R", "LegLower_R", "Foot_R", "BackRoot", "BackRoot1", "BackRoot2", "BackRoot3"];
         this.legBones2 = ["Root", "Hip_L", "LegUpper_L", "LegLower_L", "Foot_L", "Hip_R", "LegUpper_R", "LegLower_R", "Foot_R"];
 
 

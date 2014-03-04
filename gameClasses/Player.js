@@ -256,10 +256,8 @@ var Player = IgeEntity.extend({
                         direction = 3; start = 1220; end = 1380;
                     }
                     this.states.isRunning = [direction, start, end];
-                    console.log('test1', this.states.isRunning, data);
                 } else {
                     this.states.isRunning = false;
-                    console.log('test2', this.states.isRunning, data);
                 }
             }
         } else if (this._streamActionSections.indexOf(sectionId) != -1) {
@@ -650,21 +648,6 @@ var Player = IgeEntity.extend({
                     //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 0, false, ige.client.armBones);
                     var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 0, false, ige.client.armBones2);
                     if (frame >= 400) this.states.isJumping = false;
-                    /*} else if (this.states.isAttacking) {
-                     // attacking
-                     var start = 1410, end = 1510, speedUp = 2.4, direction = 0;
-                     if(this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right){
-                     start = 1540, end = 1590, speedUp = 2.4, direction = 1;
-                     if (this.controls.left && !this.controls.right) {
-                     start = 1620, end = 1670, speedUp = 2.4, direction = 2;
-                     } else if (this.controls.right && !this.controls.left) {
-                     start = 1700, end = 1750, speedUp = 2.4, direction = 3;
-                     }
-                     }
-                     this._checkResetAnimation('attack' + this.states.attackType + direction, 0);
-
-                     var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 0, false, ige.client.armBones);
-                     */
                 } else if (this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right) {
                     var direction = 0, start = 10, end = 170;
                     if (this.controls.left && !this.controls.right) {
@@ -695,8 +678,8 @@ var Player = IgeEntity.extend({
                      }*/
                     //this._checkResetAnimation('standing' + this.states.standingStage, 0);
                     this._checkResetAnimation('standing' + 0, 0);
-                    //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 0, repeat, ige.client.armBones);
-                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 0, repeat, ige.client.armBones1);
+                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 0, repeat, ige.client.armBones2);
+                    //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 0, repeat, ige.client.armBones1);
 
                     var standingControlTimeMin = 1000 * 5;
                     if(this.states.standingControlTime > standingControlTimeMin && this.states.standingStage == 0){
@@ -808,8 +791,8 @@ var Player = IgeEntity.extend({
                         speed = 1.5;
                         repeat = false;
                     }
-                    //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 1, repeat, ige.client.legBones);
-                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 1, repeat, ige.client.legBones1);
+                    //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 1, repeat, ige.client.legBones1);
+                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speed, start, end, 1, repeat, ige.client.legBones2);
                     //}
 
                 }
