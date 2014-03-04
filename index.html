@@ -29,7 +29,13 @@
 
             background-color: rgba(0,0,0,0.5);
 
-            z-index: 1000000;
+            z-index: 10000;
+
+            font-size: 1.0em;
+        }
+
+        #blocker .ui-button {
+            font-size: 0.7em;
         }
 
         #instructions {
@@ -76,7 +82,7 @@
             top: 0px;
             left: 0px;
 
-            z-index: 10000;
+            z-index: 100;
         }
 
         #blockbar {
@@ -289,13 +295,19 @@
 				</ul>
 			</li>
             <li><a href="#" onclick="javascript:ige._player.takeCommander()"><span class="ui-icon ui-icon-carat-1-e"></span>Take Commander</a></li> <!-- class="ui-state-disabled" -->
-            <li><a href="#"><span class="ui-icon ui-icon-gear"></span>Options</a></li>
+            <li><a href="#" onclick="javascript:UI.options.openDialog()"><span class="ui-icon ui-icon-gear"></span>Options</a></li>
         </div>
 
         <div id="instructions">
             <span style="font-size:40px">Click to play</span>
             <br />
             (W,A,S,D = Move, SPACE = Jump, MOUSE = Look, CLICK = Punch)
+        </div>
+
+        <div id="options-dialog">
+            <p>
+                Sound: <button id="options_mute"></button>
+            </p>
         </div>
 
     </div>
@@ -320,7 +332,7 @@
         </div>
 		
 		<div id="vote-dialog" title="Impeach commander?">
-		  <p>Impeach the current commander?</p>
+		  <p></p>
 		</div>
 
         <div id="blockbar" style="width: 126px; height: 40px;">
@@ -453,6 +465,12 @@
 				.html(text);
 			}
 		},
+        options: {
+            openDialog: function() {
+                $( "#options-dialog" ).dialog("open");
+            },
+            sound: true
+        },
 		resources: {
 			setResource: function(nr, amount) {
 				$('#resource'+nr).html(amount);
@@ -464,6 +482,38 @@
         $( "#gameMenu" ).menu();
         $.each($('#buildMenu div.spellSlot'), function(index, el) {
             $(el).append('<span class="keyShortcutLabel">'+(index + 1)+'</span>');
+        });
+
+        $( "#options-dialog" ).dialog({
+            resizable: false,
+            height: "auto",
+            modal: false,
+            title: "Options",
+            appendTo: "#blocker",
+            buttons: {
+                "Close": function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        })
+        .dialog("close");
+
+        $( "#options_mute").button({
+            label: "Unmute",
+            icons: {
+                primary: "ui-icon-volume-on"
+            }
+        }).on('click', function() {
+            if (ige.client._sound) {
+                $(this).button({
+                    label: UI.options.sound ? "Muted" : "Unmuted2",
+                    icons: {
+                        primary: "ui-icon-volume-" + (UI.options.sound ? "off" : "on")
+                    }
+                });
+                ige.client._sound.lineOut.toggleMute();
+                UI.options.sound = !UI.options.sound;
+            }
         });
     });
 
