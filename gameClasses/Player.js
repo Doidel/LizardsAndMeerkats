@@ -17,7 +17,7 @@ var Player = IgeEntity.extend({
             canJump: true,
             rockLastHarvested: ige._currentTime,
             isJumping: false,
-            currentBlockFrame: 190,
+            currentBlockFrame: 200,
             isScratching: false,
             isAttacking: false,
             attackType: 0, //0-2
@@ -31,7 +31,8 @@ var Player = IgeEntity.extend({
             isBuilding: false,
             isRunning: false,
             isUsingVoice: false,
-            runDirection: 0
+            runDirection: 0,
+            oldRunDir: -1
         };
 
         this.controls = {
@@ -710,75 +711,117 @@ var Player = IgeEntity.extend({
                         this.states.noAnimation = true;
                     }
                 } else if (this.states.isAttacking) {
-                    //var start = 440, end = 490, speedUp = 0.5, type=0;
-                    var start = 620, end = 690, direction = 0, speedUp = 0.5, type=0;
+                    var start = 440, end = 490, direction = 1, speedUp = 0.5, type=0;
+                    //var start = 620, end = 690, direction = 0, add = 0, speedUp = 0.5, type=0;
                     //var start = 1410, end = 1510, speedUp = 2.4;
-                    /*if (this.states.attackType == 1) {
-                     start = 520; end = 590; speedUp = 4;
-                     } else if (this.states.attackType == 2) {
-                     start = 620; end = 690; speedUp = 3;
-                     }*/
+                    if (this.states.attackType == 1) {
+                        start = 520; end = 590; speedUp = 0.5;
+                        //start = 520; end = 590; speedUp = 4;
+                    } else if (this.states.attackType == 2) {
+                        start = 620; end = 690; speedUp = 0.5;
+                        //start = 620; end = 690; speedUp = 3;
+                    }
 
                     //hit-left: 1410 - 1460, 1490 - 1560, 1590 - 1660
                     //hit-right: 1690 - 1740, 1770 - 1840, 1870 - 1940
 
                     if (this.controls.left && !this.controls.right) {
-                        start = 1870, end = 1940, direction = 2;
+                        //start = 1870, end = 1940, direction = 2;
+                        add = 1250, direction = 2;
+                        start += add, end += add;
                     } else if (this.controls.right && !this.controls.left) {
-                        start = 1590, end = 1660, direction = 1;
+                        //start = 1590, end = 1660, direction = 1;
+                        add = 970, direction = 1;
+                        start += add, end += add;
                     }
 
-                    this._checkResetAnimation('attack' + this.states.attackType+direction, 1);
-
+                    //this._checkResetAnimation('attack' + this.states.attackType + direction, 1);
+                    this._checkResetAnimation('attack' + this.states.attackType, 1);
+                    if(this.states.oldRunDir == -1 || this.states.oldRunDir == direction){
                     //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 1, false, ige.client.legBones);
-                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 1, false, ige.client.legBones2);
-
-                    if (this.controls.left && !this.controls.right) {
-                        //this._threeObj.animation.hierarchy[0].rotation._quaternion.set(0, 0, 0, 1);
-                        //this._threeObj.animation.hierarchy[0].rotation._quaternion.set(0, -0.707, 0, -0.707);
-                        //this._threeObj.animation.hierarchy[1].rotation.y -= Math.PI/2;
-                        //this._threeObj.bones[0].rotation.y -= Math.PI/2;
-                    } else if (this.controls.right && !this.controls.left) {
-                        //this._threeObj.animation.hierarchy[0].rotation._quaternion.set(0, 0, 0, 1);
-                        //this._threeObj.animation.hierarchy[0].rotation._quaternion.set(0, -0.707, 0, 0.707);
-                        //this._threeObj.animation.hierarchy[1].rotation.y += Math.PI/2;
-                        //this._threeObj.bones[0].rotation.y += Math.PI/2;
+                    //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start + add, end + add, 1, false, ige.client.legBones2);
+                        var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 1, false, ige.client.legBones2);
+                        this.states.oldRunDir = direction;
+                    } else {
+                        this.states.isAttacking = false;
+                        this.states.oldRunDir = -1;
                     }
-
-                    /*
-                    if (this.controls.left && !this.controls.right) {
-                        this._threeObj.animation.hierarchy[1].rotation._quaternion.set(1, 0, 0, 0);
-                    } else if (this.controls.right && !this.controls.left) {
-                        this._threeObj.animation.hierarchy[1].rotation._quaternion.set(1, 0, 0, 0);
-                    }
-                    */
 
                     if (frame >= end) {
                         // increment attackType
-                        /*if(this.states.attackType > 1){
-                         this.states.attackType = 0;
-                         } else {
-                         ++this.states.attackType;
-                         }*/
+                        if(this.states.attackType > 1){
+                            this.states.attackType = 0;
+                        } else {
+                            ++this.states.attackType;
+                        }
                         this.states.isAttacking = false;
+                        this.states.oldRunDir = -1;
                     }
                 } else if (this.controls.block) {
-                    //if he's raising the block, start the raising animation. If not, do no animation.
-                    if (this.states.currentBlockFrame < 230) {
-                        if (this.states.currentBlockFrame == 200) this._resetAnimation(1);
-                        //this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 200, 230, 1, false, ige.client.legBones);
-                        this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 200, 230, 1, false, ige.client.legBones2);
+                    //start block - left: 1970 - 2000
+                    //block - left: 2000 - 2010
+                    //end block - left: 2010 - 2040
+                    //start block - right: 2070 - 2100
+                    //block - right: 2100 - 2110
+                    //end block - right: 2110 - 2140
+
+
+                    var start = 200, end = 230, add = 0, direction = 0;
+
+                    if (this.controls.left && !this.controls.right) {
+                        add = 1870, direction = 2;
+                        start += add, end += add;
+                    } else if (this.controls.right && !this.controls.left) {
+                        add = 1770, direction = 1;
+                        start += add, end += add;
                     }
+
+                    if(this.states.oldRunDir != direction){
+                        this.states.currentBlockFrame = 230 + add;
+                    }
+
+                    //if he's raising the block, start the raising animation. If not, do no animation.
+                    if (this.states.currentBlockFrame < 230 + add) {
+                        console.log(this.states.currentBlockFrame, 230 + add);
+                        if (this.states.currentBlockFrame == 200) this._checkResetAnimation('block1' + direction, 1);
+                        this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, start, end + 10, 1, false, ige.client.legBones2);
+                    } else {
+                        this._checkResetAnimation('block1' + direction, 1);
+                        this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, end, end + 10, 1, true, ige.client.legBones2);
+                    }
+
+                    this.states.oldRunDir = direction;
+
                 } else if (this.states.currentBlockFrame > 200) {
-                    //if (this.states.currentBlockFrame == 240) this._resetAnimation(1);
-                    if (this.states.currentBlockFrame < 240) this._resetAnimation(1);
+
+                    var start = 240, end = 270, add = 0, direction = 0;
+
+                    if (this.controls.left && !this.controls.right) {
+                        add = 1870, direction = 2;
+                        start += add, end += add;
+                    } else if (this.controls.right && !this.controls.left) {
+                        add = 1770, direction = 1;
+                        start += add, end += add;
+                    }
+
+                    if(this.states.oldRunDir != direction){
+                        if (this.states.oldRunDir >= 1970 && this.states.oldRunDir <= 2000){
+                            this.states.currentBlockFrame -= 1770;
+                        } else if (this.states.oldRunDir >= 2070 && this.states.oldRunDir <= 2100){
+                            this.states.currentBlockFrame -= 1870;
+                        }
+                        this.states.currentBlockFrame += add;
+                    }
+                    this.states.oldRunDir = direction;
+
+                    if (this.states.currentBlockFrame < 240 + add) this._checkResetAnimation('block2', 1);
                     //lower-block animation
-                    //this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 240, 270, 1, false, ige.client.legBones);
-                    this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, 240, 270, 1, false, ige.client.legBones2);
-                    if (this.states.currentBlockFrame >= 270) {
+                    console.log(start, end);
+                    this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, start, end, 1, false, ige.client.legBones2);
+                    if (this.states.currentBlockFrame >= 270 + add) {
                         //reset animation
                         this.states.currentBlockFrame = 200;
-                        this._resetAnimation(1);
+                        this._checkResetAnimation('block2', 1);
                     }
                 } else if (this.states.isScratching) {
                     this._checkResetAnimation('scratching', 1);
@@ -792,7 +835,6 @@ var Player = IgeEntity.extend({
                     //running
                     //if(this.states.isRunning){
                     this._checkResetAnimation('running' + this.states.isRunning[0], 1);
-                    //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 0.5, this.states.isRunning[1], this.states.isRunning[2], 1, true, ige.client.legBones);
                     this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 0.5, this.states.isRunning[1], this.states.isRunning[2], 1, true, ige.client.legBones2);
                     //}
                 } else {
@@ -835,6 +877,12 @@ var Player = IgeEntity.extend({
             //run right: 1220 - 1380
             //hit-left: 1410 - 1460, 1490 - 1560, 1590 - 1660
             //hit-right: 1690 - 1740, 1770 - 1840, 1870 - 1940
+            //start block - left: 1970 - 2000
+            //block - left: 2000 - 2010
+            //end block - left: 2010 - 2040
+            //start block - right: 2070 - 2100
+            //block - right: 2100 - 2110
+            //end block - right: 2110 - 2140
         }
 
 
@@ -1136,14 +1184,24 @@ var Player = IgeEntity.extend({
             ige.client.scene1._threeObj.remove( this._threeObj );
         }
 
+        /*
         var mat = new THREE.MeshLambertMaterial({
             //color: new THREE.Color('#FF0000'),
-            map: THREE.ImageUtils.loadTexture( './assets/textures/meerkat/MeerkatzTexture256BackV4.png' ),
+            //map: THREE.ImageUtils.loadTexture( './assets/textures/meerkat/MeerkatzTexture256BackV4.png' ),
+            map: THREE.ImageUtils.loadTexture( './assets/textures/meerkat/meerkatTex1024.png' ),
+            skinning: true
+        });
+        */
+
+        var mat = new THREE.MeshPhongMaterial({
+            //color: new THREE.Color('#FF0000'),
+            map: THREE.ImageUtils.loadTexture( './assets/textures/lizard/LizardTexture410V6.png' ),
+            normalMap: THREE.ImageUtils.loadTexture( './assets/textures/lizard/LizardTexture410V6_NRM.png' ),
             skinning: true
         });
 
-        //var parsedModel = ige.three._loader.parse(modelLizard);
-        var parsedModel = ige.three._loader.parse(modelMeerkat);
+        var parsedModel = ige.three._loader.parse(modelLizard);
+        //var parsedModel = ige.three._loader.parse(modelMeerkat);
 
         this._threeObj = new THREE.SkinnedMesh(
             parsedModel.geometry,
