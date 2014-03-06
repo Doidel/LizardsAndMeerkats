@@ -413,7 +413,7 @@
             el: $('#healthbarInner'),
             maxvalue: 300,
             setValue: function(value) {
-                this.el.css('width', 240/this.maxvalue*value).set('text', Math.round(value));
+                this.el.css('width', 240/this.maxvalue*value).html(Math.round(value));
             }
         },
 		buildingMenu: {
