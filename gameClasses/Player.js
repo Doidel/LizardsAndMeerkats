@@ -584,16 +584,17 @@ var Player = IgeEntity.extend({
                     //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 0, false, ige.client.armBones);
                     var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 0, false, ige.client.armBones2);
                     if (frame >= 400) this.states.isJumping = false;
-                } else if (this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right) {
+                } else if (this.states.isRunning != false) {
+
                     var direction = 0, start = 10, end = 170;
                     if (this.controls.left && !this.controls.right) {
                         direction = 1; start = 1030; end = 1190;
                     } else if (this.controls.right && !this.controls.left) {
                         direction = 2; start = 1220; end = 1380;
                     }
-                    this._checkResetAnimation('running' + direction, 0);
-                    //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 0.5, start, end, 0, true, ige.client.armBones);
-                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, start, end, 0, true, ige.client.armBones2);
+                    this._checkResetAnimation('running' + this.states.isRunning[0], 0);
+                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, this.states.isRunning[1], this.states.isRunning[2], 0, true, ige.client.armBones2);
+                    //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, start, end, 0, true, ige.client.armBones2);
                 } else {
                     //if (this._previousAnimation[0].indexOf('standing') == -1) this.states.nextStandingAnim = 0;
                     var start = 840, end = 880;
