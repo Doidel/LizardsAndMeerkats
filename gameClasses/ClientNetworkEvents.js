@@ -122,8 +122,7 @@ var ClientNetworkEvents = {
                             var self = ige._player;
                             if (event.which == 1) {
                                 // build mode
-                                console.log('building? ', self.states.buildingNr);
-                                if(self.states.buildingNr >= 0){
+                                if(self.states.isBuilding && self.states.buildingNr >= 0){
                                     self.commander.finalPlaceBuilding();
                                 }
                                 //attack

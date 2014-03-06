@@ -243,7 +243,6 @@ var Player = IgeEntity.extend({
                 } else if (sectionId == 'playerAttributeUpdate') {
                     var p = ige.$(data.player);
                     p[data.group][data.name] = data.value;
-                    console.log(data, dataArr.length);
                 }
             }
         } else {
@@ -1022,7 +1021,6 @@ var Player = IgeEntity.extend({
                 ige.server.commanders[this.faction] = this.id();
                 //give player commander abilities
                 this.addComponent(PlayerCommanderComponent);
-                console.log('this', this._id);
                 this.addStreamData('playerSetComponent', {add: true, component: 'PlayerCommanderComponent'});
                 //promote commander change to players
                 ige.server.addStreamDataToAll('commanderChange', {val: this.values.name});
@@ -1254,8 +1252,17 @@ var Player = IgeEntity.extend({
          if (obj && obj.id == id) return obj;
          }*/
         return list[id];
-    }
+    },
     /* CEXCLUDE */
+    destroy: function() {
+        if (ige.isServer) {
+            if (this.commander) {
+                ige.server.commanders[this.faction] = undefined;
+                if (this.commander.streamedBuilding) this.commander.streamedBuilding.destroy();
+            }
+        }
+        IgeEntity.prototype.destroy.call(this);
+    }
 });
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = Player; }

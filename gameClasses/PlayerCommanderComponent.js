@@ -33,8 +33,10 @@ var PlayerCommanderComponent = IgeClass.extend({
 			//The building is already selected now he pressed the same key again ==> player wants to deselect it
 			if (ige.isServer) {
 				//Destroy the stream object
+                if (this.streamedBuilding) this.streamedBuilding.destroy();
 			} else {
 				//Deselect the key, graphical stuff, etc.
+                //UI.buildingMenu.displayPressed(this._player.states.buildingNr, false);
 			}
 			this._player.states.buildingNr = -1;
 		} else if (true) { //enough resources?
@@ -48,7 +50,8 @@ var PlayerCommanderComponent = IgeClass.extend({
                 } else {
                     this.streamedBuilding = new OutpostMeerkats(this._player.faction + 'StreamBuilding', new THREE.Vector3(0, 10, 0));
                 }
-                this.streamedBuilding .streamMode(1)
+                this.streamedBuilding
+                    .streamMode(1)
 					.mount(ige.server.scene1);
 				this.streamedBuilding.values.builderId = this._player._id;
                 this.streamedBuilding.states.isBuilt = false;
