@@ -8,6 +8,12 @@ var Player = IgeEntity.extend({
 
         var self = this;
 
+        if (!ige.isServer && typeof(id) == 'object') {
+            var createData = id;
+            id = id.id;
+            this.faction = createData.faction;
+        }
+
         if (id) {
             this.id(id);
         }
@@ -90,81 +96,6 @@ var Player = IgeEntity.extend({
             this._materialAmbientBackup = this._threeObj.material.ambient;
 
             ige.client.addAudioPannerToMesh(this._threeObj);
-
-            //events
-            window.addEventListener('mousedown', function(event){
-                if(ige.client.controls.enabled==true) {
-                    if (event.which == 1) {
-                        // build mode
-                        console.log('building? ', self.states.buildingNr);
-                        if(self.states.buildingNr >= 0){
-                            self.commander.finalPlaceBuilding();
-                        }
-                        //attack
-                        else if (!self.controls.attack) {
-                            // Record the new state
-                            self.controls.attack = true;
-
-                            // Tell the server about our control change
-                            ige.network.send('playerControlAttackDown');
-                        }
-                    } else if (event.which == 2) {
-                        //block
-                        if (!self.controls.block) {
-                            // Record the new state
-                            self.controls.block = true;
-
-                            // Tell the server about our control change
-                            ige.network.send('playerControlBlockDown');
-                        }
-                    } else if (event.which == 3) {
-                        //chargeLeap
-                        if (!self.controls.chargeLeap) {
-                            // Record the new state
-                            self.controls.chargeLeap = true;
-
-                            self._threeObj.chargeElements.opacity = 0.7;
-
-                            // Tell the server about our control change
-                            ige.network.send('playerControlChargeLeapDown');
-                        }
-                    }
-
-                }
-            });
-
-            window.addEventListener('mouseup', function(event){
-                if (event.which == 1) {
-                    //attack
-                    if (self.controls.attack) {
-
-                        // Record the new state
-                        self.controls.attack = false;
-                    }
-                } else if (event.which == 2) {
-                    //block
-                    if (self.controls.block) {
-
-                        // Record the new state
-                        self.controls.block = false;
-
-                        // Tell the server about our control change
-                        ige.network.send('playerControlBlockUp');
-                    }
-
-                } else if (event.which == 3) {
-                    //chargeLeap
-                    if (self.controls.chargeLeap) {
-                        // Record the new state
-                        self.controls.chargeLeap = false;
-
-                        self._threeObj.chargeElements.opacity = 0;
-
-                        // Tell the server about our control change
-                        ige.network.send('playerControlChargeLeapUp');
-                    }
-                }
-            });
         }
 
         if (ige.isServer) {
@@ -284,7 +215,7 @@ var Player = IgeEntity.extend({
                 } else if (sectionId == 'playerSpawn') {
                     var p = ige.$(data.player);
                     p.faction = data.faction;
-                    p._setPlayerModel(data.faction, data.unit);
+                    p._setPlayerModel(data.unit);
                 } else if (sectionId == 'playVoiceCommand') {
                     var p = ige.$(data.player);
                     if (p != undefined) {
@@ -334,7 +265,10 @@ var Player = IgeEntity.extend({
 
     //called when a player is first created on a client through the stream
     streamCreateData: function() {
-
+        return {
+            id: this.id(),
+            faction: this.faction
+        }
     },
 
     addStreamData: function(id, data, keepOld) {
@@ -369,8 +303,9 @@ var Player = IgeEntity.extend({
 
             if (this.controls.jump && this.states.canJump) {
                 this.states.canJump = false;
+                this.controls.jump = false;
                 //this._cannonBody.applyImpulse(new CANNON.Vec3(0,100,0), new CANNON.Vec3(0,0,0));
-                velocity.y = 20;
+                velocity.y = 16;
             }
 
 
@@ -1174,7 +1109,7 @@ var Player = IgeEntity.extend({
         //send values to all other players
         this.addStreamData('playerAttributeUpdate', {player: this._id, group: group, name: name, value: value}, !dontOverride);
     },
-    _setPlayerModel: function(faction, unit) {
+    _setPlayerModel: function(unit) {
 
         var isPlayer = ige._player ? this.id() == ige._player.id() : false;
 
@@ -1184,31 +1119,33 @@ var Player = IgeEntity.extend({
             ige.client.scene1._threeObj.remove( this._threeObj );
         }
 
-        /*
-        var mat = new THREE.MeshLambertMaterial({
-            //color: new THREE.Color('#FF0000'),
-            //map: THREE.ImageUtils.loadTexture( './assets/textures/meerkat/MeerkatzTexture256BackV4.png' ),
-            map: THREE.ImageUtils.loadTexture( './assets/textures/meerkat/meerkatTex1024.png' ),
-            skinning: true
-        });
-        */
+        var parsedModel;
+        if (this.faction == 'meerkats') {
+            var mat = new THREE.MeshLambertMaterial({
+                //color: new THREE.Color('#FF0000'),
+                //map: THREE.ImageUtils.loadTexture( './assets/textures/meerkat/MeerkatzTexture256BackV4.png' ),
+                map: THREE.ImageUtils.loadTexture( './assets/textures/meerkat/meerkatTex1024.png' ),
+                skinning: true
+            });
 
-        var mat = new THREE.MeshPhongMaterial({
-            //color: new THREE.Color('#FF0000'),
-            map: THREE.ImageUtils.loadTexture( './assets/textures/lizard/LizardTexture410V6.png' ),
-            normalMap: THREE.ImageUtils.loadTexture( './assets/textures/lizard/LizardTexture410V6_NRM.png' ),
-            skinning: true
-        });
+            parsedModel = ige.three._loader.parse(modelMeerkat);
+        } else {
+            var mat = new THREE.MeshPhongMaterial({
+                //color: new THREE.Color('#FF0000'),
+                map: THREE.ImageUtils.loadTexture( './assets/textures/lizard/LizardTexture410V6.png' ),
+                normalMap: THREE.ImageUtils.loadTexture( './assets/textures/lizard/LizardTexture410V6_NRM.png' ),
+                skinning: true
+            });
 
-        var parsedModel = ige.three._loader.parse(modelLizard);
-        //var parsedModel = ige.three._loader.parse(modelMeerkat);
+            parsedModel = ige.three._loader.parse(modelLizard);
+        }
 
         this._threeObj = new THREE.SkinnedMesh(
             parsedModel.geometry,
             mat,
             false
         );
-        this._threeObj.name = 'meerkat';
+        if (this.faction) this._threeObj.name = this.faction.substring(0,-1);
         ige.client.scene1._threeObj.add( this._threeObj );
 
 

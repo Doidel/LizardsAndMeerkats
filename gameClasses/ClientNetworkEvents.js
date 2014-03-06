@@ -115,6 +115,84 @@ var ClientNetworkEvents = {
                         ige.client.vp1.scene(ige.client.scene1);
                     }
 
+
+                    //events
+                    window.addEventListener('mousedown', function(event){
+                        if(ige.client.controls.enabled==true) {
+                            var self = ige._player;
+                            if (event.which == 1) {
+                                // build mode
+                                console.log('building? ', self.states.buildingNr);
+                                if(self.states.buildingNr >= 0){
+                                    self.commander.finalPlaceBuilding();
+                                }
+                                //attack
+                                else if (!self.controls.attack) {
+                                    // Record the new state
+                                    self.controls.attack = true;
+
+                                    // Tell the server about our control change
+                                    ige.network.send('playerControlAttackDown');
+                                }
+                            } else if (event.which == 2) {
+                                //block
+                                if (!self.controls.block) {
+                                    // Record the new state
+                                    self.controls.block = true;
+
+                                    // Tell the server about our control change
+                                    ige.network.send('playerControlBlockDown');
+                                }
+                            } else if (event.which == 3) {
+                                //chargeLeap
+                                if (!self.controls.chargeLeap) {
+                                    // Record the new state
+                                    self.controls.chargeLeap = true;
+
+                                    self._threeObj.chargeElements.opacity = 0.7;
+
+                                    // Tell the server about our control change
+                                    ige.network.send('playerControlChargeLeapDown');
+                                }
+                            }
+
+                        }
+                    });
+
+                    window.addEventListener('mouseup', function(event){
+                        var self = ige._player;
+                        if (event.which == 1) {
+                            //attack
+                            if (self.controls.attack) {
+
+                                // Record the new state
+                                self.controls.attack = false;
+                            }
+                        } else if (event.which == 2) {
+                            //block
+                            if (self.controls.block) {
+
+                                // Record the new state
+                                self.controls.block = false;
+
+                                // Tell the server about our control change
+                                ige.network.send('playerControlBlockUp');
+                            }
+
+                        } else if (event.which == 3) {
+                            //chargeLeap
+                            if (self.controls.chargeLeap) {
+                                // Record the new state
+                                self.controls.chargeLeap = false;
+
+                                self._threeObj.chargeElements.opacity = 0;
+
+                                // Tell the server about our control change
+                                ige.network.send('playerControlChargeLeapUp');
+                            }
+                        }
+                    });
+
 					// Turn off the listener for this event now that we
 					// have found and started tracking our player entity
 					ige.network.stream.off('entityCreated', self._eventListener, function (result) {
