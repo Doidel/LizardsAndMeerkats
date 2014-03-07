@@ -179,7 +179,7 @@ var Player = IgeEntity.extend({
                     return;
                 }
             } else {
-				console.log('runDirection from server:', data);
+				data = parseInt(data);
                 if (data != 0){
                     //running
                     var direction = 1, start = 10, end = 170;
