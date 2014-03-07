@@ -180,6 +180,7 @@ var Player = IgeEntity.extend({
                 }
             } else {
 				data = parseInt(data);
+				this.states.runDirection = data;
                 if (data != 0){
                     //running
                     var direction = 1, start = 10, end = 170;
@@ -589,13 +590,6 @@ var Player = IgeEntity.extend({
                     var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 0, false, ige.client.armBones2);
                     if (frame >= 400) this.states.isJumping = false;
                 } else if (this.states.isRunning != false) {
-
-                    var direction = 0, start = 10, end = 170;
-                    if (this.controls.left && !this.controls.right) {
-                        direction = 1; start = 1030; end = 1190;
-                    } else if (this.controls.right && !this.controls.left) {
-                        direction = 2; start = 1220; end = 1380;
-                    }
                     this._checkResetAnimation('running' + this.states.isRunning[0], 0);
                     this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, this.states.isRunning[1], this.states.isRunning[2], 0, true, ige.client.armBones2);
                     //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, start, end, 0, true, ige.client.armBones2);
@@ -662,11 +656,11 @@ var Player = IgeEntity.extend({
                     //hit-left: 1410 - 1460, 1490 - 1560, 1590 - 1660
                     //hit-right: 1690 - 1740, 1770 - 1840, 1870 - 1940
 
-                    if (this.controls.left && !this.controls.right) {
+                    if (this.states.runDirection == 4) {
                         //start = 1870, end = 1940, direction = 2;
                         add = 1250, direction = 2;
                         start += add, end += add;
-                    } else if (this.controls.right && !this.controls.left) {
+                    } else if (this.states.runDirection == 2) {
                         //start = 1590, end = 1660, direction = 1;
                         add = 970, direction = 1;
                         start += add, end += add;
@@ -705,10 +699,10 @@ var Player = IgeEntity.extend({
 
                     var start = 200, end = 230, add = 0, direction = 0;
 
-                    if (this.controls.left && !this.controls.right) {
+					if (this.states.runDirection == 4) {
                         add = 1870, direction = 2;
                         start += add, end += add;
-                    } else if (this.controls.right && !this.controls.left) {
+                    } else if (this.states.runDirection == 2) {
                         add = 1770, direction = 1;
                         start += add, end += add;
                     }
@@ -733,10 +727,10 @@ var Player = IgeEntity.extend({
 
                     var start = 240, end = 270, add = 0, direction = 0;
 
-                    if (this.controls.left && !this.controls.right) {
+                    if (this.states.runDirection == 4) {
                         add = 1870, direction = 2;
                         start += add, end += add;
-                    } else if (this.controls.right && !this.controls.left) {
+                    } else if (this.states.runDirection == 2) {
                         add = 1770, direction = 1;
                         start += add, end += add;
                     }
