@@ -179,14 +179,18 @@ var Player = IgeEntity.extend({
                     return;
                 }
             } else {
+				console.log('runDirection from server:', data);
                 if (data != 0){
                     //running
                     var direction = 1, start = 10, end = 170;
-                    if (this.controls.left) {
-                        direction = 2; start = 1030; end = 1190;
-                    } else if (this.controls.right) {
-                        direction = 3; start = 1220; end = 1380;
-                    }
+					switch (data) {
+						case 4:
+							direction = 2; start = 1030; end = 1190;
+							break;
+						case 2:
+							direction = 3; start = 1220; end = 1380;
+							break;
+					}
                     this.states.isRunning = [direction, start, end];
                 } else {
                     this.states.isRunning = false;
