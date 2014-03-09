@@ -2,6 +2,7 @@
 
 [Dd]eploy/
 .idea/
+node_modules/
 
 #################
 ## Eclipse
