@@ -6,18 +6,147 @@ var MainBuildingMeerkats = Building.extend({
         Building.prototype.init.call(this, id);
 
         if (!ige.isServer) {
-            var geom = ige.three._loader.parse(modelBuildingLizard).geometry;
+            var geomPillars = ige.three._loader.parse(modelBuildingMeerkatPillars).geometry;
             //geom = new THREE.CubeGeometry(2, 2, 2);
-            var mat = new THREE.MeshLambertMaterial({
-                map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/BuildingLizardTextureSmall.png' ),
+            var matPillars = new THREE.MeshLambertMaterial({
+                map: THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornTreeBark.jpg' ),
                 side: 2
                 //color: new THREE.Color('#FF0000')
             });
 
             this._threeObj = new THREE.Mesh(
-                geom,
-                mat
+                geomPillars,
+                matPillars
             );
+
+            // roof
+            var geomRoof = ige.three._loader.parse(modelBuildingMeerkatRoof).geometry;
+            //geom = new THREE.CubeGeometry(2, 2, 2);
+            var matRoof = new THREE.MeshLambertMaterial({
+                map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/meerkatRoofTextureMap2048.png' ),
+                side: 2
+                //color: new THREE.Color('#FF0000')
+            });
+
+            var roof = new THREE.Mesh(
+                geomRoof,
+                matRoof
+            );
+
+            this._threeObj.add(roof);
+
+            // floor
+            var geomFloor = ige.three._loader.parse(modelBuildingMeerkatFloor).geometry;
+            //geom = new THREE.CubeGeometry(2, 2, 2);
+            var matFloor = new THREE.MeshLambertMaterial({
+                map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/meerkatFloorTextureMap2048.png' ),
+                side: 2
+                //color: new THREE.Color('#FF0000')
+            });
+
+            var floor = new THREE.Mesh(
+                geomFloor,
+                matFloor
+            );
+
+            this._threeObj.add(floor);
+
+            var roof = new THREE.Mesh(
+                geomRoof,
+                matRoof
+            );
+
+            this._threeObj.add(roof);
+
+            // stone
+            var geomStone = ige.three._loader.parse(modelBuildingMeerkatStone).geometry;
+            //geom = new THREE.CubeGeometry(2, 2, 2);
+            var matStone = new THREE.MeshLambertMaterial({
+                map: THREE.ImageUtils.loadTexture( './assets/textures/scenery/meerkatStoneTextureMap.jpg' ),
+                side: 2
+                //color: new THREE.Color('#FF0000')
+            });
+
+            var stone = new THREE.Mesh(
+                geomStone,
+                matStone
+            );
+
+            this._threeObj.add(stone);
+
+            // stairs
+            var geomStairs = ige.three._loader.parse(modelBuildingMeerkatStairs).geometry;
+            //geom = new THREE.CubeGeometry(2, 2, 2);
+            var matStairs = new THREE.MeshLambertMaterial({
+                map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/meerkatStairsTextureMap2048.png' ),
+                side: 2
+                //color: new THREE.Color('#FF0000')
+            });
+
+            var stairs = new THREE.Mesh(
+                geomStairs,
+                matStairs
+            );
+
+            this._threeObj.add(stairs);
+
+            // voodoomask
+            var geomVoodoo = ige.three._loader.parse(modelBuildingMeerkatVoodooMask).geometry;
+            //geom = new THREE.CubeGeometry(2, 2, 2);
+            var matVoodoo = new THREE.MeshLambertMaterial({
+                map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/meerkatVoodooMaskTextureMap1024.png' ),
+                side: 2
+                //color: new THREE.Color('#FF0000')
+            });
+
+            var voodoo = new THREE.Mesh(
+                geomVoodoo,
+                matVoodoo
+            );
+
+            // voodoomaskpillar
+            var geomVoodooPillar = ige.three._loader.parse(modelBuildingMeerkatVoodooMaskPillar).geometry;
+            //geom = new THREE.CubeGeometry(2, 2, 2);
+            var matVoodooPillar = new THREE.MeshLambertMaterial({
+                map: THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornTreeBark.jpg' ),
+                side: 2
+                //color: new THREE.Color('#FF0000')
+            });
+
+            var voodooPillar = new THREE.Mesh(
+                geomVoodooPillar,
+                matVoodooPillar
+            );
+            voodooPillar.position.set(0,-1.7,0);
+
+            voodoo.add(voodooPillar);
+            voodoo.scale.set(0.5,0.5,0.5);
+            voodoo.rotation.y -= Math.PI/16;
+            voodoo.rotation.x += Math.PI/32;
+            voodoo.position.set(2,1.25,2.75);
+
+            this._threeObj.add(voodoo);
+
+            // voodoomaskpillar 2
+
+            var voodoo2 = new THREE.Mesh(
+                geomVoodoo,
+                matVoodoo
+            );
+
+            var voodooPillar2 = new THREE.Mesh(
+                geomVoodooPillar,
+                matVoodooPillar
+            );
+            voodooPillar2.position.set(0,-1.7,0);
+
+            voodoo2.add(voodooPillar2);
+            voodoo2.scale.set(0.6,0.6,0.6);
+            voodoo2.rotation.y += Math.PI/8;
+            voodoo2.rotation.x += Math.PI/16;
+            voodoo2.position.set(-0.5,1.25,2.5);
+
+            this._threeObj.add(voodoo2);
 
             this._threeObj.receiveShadow = true;
             this._threeObj.castShadow = true;
