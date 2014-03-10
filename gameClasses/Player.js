@@ -125,8 +125,15 @@ var Player = IgeEntity.extend({
             this._threeObj = new Physijs.CapsuleMesh(
                 new THREE.CylinderGeometry(0.5, 0.5, 1),
                 playerMaterial,
-                5 * 1000000 //mass
+                5 //mass
             );
+
+            // Enable CCD if the object moves more than 0.5 meter in one simulation frame
+            this._threeObj.setCcdMotionThreshold(0.5);
+
+            // Set the radius of the embedded sphere such that it is smaller than the object
+            this._threeObj.setCcdSweptSphereRadius(0.1);
+
             this._threeObj.geometry.dynamic = false;
             var spawnBuilding = ige.server.levelObjects.buildings[this.faction == 'lizards' ? 0 : 1];
             spawnBuilding._threeObj.updateMatrixWorld(true);
@@ -143,7 +150,7 @@ var Player = IgeEntity.extend({
             });
             setTimeout(function() {
                 this._threeObj.setAngularFactor({ x: 0, y: 0, z: 0 });
-                this._threeObj.setLinearFactor(new THREE.Vector3(0.0000001,0.9,0.0000001));
+                //this._threeObj.setLinearFactor(new THREE.Vector3(0.0000001,0.9,0.0000001));
             }.bind(this), 2000);
             ige.server.scene1._threeObj.add( this._threeObj );
 
