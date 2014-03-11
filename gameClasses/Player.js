@@ -119,11 +119,7 @@ var Player = IgeEntity.extend({
                 0.99, // friction
                 0.01 // restitution
             );
-            /*var physicalGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.0);
-             //physicalGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.5, 0) ); //move centerpoint to bottom
-             physicalGeometry.computeBoundingBox();
-             physicalGeometry.boundingBox.max.y += physicalGeometry.boundingBox.min.y;
-             physicalGeometry.boundingBox.min.y = 0;*/
+
             this._threeObj = new Physijs.CapsuleMesh(
                 new THREE.CylinderGeometry(0.5, 0.5, 1),
                 playerMaterial,
@@ -158,7 +154,7 @@ var Player = IgeEntity.extend({
             });
 
             setTimeout(function() {
-                this._updateHealth(0, true);
+                //this._updateHealth(0, true);
             }.bind(this), 10000);
         }
     },
@@ -222,14 +218,11 @@ var Player = IgeEntity.extend({
                         this.removeComponent(data.component);
                     }
                 } else if (sectionId == 'playerSpawn') {
-                    var p = ige.$(data.player);
-                    p.faction = data.faction;
-                    p.spawn(undefined, data.unit);
+                    this.faction = data.faction;
+                    this.spawn(undefined, data.unit);
                 } else if (sectionId == 'playVoiceCommand') {
-                    var p = ige.$(data.player);
-                    if (p != undefined) {
-                        ige.client.playAttachedSound(p.faction + data.nr + '.mp3', p._threeObj);
-                    }
+                    data = parseInt(data);
+                    ige.client.playAttachedSound(this.faction + data + '.mp3', p._threeObj);
                 } else if (sectionId == 'playersTakeHit') {
                     for (var x = 0; x < data.hit.length; x++) {
                         if (ige.$(data.hit[x])) {
@@ -237,12 +230,12 @@ var Player = IgeEntity.extend({
                         }
                     }
                 } else if (sectionId == 'playerHarvest') {
-                    var p = ige.$(data.p);
-                    if (data.amount > 0) {
-                        p.states.isScratching = true;
-                        if (p._id == ige._player._id) UI.notifications.displayHarvest(data.amount);
+                    data = parseFloat(data);
+                    if (data > 0) {
+                        this.states.isScratching = true;
+                        if (this._id == ige._player._id) UI.notifications.displayHarvest(data);
                     } else {
-                        p.states.isScratching = false;
+                        this.states.isScratching = false;
                     }
                 } else if (sectionId == 'updateHealth') {
                     if (ige.$(data.unit)) {
@@ -842,7 +835,6 @@ var Player = IgeEntity.extend({
 
         //update entity translations. needed for streaming.
         if (!this.states.isDead && this.states.isSpawned) this.translateTo(this._threeObj.position.x, this._threeObj.position.y, this._threeObj.position.z); // - this._geometry.z2
-        //console.log(this._threeObj.position.y);
     },
     /* CEXCLUDE */
     executeAttack: function() {
@@ -891,7 +883,6 @@ var Player = IgeEntity.extend({
 
             if (objectsTakenHit.length > 0) {
                 //send the hit to all players
-                //ige.network.send('playersTakeHit', {hit: objectsTakenHit, rawDamage: 20});
                 self.addStreamData('playersTakeHit', {hit: objectsTakenHit, dmg: 20});
             }
         }, 100); //TODO: Deduct the latency from the hit delay?
@@ -909,12 +900,9 @@ var Player = IgeEntity.extend({
                     self.states.isScratching = true;
                     if (this._scratchStopTimeout) clearTimeout(self._scratchStopTimeout);
                     self._scratchStopTimeout = undefined;
+                    //TODO: Add to own gold
                     //send update to all clients
-                    /*for (var key in ige.server.players) {
-                     if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
-                     //ige.network.send('playerHarvest', {player: self._id, amount: 5}, key);
-                     }*/
-                    this.addStreamData('playerHarvest', {p: self._id, amount: 5}, key);
+                    this.addStreamData('playerHarvest', 5);
                     break;
                 }
             }
@@ -1105,12 +1093,14 @@ var Player = IgeEntity.extend({
             } else {
                 this.states.isSpawned = true;
                 this._setPlayerModel(unit);
+                ige.client.requestPointerLock();
+                UI.minimap.hide();
             }
         } else {
             //Set model (faction + unit type) and displays an animation
             var spawnBuilding = ige.$(where);
             if (spawnBuilding) {
-                this.addStreamData('playerSpawn', {player: this._id, faction: this.faction, unit: unit}, this._id);
+                this.addStreamData('playerSpawn', {faction: this.faction, unit: unit}, this._id);
 
                 this._threeObj.rotation.setFromRotationMatrix(spawnBuilding._threeObj.matrixWorld);
                 this._threeObj.rotation.y -= Math.PI / 2;
@@ -1153,12 +1143,8 @@ var Player = IgeEntity.extend({
     },
     _sendScratchStop: function() {
         this.states.isScratching = false;
-        //send update to all clients
-        /*for (var key in ige.server.players) {
-         if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
-         ige.network.send('playerHarvest', {player: this._id, amount: 0}, key);
-         }*/
-        this.addStreamData('playerHarvest', {player: this._id, amount: 0}, key);
+        console.log('scratch Stop');
+        this.addStreamData('playerHarvest', 0);
     },
     _forwardAttribute: function(group, name, value, dontOverride) {
         //send values to all other players

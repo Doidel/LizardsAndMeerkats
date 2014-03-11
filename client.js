@@ -550,7 +550,8 @@ var Client = IgeClass.extend({
             document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
             document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
 
-            instructions.addEventListener( 'click', function ( event ) {
+
+            this.requestPointerLock = function () {
 
                 instructions.style.display = 'none';
 
@@ -584,7 +585,9 @@ var Client = IgeClass.extend({
 
                 }
 
-            }, false );
+            };
+
+            instructions.addEventListener( 'click', this.requestPointerLock, false );
 
         } else {
 

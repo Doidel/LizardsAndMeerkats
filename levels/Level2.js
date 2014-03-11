@@ -371,9 +371,9 @@ var Level2 = IgeClass.extend({
 
         new MainBuildingMeerkats(new THREE.Vector3(280, 29.6, -280));
 
-        new Rock1(new THREE.Vector3(28, -2, 0), 3);
+        new Rock1(new THREE.Vector3(280, 29.6 - 1.5, -270), 3);
 
-        new RockGold1(new THREE.Vector3(5, -2, 6), 4);
+        new RockGold1(new THREE.Vector3(270, 29.6 - 2, -280), 4);
     }
 });
 
