@@ -200,9 +200,7 @@ var Building = IgeEntity.extend({
         this.id(newId);
 
         //activate physics
-        this._threeObj.position.x = this._translate.x;
-        this._threeObj.position.y = this._translate.y;
-        this._threeObj.position.z = this._translate.z;
+        this.translateTo(this._translate.x, this._translate.y, this._translate.z);
         this._threeObj.quaternion.setFromEuler(new THREE.Euler(this._rotate.x, this._rotate.y, this._rotate.z));
         this.activatePhysics();
 
@@ -295,6 +293,23 @@ var Building = IgeEntity.extend({
     activatePhysics: function() {
         ige.server.scene1._threeObj.add( this._threeObj );
         //console.log('physics values', this._threeObj._physijs.position, this._threeObj._physijs.rotation);
+    },
+    translateTo: function(x, y, z) {
+        IgeEntity.prototype.translateTo.call(this, x, y, z);
+        this._threeObj.position.set(x, y, z);
+        this._threeObj.updateMatrixWorld(true);
+        this._updateMinimap();
+    },
+    translateBy: function(x, y, z) {
+        IgeEntity.prototype.translateBy.call(this, x, y, z);
+        this._threeObj.position.set(x, y, z);
+        this._threeObj.updateMatrixWorld(true);
+        this._updateMinimap();
+    },
+    _updateMinimap: function() {
+        if (!ige.isServer && this.id().indexOf('stream') == -1) {
+            UI.minimap.setBuilding(this.id(), this._translate.x, this._translate.z);
+        }
     }
     /*_forwardAttribute: function(group, name, value, includeSelf) {
         //send values to all other players

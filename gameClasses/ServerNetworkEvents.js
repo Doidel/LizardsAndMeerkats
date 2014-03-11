@@ -140,6 +140,11 @@ var ServerNetworkEvents = {
 		var p = ige.server.players[clientId];
 		if (p) p.takeCommander();
     },
+
+    _onPlayerRequestSpawn: function(data, clientId) {
+        var p = ige.server.players[clientId];
+        if (p) p.spawn(data);
+    },
 	
 	_onPlayerFinalBuild: function (data, clientId) {
 		if (ige.server.players[clientId].commander) ige.server.players[clientId].commander.finalPlaceBuilding();

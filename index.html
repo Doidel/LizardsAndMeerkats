@@ -195,6 +195,51 @@
             padding: 0 0.2em;
             display: none;
         }
+
+        #reviveCountdown {
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            margin-top: -20px;
+            font-size: 2em;
+            color: red;
+            text-align: center;
+            display: none;
+        }
+
+        #minimap {
+            background-image: url(./assets/heightmaps/Botswana.png);
+            background-size: 100% 100%;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-top: -200px;
+            margin-left: -200px;
+            width: 400px;
+            height: 400px;
+            border: 1px solid black;
+        }
+        .minimapBuilding {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+            cursor: pointer;
+        }
+        .minimapBuilding:hover {
+            opacity: 1.0;
+            width: 24px;
+            height: 24px;
+            margin-left: -2px;
+            margin-top: -2px;
+            background-size: 24px 24px;
+        }
+        #minimapBuildingmainBuildingLizards {
+            background-image: url(./assets/ui/minimap_mainBuildingLizards.png);
+        }
+        #minimapBuildingmainBuildingMeerkats {
+            background-image: url(./assets/ui/minimap_mainBuildingMeerkats.png);
+        }
     </style>
     <!-- Isogenic Loader -->
     <!-- <script type="text/javascript">var igeRoot = './ige/engine/';</script>
@@ -310,6 +355,10 @@
             </p>
         </div>
 
+        <div id="minimap">
+
+        </div>
+
     </div>
 
     <div id="interface">
@@ -350,6 +399,10 @@
         <div id="buildMenu">
             <div class="spellSlot" style="background-image: url(./assets/ui/buildingLizardsMain.jpg);"><br />Outpost</div>
             <div class="spellSlot"><br />Refinery</div>
+        </div>
+
+        <div id="reviveCountdown">
+            0
         </div>
     </div>
 </body>
@@ -475,10 +528,69 @@
 			setResource: function(nr, amount) {
 				$('#resource'+nr).html(amount);
 			}
-		}
+		},
+        spawn: {
+            _reviveInterval: undefined,
+            dying: function(reviveTimeout) {
+                var reviveCount = reviveTimeout;
+                var reviveEl = $('#reviveCountdown').css('display', 'block').html(reviveCount);
+                this._reviveInterval = setInterval(function() {
+                    reviveCount--;
+                    if (reviveCount > 0) {
+                        reviveEl.html(reviveCount);
+                    } else {
+                        this.goToSpawnScreen();
+                    }
+                }.bind(this), 1000);
+            },
+            _cancelDying: function() {
+                clearInterval(this._reviveInterval);
+                $('#reviveCountdown').css('display', 'none');
+            },
+            goToSpawnScreen: function() {
+                this._cancelDying();
+                document.exitPointerLock();
+            }
+        },
+        minimap: {
+            levelDimensions: 0,
+            setBuilding: function(id, x, y) {
+                var buildingMinimapElement = $('#minimapBuilding' + id);
+                if (buildingMinimapElement.length == 0) {
+                    buildingMinimapElement = $('<div id="minimapBuilding' + id + '" class="minimapBuilding"></div>');
+                    buildingMinimapElement.on('click', this.selectBuilding);
+                    $('#minimap').append(buildingMinimapElement);
+                }
+                buildingMinimapElement
+                        .css('left', (x + this.levelDimensions / 2) / this.levelDimensions * 400 - 10)
+                        .css('top', (y + this.levelDimensions / 2) / this.levelDimensions * 400 - 10);
+            },
+            selectBuilding: function() {
+                ige._player.spawn(this.id.substring(15));
+            }
+        },
+        igeLoadedFunctions: function() {
+
+            ige.client.vp1.on('pointerLockEntered', function() {
+                blocker.style.display = 'none';
+            });
+
+            ige.client.vp1.on('pointerLockLeft', function() {
+
+                blocker.style.display = '-webkit-box';
+                blocker.style.display = '-moz-box';
+                blocker.style.display = 'box';
+
+                instructions.style.display = '';
+
+                if (UI.spawn._reviveInterval != undefined) UI.spawn.goToSpawnScreen();
+            });
+
+        }
     };
 
     $(function() {
+
         $( "#gameMenu" ).menu();
         $.each($('#buildMenu div.spellSlot'), function(index, el) {
             $(el).append('<span class="keyShortcutLabel">'+(index + 1)+'</span>');

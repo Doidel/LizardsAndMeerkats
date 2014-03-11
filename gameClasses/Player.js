@@ -22,6 +22,8 @@ var Player = IgeEntity.extend({
         this.states = {
             canJump: true,
             rockLastHarvested: ige._currentTime,
+            isDead: false,
+            isSpawned: false,
             isJumping: false,
             currentBlockFrame: 200,
             isScratching: false,
@@ -135,12 +137,7 @@ var Player = IgeEntity.extend({
             this._threeObj.setCcdSweptSphereRadius(0.1);
 
             this._threeObj.geometry.dynamic = false;
-            var spawnBuilding = ige.server.levelObjects.buildings[this.faction == 'lizards' ? 0 : 1];
-            spawnBuilding._threeObj.updateMatrixWorld(true);
-            this._threeObj.rotation.setFromRotationMatrix(spawnBuilding._threeObj.matrixWorld);
-            this._threeObj.rotation.y -= Math.PI / 2;
-            this._rotate.y = this._threeObj.rotation.y;
-            this._threeObj.position.set(5, 5, 0).applyMatrix4(spawnBuilding._threeObj.matrixWorld);
+            this.spawn('mainBuilding' + this.faction == 'lizards' ? 'Lizards' : 'Meerkats');
 
             var upAxis = new THREE.Vector3(0,1,0);
             this._threeObj.addEventListener('collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
@@ -160,8 +157,9 @@ var Player = IgeEntity.extend({
                 networkLevelRoomSize: ige.server.gameOptions.networkLevelRoomSize
             });
 
-            //Set model (faction + unit type) and displays an animation
-            this.addStreamData('playerSpawn', {player: this._id, faction: this.faction}, this._id);
+            setTimeout(function() {
+                this._updateHealth(0, true);
+            }.bind(this), 10000);
         }
     },
 
@@ -221,13 +219,12 @@ var Player = IgeEntity.extend({
                     if (data.add !== false) {
                         this.addComponent(window[data.component]);
                     } else {
-                        //TODO: Remove component
                         this.removeComponent(data.component);
                     }
                 } else if (sectionId == 'playerSpawn') {
                     var p = ige.$(data.player);
                     p.faction = data.faction;
-                    p._setPlayerModel(data.unit);
+                    p.spawn(undefined, data.unit);
                 } else if (sectionId == 'playVoiceCommand') {
                     var p = ige.$(data.player);
                     if (p != undefined) {
@@ -301,115 +298,111 @@ var Player = IgeEntity.extend({
         var self = this;
         /* CEXCLUDE */
         if (ige.isServer) {
+            if (!this.states.isDead && this.states.isSpawned) {
+                var inputVelocity = new THREE.Vector3(0,0,0);
+                var velocity = new THREE.Vector3(0,0,0);
+                var velocityFactor = 0.2;
 
-            var inputVelocity = new THREE.Vector3(0,0,0);
-            var velocity = new THREE.Vector3(0,0,0);
-            var velocityFactor = 0.2;
-
-            /*if (this.controls.left) {
-             //this.rotateBy(0, Math.radians(0.2 * ige._tickDelta), 0);
-             } else if (this.controls.right) {
-             //this.rotateBy(0, Math.radians(-0.2 * ige._tickDelta), 0);
-             }*/
-
-            if (this.controls.jump && this.states.canJump) {
-                this.states.canJump = false;
-                this.controls.jump = false;
-                //this._cannonBody.applyImpulse(new CANNON.Vec3(0,100,0), new CANNON.Vec3(0,0,0));
-                velocity.y = 16;
-            }
-
-
-            var delta = ige._tickDelta;
-
-            if ( this.controls.forwards){
-                inputVelocity.z = -velocityFactor * delta;
-            } else if ( this.controls.backwards ){
-                inputVelocity.z = velocityFactor * delta;
-            }
-
-            if (this.controls.left){
-                inputVelocity.x = -velocityFactor * delta;
-            } else if (this.controls.right){
-                inputVelocity.x = velocityFactor * delta;
-            }
-
-            //regulate the speed so you can't profit from double speed by going both directions
-            if (Math.abs(inputVelocity.x) > 0 && Math.abs(inputVelocity.z) > 0) {
-                inputVelocity.x /= 1.4142;
-                inputVelocity.z /= 1.4142;
-            }
-
-
-            self.rotateBy(0, this.controls.rotation, 0);
-            this.controls.rotation = 0;
-
-
-            var wasCharging = this.states.isCharging;
-            this.states.isCharging = false;
-
-            if (this.controls.chargeLeap) {
-                //switch between charge and leap mode
-                if (false && this.states.canJump) {
-                    //leap
+                if (this.controls.jump && this.states.canJump) {
                     this.states.canJump = false;
-                    this.states.isCharging = false;
-                    this.controls.chargeLeap = false;
-                    this.states.isLeaping = true;
-                    velocity.y = 5;
-                    setTimeout(function() {
-                        self.states.isLeaping = false;
-                    }, 200);
-                } else if (true) {
-                    //charge
-                    if (this.states.canJump) this.states.isCharging = true;
+                    this.controls.jump = false;
+                    velocity.y = 16;
                 }
-            }
 
-            //if we can't jump it means we're already in air. If so the previous charge still applies
-            if (!this.states.canJump && wasCharging) {
-                //still charging
-                this.states.isCharging = true;
-            }
 
-            if (this.states.isLeaping) {
+                var delta = ige._tickDelta;
 
-                /*var quatLeap = new THREE.Quaternion();
-                 quatLeap.setFromEuler({x:self._rotate.x, y:self._rotate.y, z:0},"XYZ");
-                 impulse.applyQuaternion(quatLeap);*/
-                inputVelocity.x *= 5;
-                inputVelocity.z *= 5;
-            }
+                if ( this.controls.forwards){
+                    inputVelocity.z = -velocityFactor * delta;
+                } else if ( this.controls.backwards ){
+                    inputVelocity.z = velocityFactor * delta;
+                }
 
-            if (this.states.isCharging) {
-                inputVelocity.z *= 2.5;
-                inputVelocity.x *= 2.5;
-            }
+                if (this.controls.left){
+                    inputVelocity.x = -velocityFactor * delta;
+                } else if (this.controls.right){
+                    inputVelocity.x = velocityFactor * delta;
+                }
 
-            // Convert velocity to world coordinates
-            var quat = new THREE.Quaternion();
-            //deprecated -- quat.setFromEuler({x:self._rotate.x, y:self._rotate.y, z:0},"XYZ");
-            quat.setFromEuler(new THREE.Euler( self._rotate.x, self._rotate.y, 0 ));
-            inputVelocity.applyQuaternion(quat);
+                //regulate the speed so you can't profit from double speed by going both directions
+                if (Math.abs(inputVelocity.x) > 0 && Math.abs(inputVelocity.z) > 0) {
+                    inputVelocity.x /= 1.4142;
+                    inputVelocity.z /= 1.4142;
+                }
 
-            var currentVelocity = this._threeObj.getLinearVelocity();
 
-            currentVelocity.z = inputVelocity.z;
-            currentVelocity.x = inputVelocity.x;
-            currentVelocity.y = Math.round(currentVelocity.y * 1000000) / 1000000; //rounding y fluctuation to prevent streaming of very small numbers
-            if (velocity.y > 0) currentVelocity.y = velocity.y;
+                self.rotateBy(0, this.controls.rotation, 0);
+                this.controls.rotation = 0;
 
-            this._threeObj.setLinearVelocity(currentVelocity);
 
-            // ATTACK
-            if (this.controls.attack) {
-                this.controls.attack = false;
-                if (this.states.nextPossibleAttack <= ige._currentTime) this.executeAttack();
-            } else if (self.states.isScratching && !this._scratchStopTimeout) {
-                this._scratchStopTimeout = setTimeout(function() {
-                    self._sendScratchStop();
-                }, 1000); //duration of one scratch/harvest + 400, so the player can send another harvest after the first was done
-                //can be stopped/cleared in "executeAttack"
+                var wasCharging = this.states.isCharging;
+                this.states.isCharging = false;
+
+                if (this.controls.chargeLeap) {
+                    //switch between charge and leap mode
+                    if (false && this.states.canJump) {
+                        //leap
+                        this.states.canJump = false;
+                        this.states.isCharging = false;
+                        this.controls.chargeLeap = false;
+                        this.states.isLeaping = true;
+                        velocity.y = 5;
+                        setTimeout(function() {
+                            self.states.isLeaping = false;
+                        }, 200);
+                    } else if (true) {
+                        //charge
+                        if (this.states.canJump) this.states.isCharging = true;
+                    }
+                }
+
+                //if we can't jump it means we're already in air. If so the previous charge still applies
+                if (!this.states.canJump && wasCharging) {
+                    //still charging
+                    this.states.isCharging = true;
+                }
+
+                if (this.states.isLeaping) {
+
+                    /*var quatLeap = new THREE.Quaternion();
+                     quatLeap.setFromEuler({x:self._rotate.x, y:self._rotate.y, z:0},"XYZ");
+                     impulse.applyQuaternion(quatLeap);*/
+                    inputVelocity.x *= 5;
+                    inputVelocity.z *= 5;
+                }
+
+                if (this.states.isCharging) {
+                    inputVelocity.z *= 2.5;
+                    inputVelocity.x *= 2.5;
+                }
+
+                // Convert velocity to world coordinates
+                var quat = new THREE.Quaternion();
+                //deprecated -- quat.setFromEuler({x:self._rotate.x, y:self._rotate.y, z:0},"XYZ");
+                quat.setFromEuler(new THREE.Euler( self._rotate.x, self._rotate.y, 0 ));
+                inputVelocity.applyQuaternion(quat);
+
+                var currentVelocity = this._threeObj.getLinearVelocity();
+
+                currentVelocity.z = inputVelocity.z;
+                currentVelocity.x = inputVelocity.x;
+                currentVelocity.y = Math.round(currentVelocity.y * 1000000) / 1000000; //rounding y fluctuation to prevent streaming of very small numbers
+                if (velocity.y > 0) currentVelocity.y = velocity.y;
+
+                this._threeObj.setLinearVelocity(currentVelocity);
+
+                // ATTACK
+                if (this.controls.attack) {
+                    this.controls.attack = false;
+                    if (this.states.nextPossibleAttack <= ige._currentTime) this.executeAttack();
+                } else if (self.states.isScratching && !this._scratchStopTimeout) {
+                    this._scratchStopTimeout = setTimeout(function() {
+                        self._sendScratchStop();
+                    }, 1000); //duration of one scratch/harvest + 400, so the player can send another harvest after the first was done
+                    //can be stopped/cleared in "executeAttack"
+                }
+            } else {
+                this._threeObj.setLinearVelocity(new THREE.Vector3(0,0,0));
             }
         }
         /* CEXCLUDE */
@@ -644,11 +637,11 @@ var Player = IgeEntity.extend({
                 //arms animation
                 if (this.states.isDying) {
                     this._checkResetAnimation('dying', 1);
-                    //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 760, 800, 1, false, ige.client.legBones);
-                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 760, 800, 1, false, ige.client.legBones2);
-                    if (frame >= 810) {
+                    var start = 760, end = 800, speedUp = 0.5;
+                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 1, false, ige.client.legBones2);
+                    if (frame >= end) {
                         this.states.isDying = false;
-                        this.states.noAnimation = true;
+                        if (this.states.isDead) this.states.noAnimation = true;
                     }
                 } else if (this.states.isAttacking) {
                     var start = 440, end = 490, direction = 1, speedUp = 1.4, type=0;
@@ -825,18 +818,20 @@ var Player = IgeEntity.extend({
 
 
         //// STAMINA
-        if (this.values.currentStamina < this.values.maxStamina || this.controls.block) {
+        if (!this.states.isDead && (this.values.currentStamina < this.values.maxStamina || this.controls.block)) {
             var diff = (this.values.staminaregeneration*ige._tickDelta);
+
             if (this.controls.block) {
                 this.values.currentStamina = Math.max(this.values.currentStamina - diff*2, 0);
-            } else {
+            } else if (this.values.currentStamina < this.values.maxStamina) {
                 this.values.currentStamina = Math.min(this.values.currentStamina + diff, this.values.maxStamina);
             }
+
             if (!ige.isServer) UI.blockBar.setPercent(100 / this.values.maxStamina * this.values.currentStamina);
         }
 
         //// HEALTH REGEN
-        if (this.values.health < this.values.maxhealth) {
+        if (this.values.health < this.values.maxhealth && !this.states.isDead) {
             var diff = (this.values.healthregeneration*ige._tickDelta);
             this.values.health = Math.min(this.values.health + diff, this.values.maxhealth);
             this._updateHealth(this.values.health);
@@ -846,7 +841,8 @@ var Player = IgeEntity.extend({
         IgeEntity.prototype.tick.call(this, ctx);
 
         //update entity translations. needed for streaming.
-        this.translateTo(this._threeObj.position.x, this._threeObj.position.y, this._threeObj.position.z); // - this._geometry.z2
+        if (!this.states.isDead && this.states.isSpawned) this.translateTo(this._threeObj.position.x, this._threeObj.position.y, this._threeObj.position.z); // - this._geometry.z2
+        //console.log(this._threeObj.position.y);
     },
     /* CEXCLUDE */
     executeAttack: function() {
@@ -1061,6 +1057,7 @@ var Player = IgeEntity.extend({
      * @private
      */
     _updateHealth: function(health, synchronize) {
+        health = Math.max(health, 0);
         this.values.health = health;
         if (!ige.isServer) {
             //ui
@@ -1075,6 +1072,62 @@ var Player = IgeEntity.extend({
             }
         }
         /* CEXCLUDE */
+
+        if (this.states.isDead && health > 0) {
+            //revived. Can be on the field or in loading screen already
+            this.states.isDead = false;
+        }
+        if (health == 0 && !this.states.isDead) {
+            //died
+            this.states.isDead = true;
+            var reviveSeconds = 10;
+
+            if (!ige.isServer) {
+                this.states.isDying = true;
+                UI.spawn.dying(reviveSeconds);
+            }
+
+            setTimeout(function() {
+                this.states.isSpawned = false;
+            }.bind(this), reviveSeconds * 1000);
+        }
+    },
+    spawn: function(where, unit) {
+        if (!ige.isServer) {
+            // either "unit" is set by the server and he wants the player to spawn as unit xy,
+            // OR the player requests a spawn at some position/building
+            if (where) {
+                // if the player can spawn
+                if (!this.states.isSpawned) {
+                    //request spawn to server
+                    ige.network.send('playerRequestSpawn', where);
+                }
+            } else {
+                this.states.isSpawned = true;
+                this._setPlayerModel(unit);
+            }
+        } else {
+            //Set model (faction + unit type) and displays an animation
+            var spawnBuilding = ige.$(where);
+            if (spawnBuilding) {
+                this.addStreamData('playerSpawn', {player: this._id, faction: this.faction, unit: unit}, this._id);
+
+                this._threeObj.rotation.setFromRotationMatrix(spawnBuilding._threeObj.matrixWorld);
+                this._threeObj.rotation.y -= Math.PI / 2;
+                this._rotate.y = this._threeObj.rotation.y;
+                this._threeObj.position.set(5, 5, 0).applyMatrix4(spawnBuilding._threeObj.matrixWorld);
+                this._threeObj.__dirtyPosition = true;
+                this._threeObj.__dirtyRotation = true;
+
+                this.translateTo(this._threeObj.position.x, this._threeObj.position.y, this._threeObj.position.z); // - this._geometry.z2
+
+                this._updateHealth(this.values.maxhealth, true);
+
+                setTimeout(function() {
+                    this.states.isSpawned = true;
+                }.bind(this), 30);
+            }
+        }
     },
     //distance between two vec3d
     _distanceTo: function (v1, v2) {

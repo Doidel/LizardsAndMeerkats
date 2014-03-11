@@ -62,12 +62,13 @@ var Level2 = IgeClass.extend({
             //var hMapUrl = "./assets/heightmaps/NullHeight.png";
             // count of image borderlines - only used for lod
             var count = 1;
+            var size = 1024;
+            var faces = 128;
+            UI.minimap.levelDimensions = size;
+
             var hMap = new Image();
             LevelUtils.loadImage(hMap, hMapUrl, count, function(){
                 var imagedata = LevelUtils.getImageData(hMap);
-
-                var size = 1024;
-                var faces = 128;
                 var shape = new THREE.PlaneGeometry(size, size, faces, faces);
                 var grass = THREE.ImageUtils.loadTexture( './assets/textures/SoilSand0216_5_S.jpg' );
                 //var grassNormal = THREE.ImageUtils.loadTexture( './assets/textures/SoilSand0216_5_S_NRM.png' );

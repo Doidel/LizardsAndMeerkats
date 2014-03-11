@@ -77,6 +77,8 @@ var Client = IgeClass.extend({
 							.autoSize(true)
 							.mount(ige);
 
+                        UI.igeLoadedFunctions();
+
                         /*self.vp1.camera._threeObj.near = 1;
                         self.vp1.camera._threeObj.far = 1000;
                         console.log(self.vp1.camera._threeObj.near, self.vp1.camera._threeObj.far);*/
@@ -515,23 +517,21 @@ var Client = IgeClass.extend({
 
             var element = document.body;
 
+            document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock || document.webkitExitPointerLock;
+
             var pointerlockchange = function ( event ) {
 
                 if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
 
                     ige.client.controls.enabled = true;
 
-                    blocker.style.display = 'none';
+                    ige.client.vp1.emit('pointerLockEntered');
 
                 } else {
 
                     ige.client.controls.enabled = false;
 
-                    blocker.style.display = '-webkit-box';
-                    blocker.style.display = '-moz-box';
-                    blocker.style.display = 'box';
-
-                    instructions.style.display = '';
+                    ige.client.vp1.emit('pointerLockLeft');
 
                 }
 

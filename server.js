@@ -84,6 +84,7 @@ var Server = IgeClass.extend({
                         ige.network.define('playerPlayVoiceCommand', self._onPlayerPlayVoiceCommand);
                         ige.network.define('playerStartVote', self._onPlayerStartVote);
                         ige.network.define('playerVote', self._onPlayerVote);
+                        ige.network.define('playerRequestSpawn', self._onPlayerRequestSpawn);
 						
                         ige.network.define('changeBuildingColor');
                         ige.network.define('setStreamBuildingBuildable');
