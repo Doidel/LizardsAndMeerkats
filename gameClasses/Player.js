@@ -74,7 +74,9 @@ var Player = IgeEntity.extend({
             staminaregeneration: 0.01,
             health: 300,
             maxhealth: 300,
-            healthregeneration: 0.005
+            healthregeneration: 0.005,
+            gold: 0,
+            woodOrStone: 0
         };
 
         //contains data and actions which have to be streamed to the client, e.g.
@@ -98,6 +100,8 @@ var Player = IgeEntity.extend({
             this._materialAmbientBackup = this._threeObj.material.ambient;
 
             ige.client.addAudioPannerToMesh(this._threeObj);
+
+            UI.resources.setFactionImages(this.faction);
         }
 
         if (ige.isServer) {
@@ -219,6 +223,7 @@ var Player = IgeEntity.extend({
                     }
                 } else if (sectionId == 'playerSpawn') {
                     this.faction = data.faction;
+                    UI.resources.setFactionImages(this.faction);
                     this.spawn(undefined, data.unit);
                 } else if (sectionId == 'playVoiceCommand') {
                     data = parseInt(data);
@@ -233,7 +238,12 @@ var Player = IgeEntity.extend({
                     data = parseFloat(data);
                     if (data > 0) {
                         this.states.isScratching = true;
-                        if (this._id == ige._player._id) UI.notifications.displayHarvest(data);
+                        this.values.gold += data;
+                        if (this._id == ige._player._id) {
+                            UI.notifications.displayHarvest(data);
+                            UI.resources.setResource(1, this.values.gold);
+                        }
+
                     } else {
                         this.states.isScratching = false;
                     }
@@ -538,6 +548,26 @@ var Player = IgeEntity.extend({
 
                         this.toggleVoiceMode();
                     }
+                }
+
+                if (ige.input.actionState('donateGold')) {
+                    if (!this.controls.donateGold) {
+                        // Record the new state
+                        this.controls.donateGold = true;
+                        UI.resources.setKeyPressed('key_G', true);
+                        this._goldDonationVal = 0;
+                    }
+                } else {
+                    if (this.controls.donateGold) {
+                        // Record the new state
+                        this.controls.donateGold = false;
+                        UI.resources.setKeyPressed('key_G', false);
+                    }
+                }
+
+                if (this.controls.donateGold) {
+                    this._goldDonationVal = Math.min(this._goldDonationVal + 0.05 * ige._tickDelta, 100);
+                    UI.resources.setGoldDonationPercentage(this._goldDonationVal, Math.round(this.values.gold / 100 * this._goldDonationVal));
                 }
 
                 for(var i=0; i<10; ++i){
@@ -900,7 +930,8 @@ var Player = IgeEntity.extend({
                     self.states.isScratching = true;
                     if (this._scratchStopTimeout) clearTimeout(self._scratchStopTimeout);
                     self._scratchStopTimeout = undefined;
-                    //TODO: Add to own gold
+                    // Add to own gold
+                    this.values.gold += 5;
                     //send update to all clients
                     this.addStreamData('playerHarvest', 5);
                     break;
@@ -1143,7 +1174,6 @@ var Player = IgeEntity.extend({
     },
     _sendScratchStop: function() {
         this.states.isScratching = false;
-        console.log('scratch Stop');
         this.addStreamData('playerHarvest', 0);
     },
     _forwardAttribute: function(group, name, value, dontOverride) {

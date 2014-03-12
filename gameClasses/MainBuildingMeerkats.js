@@ -239,8 +239,8 @@ var MainBuildingMeerkats = Building.extend({
         if (sectionId == 'setResources') {
             if (data) {
                 data = JSON.parse(data);
-                UI.resources.setResource(0, data[0]);
-                UI.resources.setResource(1, data[1]);
+                UI.resources.setResourceTeam(0, data[0]);
+                UI.resources.setResourceTeam(1, data[1]);
             } else {
                 return this._getJSONStreamActionData('setResources');
             }

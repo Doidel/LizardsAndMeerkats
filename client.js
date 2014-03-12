@@ -169,6 +169,7 @@ var Client = IgeClass.extend({
                         ige.input.mapAction('key9', ige.input.key[9]);
                         ige.input.mapAction('key0', ige.input.key[0]);
                         ige.input.mapAction('voice', ige.input.key.v);
+                        ige.input.mapAction('donateGold', ige.input.key.g);
                         /*ige.input.mapAction('block', ige.input.mouse.wheel);
                         ige.input.mapAction('chargeLeap', ige.input.mouse.down);*/
 
