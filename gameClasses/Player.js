@@ -562,6 +562,8 @@ var Player = IgeEntity.extend({
                         // Record the new state
                         this.controls.donateGold = false;
                         UI.resources.setKeyPressed('key_G', false);
+                        var donationAmount = Math.round(this.values.gold / 100 * this._goldDonationVal);
+                        UI.resources.makeDonation(donationAmount);
                     }
                 }
 
@@ -898,7 +900,7 @@ var Player = IgeEntity.extend({
                 if (self._angleDistance(angle, rot) < blockHitAngle && !isBlocked) {
                     //hit
                     objectsTakenHit.push(possibleEnemies[x]._id);
-                    possibleEnemies[x].takeDamage(20);
+                    possibleEnemies[x].takeDamage(40);
                 }
             }
 
@@ -908,7 +910,7 @@ var Player = IgeEntity.extend({
             for (var x = 0; x < buildingsHit.length; x++) {
                 console.log('Hit a building!');
                 objectsTakenHit.push(buildingsHit[x]._id);
-                objectsTakenHit.takeDamage(20);
+                objectsTakenHit.takeDamage(40);
             }
 
             if (objectsTakenHit.length > 0) {

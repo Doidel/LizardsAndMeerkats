@@ -33,8 +33,8 @@ var Rock1 = IgeEntity.extend({
 
             var stoneMaterial = Physijs.createMaterial(
                 new THREE.MeshBasicMaterial(),
-                0,
-                0
+                .9,
+                .1
             );
 
             this._threeObj = new Physijs.SphereMesh(

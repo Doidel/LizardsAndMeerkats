@@ -37,8 +37,8 @@ var RockGold1 = IgeEntityCannon.extend({
 
             var stoneMaterial = Physijs.createMaterial(
                 new THREE.MeshBasicMaterial(),
-                .6, // low friction
-                .2 // high restitution
+                .9, // low friction
+                .1 // high restitution
             );
 
             this._threeObj = new Physijs.SphereMesh(

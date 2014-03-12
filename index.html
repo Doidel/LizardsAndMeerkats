@@ -149,6 +149,18 @@
             padding: 0px 10px;
         }
 
+        #resource1_1, #resource1_2, #resource2_1, #resource2_2 {
+            position: relative;
+        }
+
+        .resourceAddAnimElement {
+            position: absolute;
+            right: 0px;
+            top: 30px;
+            text-align: right;
+            color: rgb(159, 253, 33);
+        }
+
         #buildMenu {
             position: absolute;
             border: 1px solid #999999;
@@ -301,8 +313,12 @@
             -ms-transform:rotate(90deg); /* IE 9 */
             -webkit-transform:rotate(90deg); /* Opera, Chrome, and Safari */
             position: absolute;
-            top: -20px;
+            top: -50px;
             left: 0px;
+            width: 50px;
+            padding-top: 50px;
+            z-index: 8;
+            text-align: center;
             text-shadow: 1px 0px 20px red;
             -webkit-transition: width 0.3s;
             transition: width 0.3s;
@@ -312,6 +328,12 @@
             -webkit-text-fill-color: #FFFFFF;
             -moz-text-stroke: 1.0px #666;
             -moz-text-fill-color: #FFFFFF;
+        }
+        #goldDonationGoldFlyElement {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            visibility: hidden;
         }
     </style>
     <!-- Isogenic Loader -->
@@ -490,6 +512,7 @@
                 <img id="goldDonationBarInner" src="./assets/ui/loader.jpg" />
                 <div id="goldDonationBarDescriptor"></div>
             </div>
+            <img id="goldDonationGoldFlyElement" src="./assets/ui/icon_gold.png" />
         </div>
     </div>
 </body>
@@ -618,6 +641,38 @@
             setResourceTeam: function(nr, amount) {
                 $('#resource2_'+nr).html(amount);
             },
+            _displayAddResourceAnimation: function(nr, amount) {
+                //put green + sign
+                var plusEl = $('<div class="resourceAddAnimElement" style="top: 30px;"></div>');
+                plusEl.html('+' + amount);
+                plusEl.animate({
+                            opacity: 0.2,
+                            top: 0
+                        },
+                        {
+                            'duration': 2000,
+                            'complete': function() {
+                                $( this ).remove();
+                            }
+                        });
+                $('#resource1_'+nr).append(plusEl);
+            },
+            _displayAddResourceTeamAnimation: function(nr, amount) {
+                //put green + sign
+                var plusEl = $('<div class="resourceAddAnimElement" style="top: 30px;"></div>');
+                plusEl.html('+' + amount);
+                plusEl.animate({
+                            opacity: 0.2,
+                            top: 0
+                        },
+                        {
+                            'duration': 2000,
+                            'complete': function() {
+                                $( this ).remove();
+                            }
+                        });
+                $('#resource2_'+nr).append(plusEl);
+            },
             setFactionImages: function(faction) {
                 $('#resourceFactionSingle').attr('src', './assets/ui/'+faction+'Head_single.png');
                 $('#resourceFactionMultiple').attr('src', './assets/ui/'+faction+'Head_multiple.png');
@@ -658,6 +713,50 @@
                     $('#goldDonationBarInner').css('width', percent + '%');
                     $('#goldDonationBarDescriptor').html(value).css('left', percent + '%');
                 }
+            },
+            _goldFlyAnimFunc: function() {
+                //make gold fly over
+                $('#goldDonationGoldFlyElement')
+                        .css('visibility', 'visible')
+                        .animate({
+                            left: this._teamGoldElementOffset.left,
+                            top: this._teamGoldElementOffset.top
+                        },
+                        {
+                            'duration': 180,
+                            'complete': function() {
+                                $( this).css('visibility', 'hidden')
+                                        .css('top', '0px')
+                                        .css('left', '0px');
+                            }
+                        });
+            },
+            _donationAnimFunc: function() {
+                this._donationCount++;
+                $('#goldDonationBarDescriptor').animate({
+                            'font-size': this._donationCount % 2 == 1 ? '1.5em' : '1em'
+                        },
+                        {
+                            'duration': 200,
+                            'complete': this._donationCount % 2 == 0 ? undefined : this._goldFlyAnimFunc.bind(this)
+                        });
+
+                if (this._donationCount == 6) {
+                    clearInterval(this._donationAnimInterval);
+                }
+            },
+            makeDonation: function(value) {
+                $('#goldDonationBarDescriptor').html(value);
+                var offset = $('#goldDonationGoldFlyElement').offset();
+                this._teamGoldElementOffset = $('#resource2_1').offset();
+                this._teamGoldElementOffset.left -= offset.left;
+                this._teamGoldElementOffset.top -= offset.top;
+                console.log(this._teamGoldElementOffset);
+                this._donationCount = 0;
+                this._donationAnimFunc();
+                this._donationAnimInterval = setInterval(this._donationAnimFunc.bind(this), 200);
+
+                this._displayAddResourceTeamAnimation(1, value);
             }
 		},
         spawn: {
