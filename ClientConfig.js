@@ -28,6 +28,7 @@ var igeClientConfig = {
         './models/modelMeerkat.js',
         /* Buildings */
         './models/buildings/modelBuildingLizard.js',
+        './models/buildings/modelBuildingLizardGoldmine.js',
         './models/buildings/modelBuildingStairsLizard.js',
         './models/buildings/modelBuildingLaternLizard.js',
         './models/buildings/modelBuildingMeerkatPillars.js',
@@ -37,6 +38,8 @@ var igeClientConfig = {
         './models/buildings/modelBuildingMeerkatVoodooMask.js',
         './models/buildings/modelBuildingMeerkatVoodooMaskPillar.js',
         './models/buildings/modelBuildingMeerkatFloor.js',
+        './models/buildings/modelBuildingMeerkatGoldmine.js',
+        './models/buildings/modelBuildingGoldOre.js',
         './levels/LevelObjects/Plant1.js',
         './levels/LevelObjects/Rock1.js',
         './levels/LevelObjects/RockGold1.js',
@@ -45,6 +48,9 @@ var igeClientConfig = {
         './models/vegetation/modelAngle60.js',
         './models/vegetation/modelCamelthorn.js',
         './models/vegetation/modelCamelthornLeaves.js',
+        /* Tools */
+        './models/tools/modelToolHammer.js',
+        './models/tools/modelToolPick.js',
 
 		/* 3d filters */
 		/*'../ige/engine/components/three/EffectComposer.js',
