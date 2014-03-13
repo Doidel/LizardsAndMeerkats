@@ -84,7 +84,7 @@ var Player = IgeEntity.extend({
         this._streamActions = {};
 
         // Define the data sections that will be included in the stream
-        this._streamActionSections = ['playVoiceCommand', 'playersTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent', 'playerSetControlLeft'];
+        this._streamActionSections = ['playVoiceCommand', 'playersTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent', 'playerSetControlLeft', 'syncGold'];
         this.streamSections(['transform', 'runDirection'].concat(this._streamActionSections));
 
         if (!ige.isServer) {
@@ -108,15 +108,13 @@ var Player = IgeEntity.extend({
 
             //figure out the faction
             if (ige.server.gameStates.playerCounts.lizards == ige.server.gameStates.playerCounts.meerkats) {
-                this.faction = Math.random() < 0.5 ? 'lizards' : 'meerkats';
+                this.faction = Math.random() < 0.5 ? 'meerkats' : 'meerkats';
             } else if (ige.server.gameStates.playerCounts.lizards < ige.server.gameStates.playerCounts.meerkats) {
                 this.faction = 'lizards';
             } else {
                 this.faction = 'meerkats';
             }
             ige.server.gameStates.playerCounts[this.faction]++;
-
-            // var parsedModel = loader.parse(modelLizard);
 
             var playerMaterial = Physijs.createMaterial(
                 new THREE.MeshBasicMaterial(),
@@ -235,7 +233,7 @@ var Player = IgeEntity.extend({
                         }
                     }
                 } else if (sectionId == 'playerHarvest') {
-                    data = parseFloat(data);
+                    data = parseInt(data);
                     if (data > 0) {
                         this.states.isScratching = true;
                         this.values.gold += data;
@@ -243,7 +241,6 @@ var Player = IgeEntity.extend({
                             UI.notifications.displayHarvest(data);
                             UI.resources.setResource(1, this.values.gold);
                         }
-
                     } else {
                         this.states.isScratching = false;
                     }
@@ -251,10 +248,13 @@ var Player = IgeEntity.extend({
                     if (ige.$(data.unit)) {
                         ige.$(data.unit)._updateHealth(data.health);
                     }
-
                 } else if (sectionId == 'playerAttributeUpdate') {
                     var p = ige.$(data.player);
                     p[data.group][data.name] = data.value;
+                } else if (sectionId == 'syncGold') {
+                    data = parseInt(data);
+                    this.values.gold = data;
+                    UI.resources.setResource(1, data);
                 }
             }
         } else {
@@ -488,20 +488,6 @@ var Player = IgeEntity.extend({
                     }
                 }
 
-                //which animation will have to be run?
-                /*if (this.controls.forwards || this.controls.backwards || this.controls.left || this.controls.right) {
-                 //running
-                 var direction = 0, start = 10, end = 170;
-                 if (this.controls.left && !this.controls.right) {
-                 direction = 1; start = 1030; end = 1190;
-                 } else if (this.controls.right && !this.controls.left) {
-                 direction = 2; start = 1220; end = 1380;
-                 }
-                 setTimeout(function() {self.states.isRunning = [direction, start, end];}, 2*ige.network._latency + 130); //latency + halfOfStreamInterval + renderLatency + 30
-                 } else {
-                 setTimeout(function() {self.states.isRunning = false;}, 2*ige.network._latency + 130); //latency + halfOfStreamInterval + renderLatency
-                 }*/
-
                 if (ige.input.actionState('jump')) {
                     if (!this.controls.jump) {
                         // Record the new state
@@ -564,6 +550,7 @@ var Player = IgeEntity.extend({
                         UI.resources.setKeyPressed('key_G', false);
                         var donationAmount = Math.round(this.values.gold / 100 * this._goldDonationVal);
                         UI.resources.makeDonation(donationAmount);
+                        ige.network.send('playerDonateGold', donationAmount);
                     }
                 }
 
@@ -1068,6 +1055,16 @@ var Player = IgeEntity.extend({
             if (voteData && voteData.playersVoted.indexOf(this.id() == -1)) {
                 voteData.votes[isYes ? 'yes' : 'no']++;
                 voteData.playersVoted.push(this.id());
+            }
+        }
+    },
+    donateToTeam: function(resourceId, amount) {
+        if (resourceId == 1) {
+            if (this.values.gold >= amount) {
+                this.values.gold -= amount;
+                var mainBuilding = ige.$('mainBuilding' + (this.faction == 'lizards' ? 'Lizards' : 'Meerkats'));
+                mainBuilding.values.gold += amount;
+                this.addStreamData('syncGold', this.values.gold);
             }
         }
     },

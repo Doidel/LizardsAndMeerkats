@@ -5,6 +5,11 @@ var MainBuildingMeerkats = Building.extend({
         var id = 'mainBuildingMeerkats';
         Building.prototype.init.call(this, id);
 
+        this.values = {
+            gold: 0,
+            woodOrStone: 0
+        }
+
         if (!ige.isServer) {
             var pillarTexture = THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornTreeBark.jpg' );
             pillarTexture.wrapS = pillarTexture.wrapT = THREE.RepeatWrapping;
@@ -219,9 +224,12 @@ var MainBuildingMeerkats = Building.extend({
         //Attention:
         //this stream is for streaming to meerkat players only
 
+        // Define the data sections that will be included in the stream
+        this._streamActionSections = ['startVote'];
         //We need no transform for the main building
-        this.streamSections(['setResources', 'startVote']);
-        //this.streamSections(this._streamSections.concat(['setResources']));
+        this.streamSections(['goldResource', 'woodResource'].concat(this._streamActionSections));
+
+        this.streamMode(1);
     },
 
     /**
@@ -236,20 +244,47 @@ var MainBuildingMeerkats = Building.extend({
      */
     streamSectionData: function (sectionId, data) {
         // Check if the section is one that we are handling
-        if (sectionId == 'setResources') {
-            if (data) {
-                data = JSON.parse(data);
-                UI.resources.setResourceTeam(0, data[0]);
-                UI.resources.setResourceTeam(1, data[1]);
+        if(sectionId == 'goldResource') {
+            if(!data){
+                if(ige.isServer){
+                    return this.values.gold;
+                } else {
+                    return;
+                }
             } else {
-                return this._getJSONStreamActionData('setResources');
+                console.log('set Resource team', data);
+                data = parseInt(data);
+                this.values.gold = data;
+                UI.resources.setResourceTeam(1, data);
             }
-        } else if (sectionId == 'startVote') {
-            if (data) {
-                data = JSON.parse(data);
-                UI.voting.openDialog(data);
+        } else if(sectionId == 'woodResource') {
+            if(!data){
+                if(ige.isServer){
+                    return this.values.woodOrStone;
+                } else {
+                    return;
+                }
             } else {
-                return this._getJSONStreamActionData('startVote');
+                data = parseInt(data);
+                this.values.woodOrStone = data;
+                UI.resources.setResourceTeam(2, data);
+            }
+        } else if (this._streamActionSections.indexOf(sectionId) != -1) {
+            if (!data) {
+                if (ige.isServer) {
+                    return this._getJSONStreamActionData(sectionId);
+                } else {
+                    return;
+                }
+            }
+            var dataArr = JSON.parse(data);
+            for (var dataId in dataArr) {
+                data = dataArr[dataId];
+
+                //execute section handlers
+                if (sectionId == 'startVote') {
+                    UI.voting.openDialog(data);
+                }
             }
         } else {
             // The section was not one that we handle here, so pass this

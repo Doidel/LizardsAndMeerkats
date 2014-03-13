@@ -160,6 +160,10 @@ var ServerNetworkEvents = {
 	
 	_onPlayerVote: function (data, clientId) {
 		ige.server.players[clientId].vote(data);
+    },
+
+    _onPlayerDonateGold: function(data, clientId) {
+        ige.server.players[clientId].donateToTeam(1, parseInt(data));
     }
 };
 
