@@ -32,6 +32,7 @@ var igeClientConfig = {
         './models/buildings/modelBuildingLizardGoldmine.js',
         './models/buildings/modelBuildingStairsLizard.js',
         './models/buildings/modelBuildingLaternLizard.js',
+        './models/buildings/modelBuildingLizardStatue.js',
         './models/buildings/modelBuildingMeerkatPillars.js',
         './models/buildings/modelBuildingMeerkatRoof.js',
         './models/buildings/modelBuildingMeerkatStairs.js',
