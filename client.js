@@ -107,10 +107,8 @@ var Client = IgeClass.extend({
                         self.scene1._threeObj.remove(self.scene1._threeObj._defaultLight);
 
 
-
-
                         //pointlight
-                        var light = new THREE.PointLight( 0xffffff, 1, 0 );
+                        var light = new THREE.PointLight( 0xffffff, 0.75, 0 );
                         light.position.set( 275, 100000, -285 );
                         self.scene1._threeObj.add( light );
 
