@@ -284,7 +284,7 @@ var Player = IgeEntity.extend({
 
     addStreamData: function(id, data, keepOld) {
         //console.log(keepOld, typeof(this._streamActions[id]));
-        if (keepOld === true && typeof(this._streamActions[id]) == 'array') {
+        if (keepOld === true && typeof(this._streamActions[id]) == 'object') {
             this._streamActions[id].push(data);
         } else {
             this._streamActions[id] = [data];
@@ -1072,7 +1072,6 @@ var Player = IgeEntity.extend({
     },
     sendChatMessage: function(data) {
         data.playerName = this.values.name;
-        this.getMainBuilding().sendChatMessage(data);
         this.getMainBuilding().sendChatMessage(data);
     },
     /**

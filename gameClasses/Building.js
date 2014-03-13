@@ -53,7 +53,7 @@ var Building = IgeEntity.extend({
 
     addStreamData: function(id, data, keepOld) {
         //console.log(keepOld, typeof(this._streamActions[id]));
-        if (keepOld === true && typeof(this._streamActions[id]) == 'array') {
+        if (keepOld === true && typeof(this._streamActions[id]) == 'object') {
             this._streamActions[id].push(data);
         } else {
             this._streamActions[id] = [data];

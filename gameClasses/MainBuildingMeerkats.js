@@ -287,10 +287,7 @@ var MainBuildingMeerkats = Building.extend({
                     UI.voting.openDialog(data);
                 }
                 else if (sectionId == 'chatMessages') {
-                    console.log(data);
-                    for (var x = 0; x < data.length; x++) {
-                        UI.chat.addMessage(data[x][0], data[x][1], data[x][2]);
-                    }
+                    UI.chat.addMessage(data[0], data[1], data[2]);
                 }
             }
         } else {
@@ -307,6 +304,7 @@ var MainBuildingMeerkats = Building.extend({
 
     sendChatMessage: function(data) {
         this.addStreamData('chatMessages', [data.type, data.playerName, data.text], true);
+        console.log(typeof(this._streamActions['chatMessages']));
     }
 });
 
