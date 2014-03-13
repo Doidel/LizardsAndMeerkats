@@ -164,6 +164,10 @@ var ServerNetworkEvents = {
 
     _onPlayerDonateGold: function(data, clientId) {
         ige.server.players[clientId].donateToTeam(1, parseInt(data));
+    },
+
+    _onPlayerSendChatMessage: function(data, clientId) {
+        ige.server.players[clientId].sendChatMessage(data);
     }
 };
 

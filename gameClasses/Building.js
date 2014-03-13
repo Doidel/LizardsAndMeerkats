@@ -42,7 +42,7 @@ var Building = IgeEntity.extend({
 		
         this.streamSections(['transform']);
     },
-	
+
     _getJSONStreamActionData: function(property) {
         if (this._streamActions.hasOwnProperty(property) && this._streamActions[property] != undefined) {
             var data = this._streamActions[property];
@@ -51,8 +51,13 @@ var Building = IgeEntity.extend({
         }
     },
 
-    addStreamData: function(id, data) {
-        this._streamActions[id] = data;
+    addStreamData: function(id, data, keepOld) {
+        //console.log(keepOld, typeof(this._streamActions[id]));
+        if (keepOld === true && typeof(this._streamActions[id]) == 'array') {
+            this._streamActions[id].push(data);
+        } else {
+            this._streamActions[id] = [data];
+        }
     },
 
     /**

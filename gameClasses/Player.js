@@ -285,7 +285,6 @@ var Player = IgeEntity.extend({
     addStreamData: function(id, data, keepOld) {
         //console.log(keepOld, typeof(this._streamActions[id]));
         if (keepOld === true && typeof(this._streamActions[id]) == 'array') {
-            console.log('push data');
             this._streamActions[id].push(data);
         } else {
             this._streamActions[id] = [data];
@@ -413,7 +412,7 @@ var Player = IgeEntity.extend({
         if (!ige.isServer) {
 
             //player controls
-            if (ige._player._id == this._id) {
+            if (ige.client.controls.enabled && ige._player._id == this._id) {
 
                 if (ige.input.actionState('left')) {
 
@@ -1062,11 +1061,19 @@ var Player = IgeEntity.extend({
         if (resourceId == 1) {
             if (this.values.gold >= amount) {
                 this.values.gold -= amount;
-                var mainBuilding = ige.$('mainBuilding' + (this.faction == 'lizards' ? 'Lizards' : 'Meerkats'));
+                var mainBuilding = this.getMainBuilding();
                 mainBuilding.values.gold += amount;
                 this.addStreamData('syncGold', this.values.gold);
             }
         }
+    },
+    getMainBuilding: function() {
+        return ige.$('mainBuilding' + (this.faction == 'lizards' ? 'Lizards' : 'Meerkats'));
+    },
+    sendChatMessage: function(data) {
+        data.playerName = this.values.name;
+        this.getMainBuilding().sendChatMessage(data);
+        this.getMainBuilding().sendChatMessage(data);
     },
     /**
      * Can be called for manually updating AND synchronizing health.

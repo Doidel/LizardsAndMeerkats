@@ -335,6 +335,38 @@
             top: 0px;
             visibility: hidden;
         }
+
+
+        #chat {
+            position: absolute;
+            left: 50px;
+            bottom: 100px;
+            width: 300px;
+            height: 150px;
+            font-size: 1em;
+            overflow: hidden;
+        }
+        #chat-content {
+            width: 100%;
+            position: absolute;
+            bottom: 20px;
+            left: 0px;
+        }
+        #chat-textinput {
+            width: 100%;
+            height: 20px;
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            background-color: transparent;
+            border: 0px;
+        }
+        .chat-focused {
+            background-color: rgba(153, 102, 0, .3);
+        }
+        .chat-focused #chat-content {
+            border-bottom: 1px solid rgb(153, 102, 0);
+        }
     </style>
     <!-- Isogenic Loader -->
     <!-- <script type="text/javascript">var igeRoot = './ige/engine/';</script>
@@ -499,6 +531,11 @@
         <div id="buildMenu">
             <div class="spellSlot" style="background-image: url(./assets/ui/buildingLizardsMain.jpg);"><br />Outpost</div>
             <div class="spellSlot"><br />Refinery</div>
+        </div>
+
+        <div id="chat">
+            <div id="chat-content"></div>
+            <input id="chat-textinput" type="text" />
         </div>
 
         <div id="reviveCountdown">
@@ -804,6 +841,37 @@
             },
             show: function() {
                 $('#minimap').css('display', 'block');
+            }
+        },
+        chat: {
+            _focused: false,
+            focus: function() {
+                $('#chat-textinput').focus();
+                $('#chat').addClass('chat-focused');
+                ige.client.controls.enabled = false;
+                this._focused = true;
+            },
+            blur: function() {
+                $('#chat-textinput').blur();
+                $('#chat').removeClass('chat-focused');
+                ige.client.controls.enabled = true;
+                this._focused = false;
+            },
+            toggleFocus: function() {
+                if (this._focused) {
+                    var chatEl = $('#chat-textinput')[0];
+                    var chatEntry = chatEl.value;
+                    if (chatEntry.length > 0) {
+                        ige.network.send('playerSendChatMessage', {type: 'team', text: chatEntry});
+                        chatEl.value = '';
+                    }
+                    this.blur();
+                } else {
+                    this.focus();
+                }
+            },
+            addMessage: function(type, playerName, text) {
+                $('#chat-content').append(playerName + ": " + text + '<br />');
             }
         },
         igeLoadedFunctions: function() {

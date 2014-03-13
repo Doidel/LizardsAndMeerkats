@@ -225,7 +225,7 @@ var MainBuildingMeerkats = Building.extend({
         //this stream is for streaming to meerkat players only
 
         // Define the data sections that will be included in the stream
-        this._streamActionSections = ['startVote'];
+        this._streamActionSections = ['startVote','chatMessages'];
         //We need no transform for the main building
         this.streamSections(['goldResource', 'woodResource'].concat(this._streamActionSections));
 
@@ -286,6 +286,12 @@ var MainBuildingMeerkats = Building.extend({
                 if (sectionId == 'startVote') {
                     UI.voting.openDialog(data);
                 }
+                else if (sectionId == 'chatMessages') {
+                    console.log(data);
+                    for (var x = 0; x < data.length; x++) {
+                        UI.chat.addMessage(data[x][0], data[x][1], data[x][2]);
+                    }
+                }
             }
         } else {
             // The section was not one that we handle here, so pass this
@@ -297,6 +303,10 @@ var MainBuildingMeerkats = Building.extend({
 
     tick: function (ctx) {
         Building.prototype.tick.call(this, ctx);
+    },
+
+    sendChatMessage: function(data) {
+        this.addStreamData('chatMessages', [data.type, data.playerName, data.text], true);
     }
 });
 

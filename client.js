@@ -34,6 +34,10 @@ var Client = IgeClass.extend({
         this.legBones2 = ["Root", "Hip_L", "LegUpper_L", "LegLower_L", "Foot_L", "Hip_R", "LegUpper_R", "LegLower_R", "Foot_R"];
 
 
+        this.controls =  {
+            enabled: false
+        };
+
         ige.on('texturesLoaded', function () {
 			// Create the HTML canvas
 			ige.createFrontBuffer(true);
@@ -172,6 +176,13 @@ var Client = IgeClass.extend({
                         ige.input.mapAction('donateGold', ige.input.key.g);
                         /*ige.input.mapAction('block', ige.input.mouse.wheel);
                         ige.input.mapAction('chargeLeap', ige.input.mouse.down);*/
+
+
+                        $(document.body).keyup(function(event) {
+                            if (event.which == ige.input.key.enter) {
+                                UI.chat.toggleFocus();
+                            }
+                        });
 
                         //mouse events in Player.js
 
@@ -509,9 +520,6 @@ var Client = IgeClass.extend({
     instantiatePointerLock: function() {
         var blocker = document.getElementById( 'blocker' );
         var instructions = document.getElementById( 'instructions' );
-        ige.client.controls =  {
-            enabled: false
-        };
         var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
         if ( havePointerLock ) {
