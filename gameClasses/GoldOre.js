@@ -7,8 +7,10 @@ var GoldOre = Building.extend({
         if (!ige.isServer) {
             var geom = ige.three._loader.parse(modelBuildingGoldOre).geometry;
             //geom = new THREE.CubeGeometry(2, 2, 2);
-            var tMap = THREE.ImageUtils.loadTexture( './assets/textures/buildings/goldOreMap.png' );
-            var sMap = THREE.ImageUtils.loadTexture( './assets/textures/buildings/goldOreSpecMap.png');
+            /*var tMap = THREE.ImageUtils.loadTexture( './assets/textures/buildings/goldOreMap.png' );
+            var sMap = THREE.ImageUtils.loadTexture( './assets/textures/buildings/goldOreSpecMap.png');*/
+            var tMap = THREE.ImageUtils.loadTexture( './assets/textures/buildings/GoldOreMap.png' );
+            var sMap = THREE.ImageUtils.loadTexture( './assets/textures/buildings/GoldOreSpecMap.png');
             tMap.wrapS = tMap.wrapT = sMap.wrapS = sMap.wrapT = THREE.RepeatWrapping;
             var mat = new THREE.MeshPhongMaterial({
                 map: tMap,
