@@ -18,16 +18,6 @@ var Server = IgeClass.extend({
                 lizards: 0,
                 meerkats: 0
             },
-			resources: {
-				gold: {
-					lizards: 0,
-					meerkats: 0
-				},
-				woodOrStone: {
-					lizards: 0,
-					meerkats: 0
-				}
-			},
 			votes: {
 				lizards: undefined,
 				meerkats: undefined

@@ -230,6 +230,8 @@ var MainBuildingMeerkats = Building.extend({
         this.streamSections(['goldResource', 'woodResource'].concat(this._streamActionSections));
 
         this.streamMode(1);
+
+        this.streamSyncInterval(1000 / 3);
     },
 
     /**
@@ -252,7 +254,6 @@ var MainBuildingMeerkats = Building.extend({
                     return;
                 }
             } else {
-                console.log('set Resource team', data);
                 data = parseInt(data);
                 this.values.gold = data;
                 UI.resources.setResourceTeam(1, data);
@@ -295,17 +296,6 @@ var MainBuildingMeerkats = Building.extend({
     },
 
     tick: function (ctx) {
-        if (ige.isServer) {
-            this._tickTimer += ige._tickDelta;
-            if (this._tickTimer / 3000 > 1) {
-                this._tickTimer -= 3000;
-                this.addStreamData('setResources', [
-                    ige.server.gameStates.gold['meerkats'],
-                    ige.server.gameStates.woodOrStone['meerkats']
-                ]);
-            }
-        }
-
         Building.prototype.tick.call(this, ctx);
     }
 });

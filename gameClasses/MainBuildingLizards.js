@@ -5,6 +5,11 @@ var MainBuildingLizards = Building.extend({
         var id = 'mainBuildingLizards';
         Building.prototype.init.call(this, id);
 
+        this.values = {
+            gold: 0,
+            woodOrStone: 0
+        }
+
         if (!ige.isServer) {
             var geom = ige.three._loader.parse(modelBuildingLizard).geometry;
             //geom = new THREE.CubeGeometry(2, 2, 2);
@@ -147,51 +152,78 @@ var MainBuildingLizards = Building.extend({
 		//Attention:
 		//this stream is for streaming to lizard players only
 
-		//We need no transform for the main building
-		this.streamSections(['setResources', 'startVote']);
-		//this.streamSections(this._streamSections.concat(['setResources']));
+        // Define the data sections that will be included in the stream
+        this._streamActionSections = ['startVote'];
+        //We need no transform for the main building
+        this.streamSections(['goldResource', 'woodResource'].concat(this._streamActionSections));
+
+        this.streamMode(1);
+
+        this.streamSyncInterval(1000 / 3);
     },
 
-	/**
-	 * Override the default IgeEntity class streamSectionData() method
-	 * so that we can check for the custom1 section and handle how we deal
-	 * with it.
-	 * @param {String} sectionId A string identifying the section to
-	 * handle data get / set for.
-	 * @param {*=} data If present, this is the data that has been sent
-	 * from the server to the client for this entity.
-	 * @return {*}
-	 */
-	streamSectionData: function (sectionId, data) {
-		// Check if the section is one that we are handling
-		if (sectionId == 'setResources') {
-            if (data) {
-                data = JSON.parse(data);
-				UI.resources.setResourceTeam(0, data[0]);
-				UI.resources.setResourceTeam(1, data[1]);
+    /**
+     * Override the default IgeEntity class streamSectionData() method
+     * so that we can check for the custom1 section and handle how we deal
+     * with it.
+     * @param {String} sectionId A string identifying the section to
+     * handle data get / set for.
+     * @param {*=} data If present, this is the data that has been sent
+     * from the server to the client for this entity.
+     * @return {*}
+     */
+    streamSectionData: function (sectionId, data) {
+        // Check if the section is one that we are handling
+        if(sectionId == 'goldResource') {
+            if(!data){
+                if(ige.isServer){
+                    return this.values.gold;
+                } else {
+                    return;
+                }
             } else {
-                return this._getJSONStreamActionData('setResources');
+                data = parseInt(data);
+                this.values.gold = data;
+                UI.resources.setResourceTeam(1, data);
+            }
+        } else if(sectionId == 'stoneResource') {
+            if(!data){
+                if(ige.isServer){
+                    return this.values.woodOrStone;
+                } else {
+                    return;
+                }
+            } else {
+                data = parseInt(data);
+                this.values.woodOrStone = data;
+                UI.resources.setResourceTeam(2, data);
+            }
+        } else if (this._streamActionSections.indexOf(sectionId) != -1) {
+            if (!data) {
+                if (ige.isServer) {
+                    return this._getJSONStreamActionData(sectionId);
+                } else {
+                    return;
+                }
+            }
+            var dataArr = JSON.parse(data);
+            for (var dataId in dataArr) {
+                data = dataArr[dataId];
+
+                //execute section handlers
+                if (sectionId == 'startVote') {
+                    UI.voting.openDialog(data);
+                }
             }
         } else {
-			// The section was not one that we handle here, so pass this
-			// to the super-class streamSectionData() method - it handles
-			// the "transform" section by itself
-			return Building.prototype.streamSectionData.call(this, sectionId, data);
-		}
-	},
+            // The section was not one that we handle here, so pass this
+            // to the super-class streamSectionData() method - it handles
+            // the "transform" section by itself
+            return Building.prototype.streamSectionData.call(this, sectionId, data);
+        }
+    },
 	
 	tick: function (ctx) {
-		if (ige.isServer) {
-			this._tickTimer += ige._tickDelta;
-			if (this._tickTimer / 3000 > 1) {
-				this._tickTimer -= 3000;
-				this.addStreamData('setResources', [
-					ige.server.gameStates.gold['lizards'], 
-					ige.server.gameStates.woodOrStone['lizards']
-				]);
-			}
-		}
-		
 		Building.prototype.tick.call(this, ctx);
 	}
 });
