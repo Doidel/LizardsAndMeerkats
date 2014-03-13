@@ -108,7 +108,8 @@ var Player = IgeEntity.extend({
 
             //figure out the faction
             if (ige.server.gameStates.playerCounts.lizards == ige.server.gameStates.playerCounts.meerkats) {
-                this.faction = Math.random() < 0.5 ? 'meerkats' : 'meerkats';
+                //this.faction = Math.random() < 0.5 ? 'lizards' : 'meerkats';
+                this.faction = 'lizards';
             } else if (ige.server.gameStates.playerCounts.lizards < ige.server.gameStates.playerCounts.meerkats) {
                 this.faction = 'lizards';
             } else {

@@ -374,6 +374,8 @@ var Level2 = IgeClass.extend({
         new Rock1(new THREE.Vector3(280, 29.6 - 1.5, -270), 3);
 
         new RockGold1(new THREE.Vector3(270, 29.6 - 2, -280), 4);
+
+        new GoldOre('goldOre1', new THREE.Vector3(275, 29.6, -285));
     }
 });
 

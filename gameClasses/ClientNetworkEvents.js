@@ -76,6 +76,7 @@ var ClientNetworkEvents = {
                         console.log('create sunlight...');
                         //directional light
                         var sunlight = new THREE.DirectionalLight(0xFFFAAD, 0.7);
+                        sunlight.visible = false;
                         sunlight.position.set(0, 10, 2);
                         sunlight.shadowDarkness = 0.7;
                         sunlight.castShadow = true;

@@ -107,6 +107,14 @@ var Client = IgeClass.extend({
                         self.scene1._threeObj.remove(self.scene1._threeObj._defaultLight);
 
 
+
+
+                        //pointlight
+                        var light = new THREE.PointLight( 0xffffff, 1, 0 );
+                        light.position.set( 275, 100000, -285 );
+                        self.scene1._threeObj.add( light );
+
+
                         /*ige._threeRenderer.gammaInput = true;
                         ige._threeRenderer.gammaOutput = true;
                         ige._threeRenderer.shadowMapEnabled = true;

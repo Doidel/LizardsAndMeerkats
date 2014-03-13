@@ -5,12 +5,11 @@ var OutpostLizards = Building.extend({
         Building.prototype.init.call(this, id);
 
         if (!ige.isServer) {
-            var geom = ige.three._loader.parse(modelBuildingLizard).geometry;
+            var geom = ige.three._loader.parse(modelBuildingLizardOutpost).geometry;
             //geom = new THREE.CubeGeometry(2, 2, 2);
             var mat = new THREE.MeshLambertMaterial({
-                map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/BuildingLizardTextureSmall.png' ),
+                map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/TextureOutpost1024.jpg' ),
                 side: 2
-                //color: new THREE.Color('#FF0000')
             });
 
             this._threeObj = new THREE.Mesh(
@@ -103,8 +102,8 @@ var OutpostLizards = Building.extend({
         if (ige.isServer) {
             var stoneMaterial = Physijs.createMaterial(
                 new THREE.MeshBasicMaterial(),
-                .6, // low friction
-                .2 // high restitution
+                .9, // low friction
+                .1 // high restitution
             );
 
             var geom = new THREE.CubeGeometry(4.785, 8.52, 7.557);

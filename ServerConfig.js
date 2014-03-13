@@ -8,6 +8,7 @@ var config = {
         {name: 'Building', path: './gameClasses/Building'},
         {name: 'MainBuildingLizards', path: './gameClasses/MainBuildingLizards'},
         {name: 'MainBuildingMeerkats', path: './gameClasses/MainBuildingMeerkats'},
+        {name: 'GoldOre', path: './gameClasses/GoldOre'},
         {name: 'OutpostLizards', path: './gameClasses/OutpostLizards'},
         {name: 'OutpostMeerkats', path: './gameClasses/OutpostMeerkats'},
         {name: 'THREE', path: './ige2912/engine/components/three/three.min'},

@@ -3735,7 +3735,6 @@ var IgeEntity = IgeObject.extend({
 			// command for this entity
 			stream._streamClientCreated[thisId] = stream._streamClientCreated[thisId] || {};
 			if (!stream._streamClientCreated[thisId][clientId]) {
-                this.log('send create', 'warning');
 				createResult = this.streamCreate(clientId);
 			}
 			
