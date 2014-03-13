@@ -153,9 +153,9 @@ var MainBuildingLizards = Building.extend({
 		//this stream is for streaming to lizard players only
 
         // Define the data sections that will be included in the stream
-        this._streamActionSections = ['startVote'];
+        this._streamActionSections = ['startVote','chatMessages'];
         //We need no transform for the main building
-        this.streamSections(['goldResource', 'woodResource'].concat(this._streamActionSections));
+        this.streamSections(['goldResource', 'stoneResource'].concat(this._streamActionSections));
 
         this.streamMode(1);
 
@@ -214,6 +214,9 @@ var MainBuildingLizards = Building.extend({
                 if (sectionId == 'startVote') {
                     UI.voting.openDialog(data);
                 }
+                else if (sectionId == 'chatMessages') {
+                    UI.chat.addMessage(data[0], data[1], data[2]);
+                }
             }
         } else {
             // The section was not one that we handle here, so pass this
@@ -225,7 +228,11 @@ var MainBuildingLizards = Building.extend({
 	
 	tick: function (ctx) {
 		Building.prototype.tick.call(this, ctx);
-	}
+	},
+
+    sendChatMessage: function(data) {
+        this.addStreamData('chatMessages', [data.type, data.playerName, data.text], true);
+    }
 });
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = MainBuildingLizards; }

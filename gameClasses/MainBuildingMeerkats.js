@@ -304,7 +304,6 @@ var MainBuildingMeerkats = Building.extend({
 
     sendChatMessage: function(data) {
         this.addStreamData('chatMessages', [data.type, data.playerName, data.text], true);
-        console.log(typeof(this._streamActions['chatMessages']));
     }
 });
 
