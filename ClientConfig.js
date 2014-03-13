@@ -28,6 +28,7 @@ var igeClientConfig = {
         './models/modelMeerkat.js',
         /* Buildings */
         './models/buildings/modelBuildingLizard.js',
+        './models/buildings/modelBuildingLizardOutpost.js',
         './models/buildings/modelBuildingLizardGoldmine.js',
         './models/buildings/modelBuildingStairsLizard.js',
         './models/buildings/modelBuildingLaternLizard.js',
@@ -38,6 +39,8 @@ var igeClientConfig = {
         './models/buildings/modelBuildingMeerkatVoodooMask.js',
         './models/buildings/modelBuildingMeerkatVoodooMaskPillar.js',
         './models/buildings/modelBuildingMeerkatFloor.js',
+        './models/buildings/modelBuildingOutpostPillars.js',
+        './models/buildings/modelBuildingOutpostRoof.js',
         './models/buildings/modelBuildingMeerkatGoldmine.js',
         './models/buildings/modelBuildingGoldOre.js',
         './levels/LevelObjects/Plant1.js',
