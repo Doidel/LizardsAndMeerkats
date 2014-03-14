@@ -376,6 +376,10 @@ var Level2 = IgeClass.extend({
         new RockGold1(new THREE.Vector3(270, 29.6 - 2, -280), 4);
 
         new GoldOre('goldOre1', new THREE.Vector3(275, 29.6, -285));
+
+        //new GoldmineLizard('goldmineLizard1', new THREE.Vector3(275, 29.6, -285));
+
+        new GoldmineBuildingMeerkat('goldmineBuildingMeerkat1', new THREE.Vector3(275, 29.6, -285));
     }
 });
 
