@@ -2,7 +2,6 @@ var GoldmineBuildingMeerkat = Building.extend({
     classId: 'GoldmineBuildingMeerkat',
 
     init: function (id, position) {
-        console.log('test if server active');
         Building.prototype.init.call(this, id);
 
         if (!ige.isServer) {

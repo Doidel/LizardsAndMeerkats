@@ -33,7 +33,7 @@ var GoldmineBuildingLizard = Building.extend({
                 .1 // high restitution
             );
 
-            var geom = new THREE.CubeGeometry(4.785, 8.52, 7.557);
+            var geom = new THREE.CubeGeometry(3.086325, 5.8362, 2.04039);
             geom.computeBoundingBox();
             var halfHeight = (geom.boundingBox.max.y - geom.boundingBox.min.y) / 2;
             geom.boundingBox.max.y -= halfHeight;
@@ -46,6 +46,8 @@ var GoldmineBuildingLizard = Building.extend({
             );
             //this._threeObj.geometry.dynamic = false;
             this._threeObj.position = position;
+
+            this._threeObj.position.set(this._threeObj.position.x + 2.05,this._threeObj.position.y, this._threeObj.position.z + 0.022);
 
             if (this._id.indexOf('Stream') == -1) this.activatePhysics();
 

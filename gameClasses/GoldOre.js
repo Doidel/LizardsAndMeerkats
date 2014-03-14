@@ -25,6 +25,20 @@ var GoldOre = Building.extend({
                 mat
             );
 
+            /*
+            // physobj
+            var geomP = new THREE.SphereGeometry(3.5, 16, 16);
+            var meshP = new THREE.Mesh(
+                geomP,
+                new THREE.MeshBasicMaterial({
+                    wireframe: true,
+                    color: 'red'
+                })
+            );
+
+            this._threeObj.add(meshP);
+            */
+
             this._threeObj.receiveShadow = true;
             this._threeObj.castShadow = true;
 
@@ -39,19 +53,25 @@ var GoldOre = Building.extend({
                 .1 // high restitution
             );
 
-            var geom = new THREE.CubeGeometry(4.785, 8.52, 7.557);
-            geom.computeBoundingBox();
+            var geom = new THREE.SphereGeometry(3.5,16,16);
+            geom.computeBoundingSphere();
+            /*
             var halfHeight = (geom.boundingBox.max.y - geom.boundingBox.min.y) / 2;
             geom.boundingBox.max.y -= halfHeight;
             geom.boundingBox.min.y -= halfHeight;
+            */
 
-            this._threeObj = new Physijs.BoxMesh(
+            this._threeObj = new Physijs.SphereMesh(
                 geom,
                 stoneMaterial,
                 0 //mass
             );
             //this._threeObj.geometry.dynamic = false;
             this._threeObj.position = position;
+
+            this._threeObj.position.set(this._threeObj.position.x,this._threeObj.position.y - 1.1, this._threeObj.position.z);
+
+            if (this._id.indexOf('Stream') == -1) this.activatePhysics();
 
             this.mount(ige.server.scene1);
 
