@@ -31,6 +31,14 @@ var Building = IgeEntity.extend({
 			};
 			this.visuals.hitColor.setRGB(0.3,0.3,0);
 			this.visuals.materialAmbientBackup.setRGB(0,0,0);
+
+            //the _threeObj isn't set yet. We'll have to wait with the name tag.
+            setTimeout(function() {
+                this._healthbar = new Healthbar({
+                    entity: this,
+                    healthPercent: 100
+                });
+            }.bind(this), 1000);
 		} else {
             ige.server.levelObjects.buildings.push(this);
 			this.streamSyncInterval(200);

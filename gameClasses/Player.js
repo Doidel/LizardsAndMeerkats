@@ -230,6 +230,7 @@ var Player = IgeEntity.extend({
                 } else if (sectionId == 'objectsTakeHit') {
                     for (var x = 0; x < data.hit.length; x++) {
                         if (ige.$(data.hit[x])) {
+                            console.log('take hit', x);
                             ige.$(data.hit[x]).takeDamage(data.dmg);
                         }
                     }
@@ -892,9 +893,9 @@ var Player = IgeEntity.extend({
             }
 
             //does he hit a building?
-            var buildingsHit = self.getBuildingsHit(3);
+            var buildingsHit = self.getBuildingsHit(1);
+            console.log('Hit a buildings: ', buildingsHit.length);
             for (var x = 0; x < buildingsHit.length; x++) {
-                console.log('Hit a building!');
                 objectsTakenHit.push(buildingsHit[x]._id);
                 //buildingsHit[x].takeDamage(40);
             }
@@ -971,12 +972,44 @@ var Player = IgeEntity.extend({
     getBuildingsHit: function(radius) {
         var hitBuildings = [];
         var buildingsLength = ige.server.levelObjects.buildings.length;
+        var sensingPoints = [];
+
+        //sensing points test
+        var PI_2 = Math.PI * 2;
+        var rot = -(this._rotate.y % PI_2 + PI_2) % PI_2 - Math.PI/2;
+        var blockHitAngle = Math.PI * 0.35;
+
+        //calculate sensing points
+        for (var y = 0; y < 3; y++) {
+            var angleVal = y / 2 - 0.5;
+            var angle = rot + angleVal * blockHitAngle;
+            var sensingPoint = new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+            sensingPoint.x += this._translate.x;
+            sensingPoint.z += this._translate.z;
+            sensingPoints.push(sensingPoint);
+        }
+
+
         for (var x = 0; x < buildingsLength; x++) {
             var building = ige.server.levelObjects.buildings[x];
             var buildingMatrix = building._threeObj.matrixWorld;
 
+            if (building._threeObj.geometry.boundingSphere) {
+                var r = building._threeObj.geometry.boundingSphere.radius;
+                var pos = building._threeObj.position.clone();
+                pos.y = 0;
+                for (var sensingPointIndex = 0; sensingPointIndex <= 2; sensingPointIndex++) {
+                    if (this._distanceTo(sensingPoints[sensingPointIndex], pos) <= r) {
+                        //sensing point is within the sphere!
+                        if (hitBuildings.indexOf(building) == -1) {
+                            hitBuildings.push(building);
+                            break;
+                        }
+                    }
+                }
 
-            if (building._threeObj.geometry.boundingBox) {
+            }
+            else if (building._threeObj.geometry.boundingBox) {
                 //Rectangle x1, x2, y1, y2
                 var buildingCorner1 = new THREE.Vector3(building._threeObj.geometry.boundingBox.min.x, 0, building._threeObj.geometry.boundingBox.min.z).applyMatrix4(buildingMatrix),
                     buildingCorner2 = new THREE.Vector3(building._threeObj.geometry.boundingBox.max.x, 0, building._threeObj.geometry.boundingBox.max.z).applyMatrix4(buildingMatrix);
@@ -985,32 +1018,20 @@ var Player = IgeEntity.extend({
                 if (this._translate.x >= buildingCorner1.x - radius && this._translate.x <= buildingCorner2.x + radius &&
                     this._translate.z >= buildingCorner1.z - radius && this._translate.z <= buildingCorner2.z + radius) {
 
-                    //3 sensing devices as points. True, if one of the points is within the rectangle
-                    var PI_2 = Math.PI * 2;
-                    var rot = (this._rotate.y % PI_2 + PI_2) % PI_2;
-                    var blockHitAngle = Math.PI * 0.35;
-
-                    console.log(building._threeObj.geometry.boundingBox);
-                    console.log(buildingCorner1.x, buildingCorner1.z, buildingCorner2.x, buildingCorner2.z);
+                    //console.log(building._threeObj.geometry.boundingBox);
+                    //console.log(buildingCorner1.x, buildingCorner1.z, buildingCorner2.x, buildingCorner2.z);
 
                     //is one of the points in the rectangle?
-                    for (var y = 0; y < 3; y++) {
-                        var angleVal = y / 2 - 0.5;
-                        var angle = rot + angleVal * blockHitAngle;
-                        var sensingPoint = new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
-                        sensingPoint.x += this._translate.x;
-                        sensingPoint.z += this._translate.z;
-                        console.log(sensingPoint);
-                        if (sensingPoint.x >= buildingCorner1.x && sensingPoint.x <= buildingCorner2.x && sensingPoint.z >= buildingCorner1.z && sensingPoint.z <= buildingCorner2.z) {
+                    for (var sensingPointIndex = 0; sensingPointIndex <= 2; sensingPointIndex++) {
+                        if (sensingPoints[sensingPointIndex].x >= buildingCorner1.x && sensingPoints[sensingPointIndex].x <= buildingCorner2.x && sensingPoints[sensingPointIndex].z >= buildingCorner1.z && sensingPoints[sensingPointIndex].z <= buildingCorner2.z) {
                             //sensing point is within the rectangle!
                             if (hitBuildings.indexOf(building) == -1) {
                                 hitBuildings.push(building);
+                                break;
                             }
                         }
                     }
                 }
-            } else if (building._threeObj.geometry.boundingSphere) {
-                //TODO: Wenn die Distanz zwischen den Mittelpunkten zweier Kreise kleiner ist als die Summe ihrer Radien, so liegt eine Kollision vor
             }
         }
         return hitBuildings;

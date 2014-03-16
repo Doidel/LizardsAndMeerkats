@@ -53,7 +53,7 @@ var GoldOre = Building.extend({
                 .1 // high restitution
             );
 
-            var geom = new THREE.SphereGeometry(3.5,16,16);
+            var geom = new THREE.SphereGeometry(3.5,3,3);
             geom.computeBoundingSphere();
             /*
             var halfHeight = (geom.boundingBox.max.y - geom.boundingBox.min.y) / 2;
