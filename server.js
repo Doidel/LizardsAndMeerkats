@@ -77,6 +77,7 @@ var Server = IgeClass.extend({
                         ige.network.define('playerRequestSpawn', self._onPlayerRequestSpawn);
                         ige.network.define('playerDonateGold', self._onPlayerDonateGold);
                         ige.network.define('playerSendChatMessage', self._onPlayerSendChatMessage);
+                        ige.network.define('playerRequestNameChange', self._onPlayerRequestNameChange);
 						
                         ige.network.define('changeBuildingColor');
                         ige.network.define('setStreamBuildingBuildable');

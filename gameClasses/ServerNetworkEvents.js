@@ -168,6 +168,13 @@ var ServerNetworkEvents = {
 
     _onPlayerSendChatMessage: function(data, clientId) {
         ige.server.players[clientId].sendChatMessage(data);
+    },
+
+    _onPlayerRequestNameChange: function(data, clientId) {
+        if (data.length > 3) {
+            ige.server.players[clientId].values.name = data;
+            ige.server.players[clientId].addStreamData('updateName', data);
+        }
     }
 };
 

@@ -477,9 +477,10 @@
         </div>
 
         <div id="options-dialog">
-            <p>
-                Sound: <button id="options_mute"></button>
-            </p>
+            <table>
+                <tr><td>Your name:</td><td><input id="options_name" type="text" style="width: 150px;" /></td></tr>
+                <tr><td>Sound:</td><td><button id="options_mute"></button></td></tr>
+            </table>
         </div>
 
         <div id="minimap">
@@ -912,12 +913,17 @@
             buttons: {
                 "Close": function() {
                     $( this ).dialog( "close" );
+
+                    var playerName = $('#options_name')[0].value;
+                    if (ige._player && ige._player.values.name != playerName) {
+                        ige.network.send('playerRequestNameChange', playerName);
+                    }
                 }
             }
         })
         .dialog("close");
 
-        $( "#options_mute").button({
+        $("#options_mute").button({
             label: "Unmute",
             icons: {
                 primary: "ui-icon-volume-on"

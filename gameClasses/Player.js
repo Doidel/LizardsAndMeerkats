@@ -84,7 +84,7 @@ var Player = IgeEntity.extend({
         this._streamActions = {};
 
         // Define the data sections that will be included in the stream
-        this._streamActionSections = ['playVoiceCommand', 'objectsTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent', 'playerSetControlLeft', 'syncGold'];
+        this._streamActionSections = ['playVoiceCommand', 'objectsTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent', 'playerSetControlLeft', 'syncGold', 'updateName'];
         this.streamSections(['transform', 'runDirection'].concat(this._streamActionSections));
 
         if (!ige.isServer) {
@@ -257,6 +257,9 @@ var Player = IgeEntity.extend({
                     data = parseInt(data);
                     this.values.gold = data;
                     UI.resources.setResource(1, data);
+                } else if (sectionId == 'updateName') {
+                    this.values.name = data;
+                    this._nametag.setName();
                 }
             }
         } else {
@@ -894,7 +897,7 @@ var Player = IgeEntity.extend({
 
             //does he hit a building?
             var buildingsHit = self.getBuildingsHit(1);
-            console.log('Hit a buildings: ', buildingsHit.length);
+            //console.log('Hit buildings: ', buildingsHit.length);
             for (var x = 0; x < buildingsHit.length; x++) {
                 objectsTakenHit.push(buildingsHit[x]._id);
                 //buildingsHit[x].takeDamage(40);
