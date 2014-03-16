@@ -670,18 +670,9 @@ var Client = IgeClass.extend({
         return index;
     },
     _shadowLightMovement: function() {
-        /*if (ige.client._shadowLight.target) {
-            var p = ige.client._shadowLight.target.position;
-            ige.client._shadowLight.position.set(p.x + 20, p.y + 100, p.z);
-            ige.client._shadowLight2.position.set(p.x + 20, p.y + 100, p.z);
-        }*/
         if (ige.client._sunlightReferencePoint) {
-            var p1 = ige.client._sunlightReferencePoint.position;
             var p2 = new THREE.Vector3(0,45,0).applyMatrix4(ige.client._sunlightReferencePoint.matrixWorld);
             ige.client._shadowLight.position.set(p2.x + 20, p2.y + 50, p2.z);
-            //ige.client._shadowLight2.position.set(p1.x + 20, p1.y + 100, p1.z);
-            //ige.client._shadowLight.target.position = p2;
-            //ige.client._shadowLight2.target.position = p2;
         }
     }
 });

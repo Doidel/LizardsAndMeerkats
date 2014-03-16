@@ -84,7 +84,7 @@ var Player = IgeEntity.extend({
         this._streamActions = {};
 
         // Define the data sections that will be included in the stream
-        this._streamActionSections = ['playVoiceCommand', 'playersTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent', 'playerSetControlLeft', 'syncGold'];
+        this._streamActionSections = ['playVoiceCommand', 'objectsTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent', 'playerSetControlLeft', 'syncGold'];
         this.streamSections(['transform', 'runDirection'].concat(this._streamActionSections));
 
         if (!ige.isServer) {
@@ -227,7 +227,7 @@ var Player = IgeEntity.extend({
                 } else if (sectionId == 'playVoiceCommand') {
                     data = parseInt(data);
                     ige.client.playAttachedSound(this.faction + data + '.mp3', p._threeObj);
-                } else if (sectionId == 'playersTakeHit') {
+                } else if (sectionId == 'objectsTakeHit') {
                     for (var x = 0; x < data.hit.length; x++) {
                         if (ige.$(data.hit[x])) {
                             ige.$(data.hit[x]).takeDamage(data.dmg);
@@ -895,16 +895,15 @@ var Player = IgeEntity.extend({
             var buildingsHit = self.getBuildingsHit(3);
             for (var x = 0; x < buildingsHit.length; x++) {
                 console.log('Hit a building!');
-                continue;
                 objectsTakenHit.push(buildingsHit[x]._id);
-                objectsTakenHit.takeDamage(40);
+                //buildingsHit[x].takeDamage(40);
             }
 
             if (objectsTakenHit.length > 0) {
                 //send the hit to all players
-                self.addStreamData('playersTakeHit', {hit: objectsTakenHit, dmg: 20});
+                self.addStreamData('objectsTakeHit', {hit: objectsTakenHit, dmg: 20});
             }
-        }, 100); //TODO: Deduct the latency from the hit delay?
+        }, 300); //TODO: Deduct the latency from the hit delay?
 
         var rockFound = false;
         if (!enemyAround) {
@@ -992,21 +991,23 @@ var Player = IgeEntity.extend({
                     var blockHitAngle = Math.PI * 0.35;
 
                     console.log(building._threeObj.geometry.boundingBox);
-                    console.log(buildingCorner1, buildingCorner2);
+                    console.log(buildingCorner1.x, buildingCorner1.z, buildingCorner2.x, buildingCorner2.z);
 
                     //is one of the points in the rectangle?
-                    for (var x = -0.5; x < 0.6; x+=0.5) {
-                        var angle = rot + x * blockHitAngle;
+                    for (var y = 0; y < 3; y++) {
+                        var angleVal = y / 2 - 0.5;
+                        var angle = rot + angleVal * blockHitAngle;
                         var sensingPoint = new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
                         sensingPoint.x += this._translate.x;
                         sensingPoint.z += this._translate.z;
                         console.log(sensingPoint);
                         if (sensingPoint.x >= buildingCorner1.x && sensingPoint.x <= buildingCorner2.x && sensingPoint.z >= buildingCorner1.z && sensingPoint.z <= buildingCorner2.z) {
                             //sensing point is within the rectangle!
-                            hitBuildings.push(building);
+                            if (hitBuildings.indexOf(building) == -1) {
+                                hitBuildings.push(building);
+                            }
                         }
                     }
-                    return hitBuildings;
                 }
             } else if (building._threeObj.geometry.boundingSphere) {
                 //TODO: Wenn die Distanz zwischen den Mittelpunkten zweier Kreise kleiner ist als die Summe ihrer Radien, so liegt eine Kollision vor
