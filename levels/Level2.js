@@ -78,9 +78,9 @@ var Level2 = IgeClass.extend({
                 //grassNormal.repeat.set(64, 64);
                 //var cover = new THREE.MeshLambertMaterial({map: grass, side: 2});
                 var cover = new THREE.MeshPhongMaterial({
-                    map: grass,
+                    map: grass
                     //normalmap: grassNormal,
-                    side: 2
+                    //side: 2
                 });
 
                 var vAmountX = faces+1;
@@ -109,68 +109,7 @@ var Level2 = IgeClass.extend({
                 ground.name = "level";
 
                 // create scenery
-                var savannahGrassTexture = new THREE.ImageUtils.loadTexture( './assets/textures/scenery/Savanna_Grass.png' );
-                var savannahGrassGeomMED = new THREE.PlaneGeometry(1,1);
-                var savannahGrassGeomHIG = ige.three._loader.parse(modelAngle60).geometry;
                 var savannahGrassLODMeshes = [];
-
-                var savannahGrassSpriteMat = new THREE.SpriteMaterial({
-                    //color: 0xffffff,
-                    map: savannahGrassTexture,
-                    useScreenCoordinates: false,
-                    transparent: true,
-                    depthWrite: false
-                    //depthTest: false
-                });
-
-                var savannahGrassMat = new THREE.MeshLambertMaterial({
-                    //color: 0xffffff,
-                    map: savannahGrassTexture,
-                    side: 2,
-                    transparent: true,
-                    depthWrite: false
-                    //depthTest: false
-                });
-
-                /*for(var i=0; i<ground.geometry.vertices.length; ++i){
-                 // low
-                 var lod = new THREE.LOD();
-                 var savannahGrassMeshLOW = new THREE.Mesh();
-                 savannahGrassMeshLOW.updateMatrix();
-                 savannahGrassMeshLOW.matrixAutoUpdate = false;
-                 // medium
-                 var savannahGrassMeshMED = new THREE.Mesh(savannahGrassGeomMED, savannahGrassMat);
-                 if(i==4){
-                 console.log('test');
-                 savannahGrassMeshMED = new THREE.Mesh(savannahGrassGeomMED, new THREE.MeshBasicMaterial({color: 0xff0000, side: 2}));
-                 };
-                 savannahGrassMeshMED.name = "med";
-                 savannahGrassMeshMED.rotation.x = Math.PI * 0.5;
-                 savannahGrassMeshMED.position.z += savannahGrassGeomMED.height * 0.5;
-
-                 savannahGrassMeshMED.updateMatrix();
-                 savannahGrassMeshMED.matrixAutoUpdate = false;
-                 // high
-                 var savannahGrassMeshHIG = new THREE.Mesh(savannahGrassGeomHIG, savannahGrassMat);
-                 savannahGrassMeshHIG.rotation.x = Math.PI * 0.5;
-                 savannahGrassMeshHIG.position.z += savannahGrassGeomMED.height * 0.5;
-                 savannahGrassMeshHIG.updateMatrix();
-                 savannahGrassMeshHIG.matrixAutoUpdate = false;
-
-                 lod.addLevel(savannahGrassMeshHIG, 5);
-                 lod.addLevel(savannahGrassMeshMED, 15);
-                 lod.addLevel(savannahGrassMeshLOW, 100);
-
-                 lod.position.x = ground.geometry.vertices[i].x;
-                 lod.position.y =  ground.geometry.vertices[i].y;
-                 lod.position.z = ground.geometry.vertices[i].z;
-
-                 lod.updateMatrix();
-                 lod.matrixAutoUpdate = false;
-
-                 ground.add(lod);
-                 savannahGrassLODMeshes.push(lod);
-                 }*/
 
                 //Create grass
                 var grassPositions = new Float32Array( 30000 );
@@ -195,15 +134,6 @@ var Level2 = IgeClass.extend({
                 camelthornBarkTextureNRM.wrapS = camelthornBarkTextureNRM.wrapT = THREE.RepeatWrapping;
                 //camelthornBarkTextureNRM.repeat.set(64, 64);
                 var camelthornLeavesTexture = new THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornLeaves.png' );
-
-                var camelthornSpriteMat = new THREE.SpriteMaterial({
-                    //color: 0xffffff,
-                    map: savannahGrassTexture,
-                    useScreenCoordinates: false,
-                    transparent: true,
-                    depthWrite: false
-                    //depthTest: false
-                });
 
                 var camelthornBarkMat = new THREE.MeshPhongMaterial({
                     //color: 0xffffff,

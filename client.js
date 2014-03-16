@@ -71,7 +71,10 @@ var Client = IgeClass.extend({
 
 						// Create the scene
 						self.scene1 = new StreamScene()
+                            .shouldRender(false)
 							.id('scene1');
+
+                        self.scene1._threeObj.name = "scene1";
 
 						// Create the main viewport and set the scene
 						// it will "look" at as the new scene1 we just
@@ -88,7 +91,7 @@ var Client = IgeClass.extend({
                         console.log(self.vp1.camera._threeObj.near, self.vp1.camera._threeObj.far);*/
 
 						self.vp1.camera.translateTo(0, 2, 2);
-                        self.vp1.camera._threeObj.rotation.order = "YXZ";
+                        //self.vp1.camera._threeObj.rotation.order = "YXZ";
 
                         self.initAudio();
 						var backgroundSoundInit = function() {
@@ -101,16 +104,35 @@ var Client = IgeClass.extend({
                         };
                         backgroundSoundInit();
 
-                        ige._threeRenderer.shadowMapEnabled = true;
-                        //ige._threeRenderer.shadowMapSoft = true;
+                        //remove ambient light
+                        self.scene1._threeObj.remove(self.scene1._threeObj.children[0]);
 
-                        self.scene1._threeObj.remove(self.scene1._threeObj._defaultLight);
+                        console.log('create Sunlight');
+                        var sunlight = new THREE.DirectionalLight(0xFFFFFF, 1);
+                        sunlight.position.set( 0, 50, 0 );
+                        sunlight.shadowDarkness = 0.5;
+                        sunlight.castShadow = true;
 
+                        sunlight.shadowMapWidth = 2048;
+                        sunlight.shadowMapHeight = 2048;
+                        sunlight.shadowMapDarkness = 0.95;
+                        //sunlight.shadowCameraVisible = true;
+                        sunlight.shadowCameraNear = 85;
+                        sunlight.shadowCameraFar = 115;
 
-                        //pointlight
-                        var light = new THREE.PointLight( 0xffffff, 0.75, 0 );
-                        light.position.set( 275, 100000, -285 );
-                        self.scene1._threeObj.add( light );
+                        var d = 20;
+                        sunlight.shadowCameraLeft = -d;
+                        sunlight.shadowCameraRight = d;
+                        sunlight.shadowCameraTop = d;
+                        sunlight.shadowCameraBottom = -d;
+
+                        sunlight.shadowBias = 0.000065;
+
+                        self._shadowLight = sunlight;
+
+                        self.scene1._threeObj.add(sunlight);
+
+                        ige.addBehaviour('shadowLight', self._shadowLightMovement, true);
 
 
                         /*ige._threeRenderer.gammaInput = true;
@@ -118,19 +140,20 @@ var Client = IgeClass.extend({
                         ige._threeRenderer.shadowMapEnabled = true;
 
                         ige._threeRenderer.shadowMapCascade = true;
-                        ige._threeRenderer.shadowMapType = THREE.PCFSoftShadowMap;*/
+                        ige._threeRenderer.shadowMapType = THREE.PCFSoftShadowMap;
                         ige._threeRenderer.shadowMapEnabled = true;
-                        ige._threeRenderer.shadowMapSoft = true;
+                        ige._threeRenderer.shadowMapSoft = true;*/
 
-                        ige._threeRenderer.shadowCameraNear = 3;
+                        /*ige._threeRenderer.shadowCameraNear = 3;
                         ige._threeRenderer.shadowCameraFar = 50;
                         ige._threeRenderer.shadowCameraFov = 50;
 
                         ige._threeRenderer.shadowMapBias = 0.0039;
                         ige._threeRenderer.shadowMapDarkness = 0.5;
                         ige._threeRenderer.shadowMapWidth = 2048;
-                        ige._threeRenderer.shadowMapHeight = 2048;
-
+                        ige._threeRenderer.shadowMapHeight = 2048;*/
+                        ige._threeRenderer.shadowMapEnabled = true;
+                        ige._threeRenderer.shadowMapType = THREE.PCFSoftShadowMap;
 
 
                         //Instantiate Level and World
@@ -230,76 +253,6 @@ var Client = IgeClass.extend({
                         skybox.flipSided = true;
 
                         self.scene1._threeObj.add(skybox);
-
-
-
-                        //// EMITTER STUFF
-
-                        /*var group = new THREE.Object3D();
-
-                        var sparksEmitter = new SPARKS.Emitter(new SPARKS.SteadyCounter(200));
-
-
-                        var emitterpos = new THREE.Vector3(0,0,0);
-                        var sphereCap = new SPARKS.SphereCapZone(0, 0, 0, 10, 0, 40);
-
-                        sparksEmitter.addInitializer(new SPARKS.Position( new SPARKS.PointZone( emitterpos ) ) );
-                        sparksEmitter.addInitializer(new SPARKS.Lifetime(0,4));
-
-
-                        var h = 0;
-
-
-                        var callback = function() {
-
-                            var material = new THREE.ParticleCanvasMaterial( {  program: SPARKS.CanvasShadersUtils.circles , blending:THREE.AdditiveBlending } );
-
-                            material.color.setRGB(h, 1, 0.5); //0.7
-                            h += 1;
-                            if (h>255) h-=254;
-
-                            particle = new THREE.Particle( material );
-
-                            particle.scale.x = particle.scale.y = Math.random() * 2 +1;
-                            group.add( particle );
-
-                            return particle;
-                        };
-
-
-                        sparksEmitter.addInitializer(new SPARKS.Target(null, callback));
-
-                        sparksEmitter.addInitializer(new SPARKS.Velocity(sphereCap));
-                        sparksEmitter.addAction(new SPARKS.Age());
-                        sparksEmitter.addAction(new SPARKS.Accelerate(0.2));
-                        sparksEmitter.addAction(new SPARKS.Move());
-
-                        sparksEmitter.addCallback("created", function(p) {
-                            var position = p.position;
-                            p.target.position = position;
-                        });
-
-                        sparksEmitter.addCallback("initialized", function(p) {
-                            var position = p.position;
-                            p.target.position = position;
-                        });
-
-                        sparksEmitter.addCallback("dead", function(particle) {
-                            particle.target.visible = false; // is this a work around?
-                            group.remove(particle.target);
-
-                        });
-                        sparksEmitter.start();*/
-
-
-                        /*sparksEmitter = new SPARKS.Emitter(new SPARKS.SteadyCounter(200));
-
-
-                        emitterpos = new THREE.Vector3(0,0,0);
-                        var sphereCap = new SPARKS.SphereCapZone(0, 0, 0, 10, 0, 40);
-
-                        sparksEmitter.addInitializer(new SPARKS.Position( new SPARKS.PointZone( emitterpos ) ) );
-                        sparksEmitter.addInitializer(new SPARKS.Lifetime(0,4));*/
 					});
 
                     //custom animation update
@@ -715,6 +668,21 @@ var Client = IgeClass.extend({
             }
         }
         return index;
+    },
+    _shadowLightMovement: function() {
+        /*if (ige.client._shadowLight.target) {
+            var p = ige.client._shadowLight.target.position;
+            ige.client._shadowLight.position.set(p.x + 20, p.y + 100, p.z);
+            ige.client._shadowLight2.position.set(p.x + 20, p.y + 100, p.z);
+        }*/
+        if (ige.client._sunlightReferencePoint) {
+            var p1 = ige.client._sunlightReferencePoint.position;
+            var p2 = new THREE.Vector3(0,45,0).applyMatrix4(ige.client._sunlightReferencePoint.matrixWorld);
+            ige.client._shadowLight.position.set(p2.x + 20, p2.y + 50, p2.z);
+            //ige.client._shadowLight2.position.set(p1.x + 20, p1.y + 100, p1.z);
+            //ige.client._shadowLight.target.position = p2;
+            //ige.client._shadowLight2.target.position = p2;
+        }
     }
 });
 

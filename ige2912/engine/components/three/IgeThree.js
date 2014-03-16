@@ -121,8 +121,10 @@ var IgeThree = IgeEventingClass.extend({
 			this._scene.tick(ctx, scene);
 
 			// Draw the scene
-			ige._threeRenderer.clear();
-			ige._threeRenderer.render(this._scene._threeObj, this.camera._threeObj);
+            if (this._scene._shouldRender) {
+                ige._threeRenderer.clear();
+                ige._threeRenderer.render(this._scene._threeObj, this.camera._threeObj);
+            }
 		}
 	},
 

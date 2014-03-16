@@ -70,48 +70,6 @@ var ClientNetworkEvents = {
                         ige.client.vp1.camera.radius *= modifierY;
                     }, false );
 
-
-
-                    if (entity.__threeSunlight == undefined) {
-                        console.log('create sunlight...');
-                        //directional light
-                        var sunlight = new THREE.DirectionalLight(0xFFFAAD, 0.7);
-                        sunlight.visible = false;
-                        sunlight.position.set(0, 10, 2);
-                        sunlight.shadowDarkness = 0.7;
-                        sunlight.castShadow = true;
-                        //sunlight.shadowCameraVisible = true;
-                        sunlight.target = entity._threeObj;
-
-                        sunlight.shadowCameraLeft = -6;
-                        sunlight.shadowCameraRight = 6;
-                        sunlight.shadowCameraTop = 10;
-                        sunlight.shadowCameraBottom = -2;
-                        sunlight.shadowCameraNear = 5;
-                        sunlight.shadowCameraFar = 15;
-
-                        sunlight.shadowMapWidth = 1024;
-                        sunlight.shadowMapHeight = 1024;
-
-                        entity._threeObj.add( sunlight );
-                        entity.__threeSunlight = sunlight;
-
-                        /*sunlight.shadowDarkness = 0.6;
-                         sunlight.shadowBias = 0.000065;*/
-
-                        /*sunlight.shadowCascade = true;
-                         sunlight.shadowCascadeCount = 3;
-                         sunlight.shadowCascadeNearZ = [ -1.000, 0.995, 0.998 ];
-                         sunlight.shadowCascadeFarZ  = [  0.995, 0.998, 1.000 ];
-                         sunlight.shadowCascadeWidth = [ 1024, 1024, 1024 ];
-                         sunlight.shadowCascadeHeight = [ 1024, 1024, 1024 ];*/
-
-                        //sunlight.shadowCascadeOffset.set( 0, 0, -10 );
-                        //sunlight.lookAt(new THREE.Vector3(0,0,0));
-
-                        //self.scene1._threeObj._defaultLight = sunlight;
-                    }
-
                     if (ige.client.vp1.scene() == undefined) {
                         ige.client.vp1.scene(ige.client.scene1);
                     }
