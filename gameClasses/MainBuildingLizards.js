@@ -102,6 +102,21 @@ var MainBuildingLizards = Building.extend({
                 this._threeObj.add(laterns[i]);
             }
 
+
+            /*
+             // physobj
+             var geomP = new THREE.CubeGeometry(4.785, 17.0, 7.557);
+             var meshP = new THREE.Mesh(
+             geomP,
+             new THREE.MeshBasicMaterial({
+             wireframe: true,
+             color: 'red'
+             })
+             );
+
+            this._threeObj.add(meshP);
+            */
+
             //ige.client.scene1._threeObj.add(this._threeObj);
             this.mount(ige.client.scene1);
         }
@@ -113,7 +128,7 @@ var MainBuildingLizards = Building.extend({
                 .2 // high restitution
             );
 
-            var geom = new THREE.CubeGeometry(4.785, 8.52, 7.557);
+            var geom = new THREE.CubeGeometry(4.785, 17.0, 7.557);
             geom.computeBoundingBox();
             var halfHeight = (geom.boundingBox.max.y - geom.boundingBox.min.y) / 2;
             geom.boundingBox.max.y -= halfHeight;

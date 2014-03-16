@@ -11,6 +11,8 @@ var config = {
         {name: 'GoldOre', path: './gameClasses/GoldOre'},
         {name: 'OutpostLizards', path: './gameClasses/OutpostLizards'},
         {name: 'OutpostMeerkats', path: './gameClasses/OutpostMeerkats'},
+        {name: 'GoldmineBuildingLizard', path: './gameClasses/GoldmineBuildingLizard'},
+        {name: 'GoldmineBuildingMeerkat', path: './gameClasses/GoldmineBuildingMeerkat'},
         {name: 'THREE', path: './ige2912/engine/components/three/three.min'},
         {name: 'modelLizard', path: './models/modelLizard'},
         {name: 'LevelUtils', path: './levels/LevelUtils'},

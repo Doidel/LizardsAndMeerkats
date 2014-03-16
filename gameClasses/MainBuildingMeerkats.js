@@ -160,17 +160,6 @@ var MainBuildingMeerkats = Building.extend({
 
             this._threeObj.add(voodoo2);
 
-            // test physic objects
-            var testgeom = new THREE.CubeGeometry(4.785, 8.52, 7.557);
-            var testMesh = new THREE.Mesh(
-                testgeom,
-                matVoodooPillar
-            );
-            testMesh.name = 'testmesh';
-
-            this._threeObj.add(testMesh);
-
-
             this._threeObj.receiveShadow = true;
             this._threeObj.castShadow = true;
 
@@ -185,13 +174,15 @@ var MainBuildingMeerkats = Building.extend({
                 .2 // high restitution
             );
 
-            var geom = new THREE.CubeGeometry(4.785, 8.52, 7.557);
+            var geom = new THREE.CylinderGeometry(3,3,10);
+            /*
             geom.computeBoundingBox();
             var halfHeight = (geom.boundingBox.max.y - geom.boundingBox.min.y) / 2;
             geom.boundingBox.max.y -= halfHeight;
             geom.boundingBox.min.y -= halfHeight;
+            */
 
-            this._threeObj = new Physijs.BoxMesh(
+            this._threeObj = new Physijs.CylinderMesh(
                 geom,
                 stoneMaterial,
                 0 //mass

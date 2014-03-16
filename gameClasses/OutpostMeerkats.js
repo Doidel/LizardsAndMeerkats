@@ -5,96 +5,54 @@ var OutpostMeerkats = Building.extend({
         Building.prototype.init.call(this, id);
 
         if (!ige.isServer) {
-            var geom = ige.three._loader.parse(modelBuildingLizard).geometry;
-            //geom = new THREE.CubeGeometry(2, 2, 2);
-            var mat = new THREE.MeshLambertMaterial({
-                map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/BuildingLizardTextureSmall.png' ),
+            var geomPillars = ige.three._loader.parse(modelBuildingMeerkatOutpostPillars).geometry;
+            var tMap = THREE.ImageUtils.loadTexture( './assets/textures/scenery/textureCamelthornTreeBark.jpg' );
+            tMap.wrapS = tMap.wrapT = THREE.RepeatWrapping;
+
+            var matPillars = new THREE.MeshLambertMaterial({
+                map: tMap,
                 side: 2
                 //color: new THREE.Color('#FF0000')
             });
 
             this._threeObj = new THREE.Mesh(
-                geom,
-                mat
+                geomPillars,
+                matPillars
             );
 
-            this._threeObj.receiveShadow = true;
-            this._threeObj.castShadow = true;
-
-            /* adding stairs */
-            var geomStairs = ige.three._loader.parse(modelBuildingStairsLizard).geometry;
-            var matStairs = new THREE.MeshLambertMaterial({
-                map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/BuildingLizardStairsTexture.png' ),
+            /* roof */
+            var geomRoof = ige.three._loader.parse(modelBuildingMeerkatOutpostRoof).geometry;
+            var tMapRoof = THREE.ImageUtils.loadTexture( './assets/textures/buildings/meerkatRoofTextureMap2048.png' );
+            tMapRoof.wrapS = tMapRoof.wrapT = THREE.RepeatWrapping;
+            var matRoof = new THREE.MeshLambertMaterial({
+                map: tMapRoof,
                 side: 2
                 //color: new THREE.Color('#FF0000')
             });
 
-            var stairs = [];
-            for(var i=0; i<4; ++i){
-                stairs.push(new THREE.Mesh(
-                    geomStairs,
-                    matStairs
-                ));
-                stairs[i].receiveShadow = true;
-                stairs[i].castShadow = true;
-            }
+            var meshRoof = new THREE.Mesh(
+                geomRoof,
+                matRoof
+            );
 
-            stairs[0].position = new THREE.Vector3(0, 0, 4.65);
+            this._threeObj.add(meshRoof)
 
-            stairs[1].rotation.y = Math.PI/2;
-            stairs[1].position = new THREE.Vector3(3.26, 0, 1.5);
+            /*
+             // physobj
+             var geomP = new THREE.CylinderGeometry(1.5,1.5,7.35);
+             var meshP = new THREE.Mesh(
+             geomP,
+             new THREE.MeshBasicMaterial({
+             wireframe: true,
+             color: 'red'
+             })
+             );
+             this._threeObj.add(meshP);
+             */
 
-            stairs[2].rotation.y = Math.PI/2;
-            stairs[2].position = new THREE.Vector3(3.26, 0, -1.5);
 
-            stairs[3].rotation.y = Math.PI;
-            stairs[3].position = new THREE.Vector3(0, 0, -4.65);
-            for(var i=0; i<4; ++i){
-                this._threeObj.add(stairs[i]);
-            }
-
-            /* adding laterns */
-            var geomLatern = ige.three._loader.parse(modelBuildingLaternLizard).geometry;
-            var matLatern = new THREE.MeshLambertMaterial({
-                map: THREE.ImageUtils.loadTexture( './assets/textures/buildings/BuildingLizardLaternTexture.png' ),
-                side: 2
-            });
-
-            var laterns = [];
-            for(var i=0; i<10; ++i){
-                laterns.push(new THREE.Mesh(
-                    geomLatern,
-                    matLatern
-                ));
-                laterns[i].receiveShadow = true;
-                laterns[i].castShadow = true;
-            }
-
-            laterns[0].position = new THREE.Vector3(1.34, 2.36, 3.45);
-            laterns[1].position = new THREE.Vector3(-1.34, 2.36, 3.45);
-
-            laterns[2].rotation.y = Math.PI;
-            laterns[3].rotation.y = Math.PI;
-            laterns[2].position = new THREE.Vector3(1.34, 2.36, -3.45);
-            laterns[3].position = new THREE.Vector3(-1.34, 2.36, -3.45);
-
-            laterns[4].rotation.y = Math.PI/2;
-            laterns[5].rotation.y = Math.PI/2;
-            laterns[6].rotation.y = Math.PI/2;
-            laterns[4].position = new THREE.Vector3(2.07, 2.36, 2.735);
-            laterns[5].position = new THREE.Vector3(2.07, 2.36, 0);
-            laterns[6].position = new THREE.Vector3(2.07, 2.36, -2.735);
-
-            laterns[7].rotation.y = (Math.PI*3)/2;
-            laterns[8].rotation.y = (Math.PI*3)/2;
-            laterns[9].rotation.y = (Math.PI*3)/2;
-            laterns[7].position = new THREE.Vector3(-2.07, 2.36, 2.735);
-            laterns[8].position = new THREE.Vector3(-2.07, 2.36, 0);
-            laterns[9].position = new THREE.Vector3(-2.07, 2.36, -2.735);
-
-            for(var i=0; i<10; ++i){
-                this._threeObj.add(laterns[i]);
-            }
+            this._threeObj.receiveShadow = true;
+            this._threeObj.castShadow = true;
 
             //ige.client.scene1._threeObj.add(this._threeObj);
             this.mount(ige.client.scene1);
@@ -107,13 +65,15 @@ var OutpostMeerkats = Building.extend({
                 .2 // high restitution
             );
 
-            var geom = new THREE.CubeGeometry(4.785, 8.52, 7.557);
+            var geom = new THREE.CylinderGeometry(1.5,1.5,7.35);
+            /*
             geom.computeBoundingBox();
             var halfHeight = (geom.boundingBox.max.y - geom.boundingBox.min.y) / 2;
             geom.boundingBox.max.y -= halfHeight;
             geom.boundingBox.min.y -= halfHeight;
+            */
 
-            this._threeObj = new Physijs.BoxMesh(
+            this._threeObj = new Physijs.CylinderMesh(
                 geom,
                 stoneMaterial,
                 0 //mass

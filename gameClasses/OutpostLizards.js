@@ -38,16 +38,16 @@ var OutpostLizards = Building.extend({
                 stairs[i].castShadow = true;
             }
 
-            stairs[0].position = new THREE.Vector3(0, 0, 4.65);
+            stairs[0].position = new THREE.Vector3(0, 0, 3.45);
 
             stairs[1].rotation.y = Math.PI/2;
-            stairs[1].position = new THREE.Vector3(3.26, 0, 1.5);
+            stairs[1].position = new THREE.Vector3(3.26, 0, 0);
 
-            stairs[2].rotation.y = Math.PI/2;
-            stairs[2].position = new THREE.Vector3(3.26, 0, -1.5);
+            stairs[2].rotation.y = Math.PI*3/2;
+            stairs[2].position = new THREE.Vector3(-3.26, 0, 0);
 
             stairs[3].rotation.y = Math.PI;
-            stairs[3].position = new THREE.Vector3(0, 0, -4.65);
+            stairs[3].position = new THREE.Vector3(0, 0, -3.45);
             for(var i=0; i<4; ++i){
                 this._threeObj.add(stairs[i]);
             }
@@ -69,31 +69,43 @@ var OutpostLizards = Building.extend({
                 laterns[i].castShadow = true;
             }
 
-            laterns[0].position = new THREE.Vector3(1.34, 2.36, 3.45);
-            laterns[1].position = new THREE.Vector3(-1.34, 2.36, 3.45);
+            laterns[0].position = new THREE.Vector3(1.34, 2.36, 2.225);
+            laterns[1].position = new THREE.Vector3(-1.34, 2.36, 2.225);
 
             laterns[2].rotation.y = Math.PI;
             laterns[3].rotation.y = Math.PI;
-            laterns[2].position = new THREE.Vector3(1.34, 2.36, -3.45);
-            laterns[3].position = new THREE.Vector3(-1.34, 2.36, -3.45);
+            laterns[2].position = new THREE.Vector3(1.34, 2.36, -2.225);
+            laterns[3].position = new THREE.Vector3(-1.34, 2.36, -2.225);
 
             laterns[4].rotation.y = Math.PI/2;
             laterns[5].rotation.y = Math.PI/2;
-            laterns[6].rotation.y = Math.PI/2;
-            laterns[4].position = new THREE.Vector3(2.07, 2.36, 2.735);
-            laterns[5].position = new THREE.Vector3(2.07, 2.36, 0);
-            laterns[6].position = new THREE.Vector3(2.07, 2.36, -2.735);
+            laterns[4].position = new THREE.Vector3(2.07, 2.36, 1.505);
+            laterns[5].position = new THREE.Vector3(2.07, 2.36, -1.522);
 
+            laterns[6].rotation.y = (Math.PI*3)/2;
             laterns[7].rotation.y = (Math.PI*3)/2;
-            laterns[8].rotation.y = (Math.PI*3)/2;
-            laterns[9].rotation.y = (Math.PI*3)/2;
-            laterns[7].position = new THREE.Vector3(-2.07, 2.36, 2.735);
-            laterns[8].position = new THREE.Vector3(-2.07, 2.36, 0);
-            laterns[9].position = new THREE.Vector3(-2.07, 2.36, -2.735);
+            laterns[6].position = new THREE.Vector3(-2.07, 2.36, 1.522);
+            laterns[7].position = new THREE.Vector3(-2.07, 2.36, -1.505);
 
             for(var i=0; i<10; ++i){
                 this._threeObj.add(laterns[i]);
             }
+
+
+
+             // physobj
+            /*
+             var geomP = new THREE.CubeGeometry(4.785, 15.3, 5.1);
+             var meshP = new THREE.Mesh(
+             geomP,
+             new THREE.MeshBasicMaterial({
+             wireframe: true,
+             color: 'red'
+             })
+             );
+
+             this._threeObj.add(meshP);
+            */
 
             //ige.client.scene1._threeObj.add(this._threeObj);
             this.mount(ige.client.scene1);
@@ -106,7 +118,7 @@ var OutpostLizards = Building.extend({
                 .1 // high restitution
             );
 
-            var geom = new THREE.CubeGeometry(4.785, 8.52, 7.557);
+            var geom = new THREE.CubeGeometry(4.785, 15.3, 5.1);
             geom.computeBoundingBox();
             var halfHeight = (geom.boundingBox.max.y - geom.boundingBox.min.y) / 2;
             geom.boundingBox.max.y -= halfHeight;
