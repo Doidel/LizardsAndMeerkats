@@ -235,7 +235,6 @@ THREE.Water.prototype.updateTextureMatrix = function () {
 	var view = this.mirrorWorldPosition.clone().sub( this.cameraWorldPosition );
 	var reflectView = view.reflect( this.normal );
 	reflectView.add( this.mirrorWorldPosition );
-    console.log(view);
 
 	this.rotationMatrix.extractRotation( this.camera.matrixWorld );
 

@@ -15,6 +15,7 @@ var igeClientConfig = {
         './gameClasses/Healthbar.js',
         './gameClasses/Nametag.js',
         './gameClasses/StreamScene.js',
+        './gameClasses/Gear.js',
         './levels/LevelUtils.js',
         './levels/Level1.js',
         './levels/Level2.js',

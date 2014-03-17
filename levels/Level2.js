@@ -226,7 +226,7 @@ var Level2 = IgeClass.extend({
                 }
                 var camelthorns = new LevelUtils.Camelthorn(camelthornPositions, ground);
 
-                /*
+
                  // Create the water effect
 
                  // water
@@ -251,12 +251,14 @@ var Level2 = IgeClass.extend({
                  textureWidth: 512,
                  textureHeight: 512,
                  waterNormals: waterNormals,
-                 alpha: 	0.85,
+                 alpha: 	0.65,
                  //sunDirection: sunlight.position.normalize(),
-                 sunDirection: new THREE.Vector3(10,10,10).normalize(),
-                 sunColor: 0xffffff,
-                 //waterColor: 0x001e0f,
-                 waterColor: 0xffffff,
+                 //sunDirection: new THREE.Vector3(10,10,10).normalize(),
+                 sunDirection: new THREE.Vector3(ige.client.scene1._threeObj.children[0].position.x, ige.client.scene1._threeObj.children[0].position.y, ige.client.scene1._threeObj.children[0].position.z).normalize(),
+                 //sunColor: 0xffffff,
+                 sunColor: ige.client.scene1._threeObj.children[0].color.getHexString(),
+                 waterColor: 0x001e0f,
+                 //waterColor: 0xffffff,
                  distortionScale: 50.0
                  } );
 
@@ -266,22 +268,24 @@ var Level2 = IgeClass.extend({
                  new THREE.PlaneGeometry( parameters.width * 50, parameters.height * 50, 10, 10 ),
                  watershader.material
                  );
-                 aMeshMirror.add( watershader );
-                 aMeshMirror.rotation.x = - Math.PI * 0.5;
-                 aMeshMirror.position.y += 20;
-                 ige.client.scene1._threeObj.add(aMeshMirror);
+                aMeshMirror.add( watershader );
+                aMeshMirror.rotation.x = - Math.PI * 0.5;
+                aMeshMirror.position.y += 20;
+                aMeshMirror.name = 'watershader';
+                ige.client.scene1._threeObj.add(aMeshMirror);
+                //ground.add(aMeshMirror);
 
-                 */
+
 
                 //ground.position.set(0,0,0);
                 ige.client.scene1._threeObj.add(ground);
 
                 // update content
                 ige.addBehaviour('updateContent', function(){
-                    /*
-                     //watershader.material.uniforms.time.value += ige._tickDelta/1000;
-                     //watershader.render();
-                     */
+
+                    watershader.material.uniforms.time.value += ige._tickDelta/1000;
+                    watershader.render();
+
                     for(var i=0; i<savannahGrassLODMeshes.length; ++i){
                         savannahGrassLODMeshes[i].update(ige._currentCamera._threeObj);
                         if(savannahGrassLODMeshes[i].children[0].name == 'med'){

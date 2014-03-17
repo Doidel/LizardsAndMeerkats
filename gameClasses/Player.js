@@ -1256,6 +1256,11 @@ var Player = IgeEntity.extend({
             false
         );
         if (this.faction) this._threeObj.name = this.faction.substring(0,-1);
+
+        /* adding tools or weapons */
+        // initialize handhold
+        this._threeObj.handhold = new Gear(this._threeObj);
+
         ige.client.scene1._threeObj.add( this._threeObj );
 
 
