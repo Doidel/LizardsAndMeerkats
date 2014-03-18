@@ -326,15 +326,20 @@ var Building = IgeEntity.extend({
         }
     },
 	die: function() {
+		var deathDuration = 1000;
 		if (!ige.isServer) {
-			var scaleShrinkValue = 1 / 60;
+			var scaleShrinkValue = -(deathDuration / 1000) / 60;
 			var shrinkInterval = setInterval(function() {
-				this._threeObj.scale.
-			}.bind(this), 1000 / 60);
+				this._threeObj.scale.addScalar( scaleShrinkValue );
+				if (this._threeObj.scale.x <= 0) {
+					clearInterval(shrinkInterval);
+					this.destroy();
+				}
+			}.bind(this), deathDuration / 60);
 		} else {
 			setTimeout(function() {
 				this.destroy();
-			}.bind(this), 2000);
+			}.bind(this), deathDuration);
 		}
 	},
 	destroy: function() {
