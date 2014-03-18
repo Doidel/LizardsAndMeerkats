@@ -4,6 +4,8 @@ var MainBuildingMeerkats = Building.extend({
     init: function (position) {
         var id = 'mainBuildingMeerkats';
         Building.prototype.init.call(this, id);
+		
+		this.faction = 'meerkats';
 
         this.values = {
             gold: 0,

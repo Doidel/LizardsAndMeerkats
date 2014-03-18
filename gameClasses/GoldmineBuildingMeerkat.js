@@ -3,6 +3,8 @@ var GoldmineBuildingMeerkat = Building.extend({
 
     init: function (id, position) {
         Building.prototype.init.call(this, id);
+		
+		this.faction = 'meerkats';
 
         if (!ige.isServer) {
             // pillars

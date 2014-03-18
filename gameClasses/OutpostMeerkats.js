@@ -3,6 +3,8 @@ var OutpostMeerkats = Building.extend({
 
     init: function (id, position) {
         Building.prototype.init.call(this, id);
+		
+		this.faction = 'meerkats';
 
         if (!ige.isServer) {
             var geomPillars = ige.three._loader.parse(modelBuildingMeerkatOutpostPillars).geometry;

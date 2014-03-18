@@ -4,6 +4,8 @@ var MainBuildingLizards = Building.extend({
     init: function (position) {
         var id = 'mainBuildingLizards';
         Building.prototype.init.call(this, id);
+		
+		this.faction = 'lizards';
 
         this.values = {
             gold: 0,

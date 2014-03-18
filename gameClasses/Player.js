@@ -899,8 +899,17 @@ var Player = IgeEntity.extend({
             var buildingsHit = self.getBuildingsHit(1);
             //console.log('Hit buildings: ', buildingsHit.length);
             for (var x = 0; x < buildingsHit.length; x++) {
-                objectsTakenHit.push(buildingsHit[x]._id);
-                //buildingsHit[x].takeDamage(40);
+				if (buildingsHit[x].faction == this.faction) {
+					// the building is repaired / built
+					//TODO: Repair/build
+				} else if (buildingsHit[x].faction == (this.faction == 'lizards' ? 'lizards' : 'meerkats')
+					|| buildingsHit[x].faction == 'neutralHostile') {
+					if (buildingsHit[x].values.health > 0) {
+						//the building is damaged
+						buildingsHit[x].takeDamage(40);
+						objectsTakenHit.push(buildingsHit[x]._id);
+					}
+				}
             }
 
             if (objectsTakenHit.length > 0) {
@@ -1134,15 +1143,14 @@ var Player = IgeEntity.extend({
         if (this.states.isDead && health > 0) {
             //revived. Can be on the field or in loading screen already
             this.states.isDead = false;
-        }
-        if (health == 0 && !this.states.isDead) {
+        } else if (health == 0 && !this.states.isDead) {
             //died
             this.states.isDead = true;
             var reviveSeconds = 10;
 
             if (!ige.isServer) {
                 this.states.isDying = true;
-                UI.spawn.dying(reviveSeconds);
+                if (ige._player.id() == this.id()) UI.spawn.dying(reviveSeconds);
             }
 
             setTimeout(function() {

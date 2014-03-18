@@ -7,6 +7,9 @@ var Building = IgeEntity.extend({
         if (id) {
             this.id(id);
         }
+		
+		//neutralFriendly, neutralHostile, lizards, meerkats
+		this.faction = 'neutralFriendly';
 
         //default values
         this.values = {
@@ -81,13 +84,6 @@ var Building = IgeEntity.extend({
             }
         }
         /* CEXCLUDE */
-
-        //// HEALTH REGEN
-        /*if (this.values.health < this.values.maxhealth) {
-            var diff = (this.values.healthregeneration*ige._tickDelta);
-            this.values.health = Math.min(this.values.health + diff, this.values.maxhealth);
-            this._updateHealth(this.values.health);
-        }*/
 
         // Call the IgeEntity (super-class) tick() method
         IgeEntity.prototype.tick.call(this, ctx);
@@ -176,19 +172,24 @@ var Building = IgeEntity.extend({
      * @private
      */
     _updateHealth: function(health, synchronize) {
+        health = Math.max(health, 0);
         this.values.health = health;
         if (!ige.isServer) {
             //ui
+            if (this._id == ige._player._id) UI.healthBar.setValue(health);
             this._healthbar.setPercent(100 / this.values.maxhealth * this.values.health);
         }
         /* CEXCLUDE */
         else {
             if (synchronize) {
                 //send update to all clients
-                //TODO: ige.network.send('updateHealth', {unit: this._id, health: health});
+                this.addStreamData('updateHealth', {unit: this._id, health: health});
             }
         }
         /* CEXCLUDE */
+		if (this.values.health <= 0) {
+			this.die();
+		}
     },
     /* CEXCLUDE */
     finalPlaceBuilding: function() {
@@ -323,7 +324,23 @@ var Building = IgeEntity.extend({
         if (!ige.isServer && this.id().indexOf('stream') == -1) {
             UI.minimap.setBuilding(this.id(), this._translate.x, this._translate.z);
         }
-    }
+    },
+	die: function() {
+		if (!ige.isServer) {
+			var scaleShrinkValue = 1 / 60;
+			var shrinkInterval = setInterval(function() {
+				this._threeObj.scale.
+			}.bind(this), 1000 / 60);
+		} else {
+			setTimeout(function() {
+				this.destroy();
+			}.bind(this), 2000);
+		}
+	},
+	destroy: function() {
+		if (ige.isServer) ige.server.levelObjects.buildings.splice(ige.server.levelObjects.buildings.indexOf(this), 1);
+		IgeEntity.prototype.destroy.call(this);
+	}
     /*_forwardAttribute: function(group, name, value, includeSelf) {
         //send values to all other players
         for (var key in ige.server.players) {

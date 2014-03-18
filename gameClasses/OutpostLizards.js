@@ -3,6 +3,8 @@ var OutpostLizards = Building.extend({
 
     init: function (id, position) {
         Building.prototype.init.call(this, id);
+		
+		this.faction = 'lizards';
 
         if (!ige.isServer) {
             var geom = ige.three._loader.parse(modelBuildingLizardOutpost).geometry;
