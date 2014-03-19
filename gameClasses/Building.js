@@ -199,10 +199,13 @@ var Building = IgeEntity.extend({
         if (!this.states.isBuildableAtCurrentPosition) return false;
 
         //remove resources
-
+		
+		//TODO: Don't change id (3717ff). Add LevelRoomComponent with larger room size. Set interval much lower.
+		// == free LOD, free making sure of consistency
+		
         //remove streaming and green/red fragment shader (client)
         this.states.isBuilt = true;
-        this.streamMode(0);
+        //this.streamMode(0);
 
         //create new id
         var newId = ige.newId();
