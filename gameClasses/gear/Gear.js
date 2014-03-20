@@ -1,26 +1,26 @@
 var Gear = IgeEntity.extend({
     classId: 'Gear',
     gearParts: {
-        torso: [],
-        head: [],
+        torso: 'none',
+        head: 'none',
 
-        shoulderRight: [],
-        upperArmRight: [],
-        lowerArmRight: [],
-        handRight: [],
+        shoulderRight: 'none',
+        upperArmRight: 'none',
+        lowerArmRight: 'none',
+        handRight: 'none',
 
-        shoulderLeft: [],
-        upperArmLeft: [],
-        lowerArmLeft: [],
-        handLeft: [],
+        shoulderLeft: 'none',
+        upperArmLeft: 'none',
+        lowerArmLeft: 'none',
+        handLeft: 'none',
 
-        upperLegRight: [],
-        lowerLegRight: [],
-        footRight: [],
+        upperLegRight: 'none',
+        lowerLegRight: 'none',
+        footRight: 'none',
 
-        upperLegLeft: [],
-        lowerLegLeft: [],
-        footLeft: []
+        upperLegLeft: 'none',
+        lowerLegLeft: 'none',
+        footLeft: 'none'
     },
 
     init: function (playerMesh) {
@@ -50,44 +50,12 @@ var Gear = IgeEntity.extend({
             // add noop update function to Object3D prototype
             // so any Object3D may be a child of a Bone
             THREE.Object3D.prototype.update = function() {};
-
-            // create a mesh and add it to some bone
-            //var mesh = new THREE.Mesh( new THREE.SphereGeometry(20), new THREE.MeshNormalMaterial() );
-
-            // create a mesh and add it to some bone
-            var m = new THREE.Mesh(new THREE.CubeGeometry(0.125,0.125,0.125,1), new THREE.MeshBasicMaterial({color: 'red', side: 2}));
-            //this.playerMesh.add(m);
-
-            // bonenames are inverted (right/left) on the model, but correct here
-
-            var backBone = this.playerMesh.bones[1];
-            var headBone = this.playerMesh.bones[4];
-
-            var shoulderRightBone = this.playerMesh.bones[5];
-            var upperArmRightBone = this.playerMesh.bones[6];
-            var lowerArmRightBone = this.playerMesh.bones[7];
-            var handRightBone = this.playerMesh.bones[8];
-
-            var shoulderLeftBone = this.playerMesh.bones[9];
-            var upperArmLeftBone = this.playerMesh.bones[10];
-            var lowerArmLeftBone = this.playerMesh.bones[11];
-            var handLeftBone = this.playerMesh.bones[12];
-
-            var upperLegRightBone = this.playerMesh.bones[14];
-            var lowerLegRightBone = this.playerMesh.bones[15];
-            var footRightBone = this.playerMesh.bones[16];
-
-            var upperLegLeftBone = this.playerMesh.bones[18];
-            var lowerLegLeftBone = this.playerMesh.bones[19];
-            var footLeftBone = this.playerMesh.bones[20];
-
-            handRightBone.add(m);
 		} else {
 
         }
     },
 
-    // add gear elements
+    // add gear elements to player
     addGearElement: function(gearPartName, gearElement){
         switch (gearPartName) {
             case 'torso':
@@ -186,9 +154,22 @@ var Gear = IgeEntity.extend({
     }
 });
 
+Gear.addGearElementToList = function(gearElement){
+    switch(gearElement.classId()){
+        case 'GearToolElement':
+            Gear.list.tools.push(gearElement);
+            break;
+        case 'GearWeaponElement':
+            Gear.list.weapons.push(gearElement);
+            break;
+        case 'GearArmorElement':
+            Gear.list.armors.push(gearElement);
+            break;
+    };
+}
+
 Gear.list = {
     tools: [
-        //new GearToolElement(new THREE.Mesh(new THREE.CubeGeometry(0.25,0.25,0.25), new THREE.MeshBasicMaterial({color: 0x00ff00})))
     ],
     weapons: [
     ],
