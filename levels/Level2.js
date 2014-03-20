@@ -230,47 +230,42 @@ var Level2 = IgeClass.extend({
                  // Create the water effect
 
                  // water
-
-                 var parameters = {
-                 //width: 2000,
-                 width: 10,
-                 //height: 2000,
-                 height: 10,
-                 widthSegments: 1,
-                 heightSegments: 1,
-                 depth: 50,
-                 param: 4,
-                 filterparam: 1
-                 };
-
+                var parameters = {
+                    width: 50,
+                    height: 50,
+                    widthSegments: 250,
+                    heightSegments: 250,
+                    depth: 1500,
+                    param: 4,
+                    filterparam: 1
+                }
                  // Load textures
                  var waterNormals = new THREE.ImageUtils.loadTexture( './assets/textures/waternormals.jpg' );
                  waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
 
-                 watershader = new THREE.Water( ige._threeRenderer, ige._currentCamera._threeObj, ige.client.scene1._threeObj, {
-                 textureWidth: 512,
-                 textureHeight: 512,
-                 waterNormals: waterNormals,
-                 alpha: 	0.65,
-                 //sunDirection: sunlight.position.normalize(),
-                 //sunDirection: new THREE.Vector3(10,10,10).normalize(),
-                 sunDirection: new THREE.Vector3(ige.client.scene1._threeObj.children[0].position.x, ige.client.scene1._threeObj.children[0].position.y, ige.client.scene1._threeObj.children[0].position.z).normalize(),
-                 //sunColor: 0xffffff,
-                 sunColor: ige.client.scene1._threeObj.children[0].color.getHexString(),
-                 waterColor: 0x001e0f,
-                 //waterColor: 0xffffff,
-                 distortionScale: 50.0
+                 var watershader = new THREE.Water( ige._threeRenderer, ige._currentCamera._threeObj, ige.client.scene1._threeObj, {
+                     textureWidth: 512,
+                     textureHeight: 512,
+                     waterNormals: waterNormals,
+                     //alpha: 	0.65,
+                     alpha: 	1.0,
+                     //sunDirection: sunlight.position.normalize(),
+                     //sunDirection: new THREE.Vector3( - 1, 0.4, - 1 ).normalize(),
+                     sunDirection: ige.client.scene1._threeObj.children[1].position.clone().normalize(),
+                     sunColor: 0xffffff,
+                     //sunColor: ige.client.scene1._threeObj.children[0].color.getHexString(),
+                     waterColor: 0x001e0f,
+                     //waterColor: 0xffffff,
+                     distortionScale: 250.0
                  } );
 
-                 watershader.material.side = 2;
-
                  var aMeshMirror = new THREE.Mesh(
-                 new THREE.PlaneGeometry( parameters.width * 50, parameters.height * 50, 10, 10 ),
-                 watershader.material
+                    new THREE.PlaneGeometry( parameters.width * 50, parameters.height * 50, 10, 10 ),
+                    watershader.material
                  );
                 aMeshMirror.add( watershader );
                 aMeshMirror.rotation.x = - Math.PI * 0.5;
-                aMeshMirror.position.y += 20;
+                //aMeshMirror.position.y += 50;
                 aMeshMirror.name = 'watershader';
                 ige.client.scene1._threeObj.add(aMeshMirror);
                 //ground.add(aMeshMirror);
@@ -283,7 +278,7 @@ var Level2 = IgeClass.extend({
                 // update content
                 ige.addBehaviour('updateContent', function(){
 
-                    watershader.material.uniforms.time.value += ige._tickDelta/1000;
+                    watershader.material.uniforms.time.value = ige.currentTime() / 3000;
                     watershader.render();
 
                     for(var i=0; i<savannahGrassLODMeshes.length; ++i){

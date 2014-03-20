@@ -1267,7 +1267,7 @@ var Player = IgeEntity.extend({
 
         /* adding tools or weapons */
         // initialize handhold
-        this._threeObj.handhold = new Gear(this._threeObj);
+        this._threeObj.gear = new Gear(this._threeObj);
 
         ige.client.scene1._threeObj.add( this._threeObj );
 
