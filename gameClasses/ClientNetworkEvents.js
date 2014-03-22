@@ -8,8 +8,12 @@ var ClientNetworkEvents = {
 	 * @private
 	 */
 	_onPlayerEntity: function (data) {
-		if (ige.$(data)) {
-			ige.client.vp1.camera.trackTranslate(ige.$(data), 50);
+        var id = data[0];
+        var playerList = data[1];
+
+        //create entity
+		if (ige.$(id)) {
+			ige.client.vp1.camera.trackTranslate(ige.$(id), 50);
 		} else {
 			// The client has not yet received the entity via the network
 			// stream so lets ask the stream to tell us when it creates a
@@ -17,11 +21,11 @@ var ClientNetworkEvents = {
 			// should be tracking!
 			var self = this;
 			self._eventListener = ige.network.stream.on('entityCreated', function (entity) {
-				if (entity.id() === data) {
+				if (entity.id() === id) {
 					// Tell the camera to track out player entity
 					//ige.client.vp1.camera.trackTranslate(ige.$(data), 0);
                     console.log('entity created');
-                    var entity = ige.$(data);
+                    var entity = ige.$(id);
 
                     ige._player = entity;
 
@@ -161,6 +165,9 @@ var ClientNetworkEvents = {
 				}
 			});
 		}
+
+        //fill in initial player overview tab
+        UI.playerList.set(playerList);
 	},
     _onSetStreamedBuildingBuildable: function(data) {
         var streamBuilding = ige.$(data.id);

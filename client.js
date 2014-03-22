@@ -69,6 +69,8 @@ var Client = IgeClass.extend({
 								self.log('Stream entity created with ID: ' + entity.id());
 							});
 
+                        ige._threeRenderer.setClearColor( new THREE.Color( $('body').css('background-color') ), 1.0 )
+
 						// Create the scene
 						self.scene1 = new StreamScene()
                             .shouldRender(false)

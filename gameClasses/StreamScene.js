@@ -9,7 +9,7 @@ var StreamScene = IgeScene2d.extend({
         this._streamActions = {};
 
 		// Define the data sections that will be included in the stream
-		this.streamSections(['commanderChange']);
+		this.streamSections(['commanderChange', 'playerList']);
 	},
 
 	/**
@@ -31,6 +31,12 @@ var StreamScene = IgeScene2d.extend({
             } else {
                 return this._getJSONStreamActionData('commanderChange');
             }
+        } else if (sectionId == 'playerList') {
+            if (data) {
+                UI.playerList.set(JSON.parse(data));
+            } else {
+                return this._getJSONStreamActionData('commanderChange');
+            }
         } else {
 			// The section was not one that we handle here, so pass this
 			// to the super-class streamSectionData() method - it handles
@@ -49,7 +55,18 @@ var StreamScene = IgeScene2d.extend({
 
     addStreamData: function(id, data) {
         this._streamActions[id] = data;
+    },
+
+    getPlayerOverview: function() {
+        var playerList = [[],[]];
+        var players = ige.server.players;
+        for (var key in ige.server.players) {
+            if (key === 'length' || !ige.server.players.hasOwnProperty(key)) continue;
+            playerList[players[key].faction == 'lizards' ? 0 : 1].push(players[key].values.name);
+        }
+        return playerList;
     }
+
 });
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = StreamScene; }

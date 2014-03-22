@@ -15,358 +15,414 @@
 	<link href='http://fonts.googleapis.com/css?family=Freckle+Face' rel='stylesheet' type='text/css'>
 
     <style>
+
+
+    /* apply a natural box layout model to all elements */
+    *, *:before, *:after {
+        -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+    }
 	
-		body, .ui-widget {
-			font-family: 'Freckle Face', cursive;
-		}
-	
-        #blocker {
+    body {
+        font-family: 'Freckle Face', cursive;
+        background-color: rgb(69,51,38);
+    }
 
-            position: absolute;
+    .yellowText {
+        color: #f3d35f !important;
+    }
 
-            width: 100%;
-            height: 100%;
+    #backgroundimage {
+        background-image: url(./assets/textures/grass1.jpg);
+        background-repeat: repeat;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        opacity: 0.7;
+        z-index: -10;
+    }
 
-            background-color: rgba(0,0,0,0.5);
+    .ui-widget {
+        font-family: 'Freckle Face', cursive;
+    }
 
-            z-index: 10000;
+    body > canvas {
+        display: none;
+    }
 
-            font-size: 1.0em;
-        }
+    #blocker {
 
-        #blocker .ui-button {
-            font-size: 0.7em;
-        }
+        position: absolute;
 
-        #instructions {
+        width: 100%;
+        height: 100%;
 
-            width: 100%;
-            height: 100%;
+        background-color: rgba(0,0,0,0.5);
 
-            display: -webkit-box;
-            display: -moz-box;
-            display: box;
+        z-index: 10000;
 
-            -webkit-box-orient: horizontal;
-            -moz-box-orient: horizontal;
-            box-orient: horizontal;
+        font-size: 1.0em;
+    }
 
-            -webkit-box-pack: center;
-            -moz-box-pack: center;
-            box-pack: center;
+    #blocker .ui-button {
+        font-size: 0.7em;
+    }
 
-            -webkit-box-align: center;
-            -moz-box-align: center;
-            box-align: center;
+    #instructions {
 
-            color: #ffffff;
-            text-align: center;
+        width: 100%;
+        height: 100%;
 
-            cursor: pointer;
+        display: -webkit-box;
+        display: -moz-box;
+        display: box;
 
-        }
+        -webkit-box-orient: horizontal;
+        -moz-box-orient: horizontal;
+        box-orient: horizontal;
 
-        #gameMenu {
-            width: 200px;
-            position: absolute;
-            top: 150px;
-            left: 50%;
-            margin-left: -103px;
-            font-size: 12px;
-        }
+        -webkit-box-pack: center;
+        -moz-box-pack: center;
+        box-pack: center;
 
-        #interface {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0px;
-            left: 0px;
+        -webkit-box-align: center;
+        -moz-box-align: center;
+        box-align: center;
 
-            z-index: 100;
-        }
+        color: #ffffff;
+        text-align: center;
 
-        #blockbar {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            margin-left: -63px;
-            margin-top: -100px;
-            opacity: 0.6;
-        }
+        cursor: pointer;
 
-        #blockbar > * {
-            position: absolute;
-            left: 0px;
-            right: 0px;
-        }
+    }
 
-        #healthbar {
-            position: absolute;
-            left: 50px;
-            bottom: 40px;
-            width: 240px;
-            height: 20px;
-        }
-        #healthbar > * {
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            width: 240px;
-            height: 100%;
-            text-align: center;
-            text-shadow: 0 0 0.2em #F87, 0 0 0.2em #F87;
-            color: rgb(80, 9, 9);
-        }
+    #gameMenu {
+        width: 12.5em;
+        position: absolute;
+        top: 9em;
+        left: 50%;
+        margin-left: -6.3em;
+        font-size: 1em;
+    }
 
-        #goldHarvestElement, #commanderChangeNotificationElement {
-            color: #ffff00;
-            font-weight: bold;
-            font-size: 2.4em;
-            position: absolute;
-			text-align: center;
-            top: 50%;
-			width: 100%;
-            margin-top: -40px;
-            padding-top: 40px;
-            opacity: 1;
-            text-shadow: 0.05em 0.05em 0.1em rgb(122, 91, 24);
-        }
-		
-		#commanderChangeNotificationElement {
-			font-size: 3em;
-            margin-top: -40px;
-			top: 15%;
-		}
+    #spawnLink {
+        font-weight: bold;
+        font-size: 1.2em;
+        padding-left: 1.6em;
+    }
 
-        #statusbar {
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            width: 100%;
-            height: 30px;
-            background-color: rgba(153, 102, 0, .3);
-            font-size: 30px;
-            padding: 0px 10px;
-        }
+    #interface {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
 
-        #resource1_1, #resource1_2, #resource2_1, #resource2_2 {
-            position: relative;
-        }
+        z-index: 100;
+    }
 
-        .resourceAddAnimElement {
-            position: absolute;
-            right: 0px;
-            top: 30px;
-            text-align: right;
-            color: rgb(159, 253, 33);
-        }
+    #blockbar {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -63px;
+        margin-top: -100px;
+        opacity: 0.6;
+    }
 
-        #buildMenu {
-            position: absolute;
-            border: 1px solid #999999;
-            width: 200px;
-            right: 20px;
-            bottom: 50px;
-            display: none;
-        }
+    #blockbar > * {
+        position: absolute;
+        left: 0px;
+        right: 0px;
+    }
 
-        .spellSlot {
-            position: relative;
-            width: 50px;
-            height: 50px;
-            float: left;
-            border: 1px solid #444444;
-            text-align: center;
-            font-size: 11px;
-            color: #f3d35f;
-        }
-        .spellSlotPressed {
-            border-color: #e46922;
-            color: #e46922;
-        }
+    #healthbar {
+        position: absolute;
+        left: 50px;
+        bottom: 40px;
+        width: 240px;
+        height: 20px;
+    }
+    #healthbar > * {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 240px;
+        height: 100%;
+        text-align: center;
+        text-shadow: 0 0 0.2em #F87, 0 0 0.2em #F87;
+        color: rgb(80, 9, 9);
+    }
 
-        .keyShortcutLabel {
-            position: absolute;
-            right: 5px;
-            bottom: 5px;
-            font-size: 10px;
-            color: white;
-        }
+    #goldHarvestElement, #commanderChangeNotificationElement {
+        color: #ffff00;
+        font-weight: bold;
+        font-size: 2.4em;
+        position: absolute;
+        text-align: center;
+        top: 50%;
+        width: 100%;
+        margin-top: -40px;
+        padding-top: 40px;
+        opacity: 1;
+        text-shadow: 0.05em 0.05em 0.1em rgb(122, 91, 24);
+    }
 
-        #voiceCommands {
-            float: right;
-            height: 100%;
-            overflow: visible;
-            font-size: 0.8em;
-            padding: 0 0.2em;
-            width: 10.5em;
-        }
-        #voiceCommands > div {
-            background-color: rgba(153, 102, 0, .3);
-            border: 1px solid rgb(153, 102, 0);
-            padding: 0 0.2em;
-            display: none;
-        }
+    #commanderChangeNotificationElement {
+        font-size: 3em;
+        margin-top: -40px;
+        top: 15%;
+    }
 
-        #reviveCountdown {
-            position: absolute;
-            top: 40%;
-            width: 100%;
-            margin-top: -20px;
-            font-size: 2em;
-            color: red;
-            text-align: center;
-            display: none;
-        }
+    #statusbar {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 30px;
+        background-color: rgba(153, 102, 0, .3);
+        font-size: 30px;
+        padding: 0px 10px;
+    }
 
-        #minimap {
-            background-image: url(./assets/heightmaps/Botswana.png);
-            background-size: 100% 100%;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            margin-top: -200px;
-            margin-left: -200px;
-            width: 400px;
-            height: 400px;
-            border: 1px solid black;
-        }
-        .minimapBuilding {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            opacity: 0.7;
-            cursor: pointer;
-        }
-        .minimapBuilding:hover {
-            opacity: 1.0;
-            width: 24px;
-            height: 24px;
-            margin-left: -2px;
-            margin-top: -2px;
-            background-size: 24px 24px;
-        }
-        #minimapBuildingmainBuildingLizards {
-            background-image: url(./assets/ui/minimap_mainBuildingLizards.png);
-        }
-        #minimapBuildingmainBuildingMeerkats {
-            background-image: url(./assets/ui/minimap_mainBuildingMeerkats.png);
-        }
+    #resource1_1, #resource1_2, #resource2_1, #resource2_2 {
+        position: relative;
+    }
 
-        /* donation stuff */
-        .lightRay {
-            width: 59px;
-            height: 97px;
-            position: absolute;
-            top: -64px;
-            left: -3px;
-        }
-        .lightRay > div {
-            background-image: url(./assets/ui/lightRaySprite.png);
-            background-position: 0px 0px;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0px;
-            left: 0px;
-        }
-        #key_G {
-            background-image: url(./assets/ui/key_G_unpressed.png);
-            width: 72px;
-            height: 79px;
-            overflow: visible;
-            position: absolute;
-            top: 45%;
-            right: 10%;
-        }
-        #goldDonationBar {
-            /* Rotate div */
-            transform:rotate(-90deg);
-            -ms-transform:rotate(-90deg); /* IE 9 */
-            -webkit-transform:rotate(-90deg); /* Opera, Chrome, and Safari */
-            display: none;
-            position: absolute;
-            top: -30px;
-            left: 10px;
-            width: 240px;
-            height: 20px;
-        }
-        #goldDonationBarOuter {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            z-index: 5;
-            background-image: url(./assets/ui/progressbarOverlay.png);
-        }
-        #goldDonationBarInner {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            z-index: 3;
-        }
-        #goldDonationBarDescriptor {
-            transform:rotate(90deg);
-            -ms-transform:rotate(90deg); /* IE 9 */
-            -webkit-transform:rotate(90deg); /* Opera, Chrome, and Safari */
-            position: absolute;
-            top: -50px;
-            left: 0px;
-            width: 50px;
-            padding-top: 50px;
-            z-index: 8;
-            text-align: center;
-            text-shadow: 1px 0px 20px red;
-            -webkit-transition: width 0.3s;
-            transition: width 0.3s;
-            -moz-transition: width 0.3s;
-            -o-transition: width 0.3s;
-            -webkit-text-stroke: 1.0px #666;
-            -webkit-text-fill-color: #FFFFFF;
-            -moz-text-stroke: 1.0px #666;
-            -moz-text-fill-color: #FFFFFF;
-        }
-        #goldDonationGoldFlyElement {
-            position: absolute;
-            left: 0px;
-            top: 0px;
-            visibility: hidden;
-        }
+    .resourceAddAnimElement {
+        position: absolute;
+        right: 0px;
+        top: 30px;
+        text-align: right;
+        color: rgb(159, 253, 33);
+    }
+
+    #buildMenu {
+        position: absolute;
+        border: 1px solid #999999;
+        width: 200px;
+        right: 20px;
+        bottom: 50px;
+        display: none;
+    }
+
+    .spellSlot {
+        position: relative;
+        width: 50px;
+        height: 50px;
+        float: left;
+        border: 1px solid #444444;
+        text-align: center;
+        font-size: 11px;
+        color: #f3d35f;
+    }
+    .spellSlotPressed {
+        border-color: #e46922;
+        color: #e46922;
+    }
+
+    .keyShortcutLabel {
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+        font-size: 10px;
+        color: white;
+    }
+
+    #voiceCommands {
+        float: right;
+        height: 100%;
+        overflow: visible;
+        font-size: 0.8em;
+        padding: 0 0.2em;
+        width: 10.5em;
+    }
+    #voiceCommands > div {
+        background-color: rgba(153, 102, 0, .3);
+        border: 1px solid rgb(153, 102, 0);
+        padding: 0 0.2em;
+        display: none;
+    }
+
+    #reviveCountdown {
+        position: absolute;
+        top: 40%;
+        width: 100%;
+        margin-top: -20px;
+        font-size: 2em;
+        color: red;
+        text-align: center;
+        display: none;
+    }
+
+    #minimap {
+        background-image: url(./assets/heightmaps/Botswana.png);
+        background-size: 100% 100%;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-top: -200px;
+        margin-left: -200px;
+        width: 400px;
+        height: 400px;
+        border: 1px solid black;
+        display: none;
+        z-index: 100;
+    }
+    .minimapBuilding {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        opacity: 0.7;
+        cursor: pointer;
+    }
+    .minimapBuilding:hover {
+        opacity: 1.0;
+        width: 24px;
+        height: 24px;
+        margin-left: -2px;
+        margin-top: -2px;
+        background-size: 24px 24px;
+    }
+    #minimapBuildingmainBuildingLizards {
+        background-image: url(./assets/ui/minimap_mainBuildingLizards.png);
+    }
+    #minimapBuildingmainBuildingMeerkats {
+        background-image: url(./assets/ui/minimap_mainBuildingMeerkats.png);
+    }
+
+    /* donation stuff */
+    .lightRay {
+        width: 59px;
+        height: 97px;
+        position: absolute;
+        top: -64px;
+        left: -3px;
+    }
+    .lightRay > div {
+        background-image: url(./assets/ui/lightRaySprite.png);
+        background-position: 0px 0px;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+    #key_G {
+        background-image: url(./assets/ui/key_G_unpressed.png);
+        width: 72px;
+        height: 79px;
+        overflow: visible;
+        position: absolute;
+        top: 45%;
+        right: 10%;
+    }
+    #goldDonationBar {
+        /* Rotate div */
+        transform:rotate(-90deg);
+        -ms-transform:rotate(-90deg); /* IE 9 */
+        -webkit-transform:rotate(-90deg); /* Opera, Chrome, and Safari */
+        display: none;
+        position: absolute;
+        top: -30px;
+        left: 10px;
+        width: 240px;
+        height: 20px;
+    }
+    #goldDonationBarOuter {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: 5;
+        background-image: url(./assets/ui/progressbarOverlay.png);
+    }
+    #goldDonationBarInner {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: 3;
+    }
+    #goldDonationBarDescriptor {
+        transform:rotate(90deg);
+        -ms-transform:rotate(90deg); /* IE 9 */
+        -webkit-transform:rotate(90deg); /* Opera, Chrome, and Safari */
+        position: absolute;
+        top: -50px;
+        left: 0px;
+        width: 50px;
+        padding-top: 50px;
+        z-index: 8;
+        text-align: center;
+        text-shadow: 1px 0px 20px red;
+        -webkit-transition: width 0.3s;
+        transition: width 0.3s;
+        -moz-transition: width 0.3s;
+        -o-transition: width 0.3s;
+        -webkit-text-stroke: 1.0px #666;
+        -webkit-text-fill-color: #FFFFFF;
+        -moz-text-stroke: 1.0px #666;
+        -moz-text-fill-color: #FFFFFF;
+    }
+    #goldDonationGoldFlyElement {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        visibility: hidden;
+    }
 
 
-        #chat {
-            position: absolute;
-            left: 50px;
-            bottom: 100px;
-            width: 300px;
-            height: 150px;
-            font-size: 1em;
-            overflow: hidden;
-        }
-        #chat-content {
-            width: 100%;
-            position: absolute;
-            bottom: 20px;
-            left: 0px;
-        }
-        #chat-textinput {
-            width: 100%;
-            height: 20px;
-            position: absolute;
-            bottom: 0px;
-            left: 0px;
-            background-color: transparent;
-            border: 0px;
-        }
-        .chat-focused {
-            background-color: rgba(153, 102, 0, .3);
-        }
-        .chat-focused #chat-content {
-            border-bottom: 1px solid rgb(153, 102, 0);
-        }
+    #chat {
+        position: absolute;
+        left: 50px;
+        bottom: 100px;
+        width: 300px;
+        height: 150px;
+        font-size: 1em;
+        overflow: hidden;
+    }
+    #chat-content {
+        width: 100%;
+        position: absolute;
+        bottom: 20px;
+        left: 0px;
+    }
+    #chat-textinput {
+        width: 100%;
+        height: 20px;
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        background-color: transparent;
+        border: 0px;
+    }
+    .chat-focused {
+        background-color: rgba(153, 102, 0, .3);
+    }
+    .chat-focused #chat-content {
+        border-bottom: 1px solid rgb(153, 102, 0);
+    }
+
+
+    #playerList {
+        width: 40em;
+        margin-left: -20em;
+        position: absolute;
+        top: 24em;
+        left: 50%;
+        font-size: 0.8em;
+        background-color: rgba(32, 25, 19,0.5);
+        background-image: none;
+    }
+
+    #playerList > div {
+        width: 50%;
+        float: left;
+        border-right: 1px solid black;
+        padding: 1em;
+    }
     </style>
     <!-- Isogenic Loader -->
     <!-- <script type="text/javascript">var igeRoot = './ige/engine/';</script>
@@ -441,6 +497,9 @@
     </script>
 </head>
 <body>
+
+    <div id="backgroundimage"></div>
+
     <div class="igeLoading loadingFloat">
         <div class="loadingLogo"></div>
         <div class="loadingCircle"></div>
@@ -461,6 +520,7 @@
     <div id="blocker">
 
         <div id="gameMenu">
+            <li><a href="#" id="spawnLink" class="yellowText" onclick="javascript:UI.minimap.show()"><span class="ui-icon ui-icon-carat-1-e"></span>Spawn</a></li>
             <li><a href="#"><span class="ui-icon ui-icon-carat-1-e"></span>Start vote</a>
 				<ul style="width: 140px;">
 					<li><a href="#" onclick="javascript:ige.client.startVote('impeach')"><span class="ui-icon ui-icon-carat-1-e"></span>Impeach commander</a></li>
@@ -485,6 +545,17 @@
 
         <div id="minimap">
 
+        </div>
+
+        <div id="playerList" class="ui-widget-content ui-corner-all">
+            <div>
+                <span class="yellowText">Lizards:</span><br />
+                <span class="playerListEntries"></span>
+            </div>
+            <div>
+                <span class="yellowText">Meerkats:</span><br />
+                <span class="playerListEntries"></span>
+            </div>
         </div>
 
     </div>
@@ -836,12 +907,15 @@
             },
             selectBuilding: function() {
                 ige._player.spawn(this.id.substring(15));
+                $('body>canvas').css('display','block');
             },
             hide: function() {
                 $('#minimap').css('display', 'none');
             },
             show: function() {
-                $('#minimap').css('display', 'block');
+                if (!ige._player.states.isSpawned) {
+                    $('#minimap').css('display', 'block');
+                }
             }
         },
         chat: {
@@ -873,6 +947,13 @@
             },
             addMessage: function(type, playerName, text) {
                 $('#chat-content').append(playerName + ": " + text + '<br />');
+            }
+        },
+        playerList: {
+            set: function(list) {
+                var divs = $('#playerList .playerListEntries');
+                $(divs[0]).html(list[0].join('<br />'));
+                $(divs[1]).html(list[1].join('<br />'));
             }
         },
         igeLoadedFunctions: function() {
