@@ -27,7 +27,8 @@ var config = {
         {name: 'RockGold1', path: './levels/LevelObjects/RockGold1'},
         {name: 'Ammo', path: './ammo'},
         {name: 'physijs_worker_functions', path: './physijs_worker'},
-        {name: 'Physijs', path: './physi'}
+        {name: 'Physijs', path: './physi'},
+        {name: 'SecurityTools', path: './gameClasses/SecurityTools'}
 	]
 };
 

@@ -34,6 +34,8 @@ var Server = IgeClass.extend({
 			buildings: [] /* 0: lizardsMainBuilding, 1: meerkatsMainBuilding */
         };
 
+        ige.securityTools = new SecurityTools();
+
 		// Add the server-side game methods / event handlers
 		this.implement(ServerNetworkEvents);
 
@@ -144,8 +146,8 @@ var Server = IgeClass.extend({
         }
         return false;
     },
-    addStreamDataToAll: function(id, data) {
-		ige.server.scene1.addStreamData(id, data);
+    addStreamDataToAll: function(id, data, keepOld) {
+		ige.server.scene1.addStreamData(id, data, keepOld);
     },
     addStreamDataToFaction: function(id, data, faction) {
         ige.server.levelObjects.buildings[faction == 'lizards' ? 0 : 1].addStreamData(id, data);

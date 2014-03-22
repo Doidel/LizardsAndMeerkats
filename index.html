@@ -530,7 +530,7 @@
             <li><a href="#" onclick="javascript:UI.options.openDialog()"><span class="ui-icon ui-icon-gear"></span>Options</a></li>
         </div>
 
-        <div id="instructions">
+        <div id="instructions" style="display: none;">
             <span style="font-size:40px">Click to play</span>
             <br />
             (W,A,S,D = Move, SPACE = Jump, MOUSE = Look, CLICK = Punch)
@@ -890,6 +890,9 @@
                 this._cancelDying();
                 document.exitPointerLock();
                 UI.minimap.show();
+            },
+            setInstructionsVisibility: function(isVisible) {
+                $('#instructions').css('display', isVisible ? 'block' : 'none');
             }
         },
         minimap: {

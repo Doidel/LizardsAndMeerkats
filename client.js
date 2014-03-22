@@ -38,6 +38,8 @@ var Client = IgeClass.extend({
             enabled: false
         };
 
+        ige.securityTools = new SecurityTools();
+
         ige.on('texturesLoaded', function () {
 			// Create the HTML canvas
 			ige.createFrontBuffer(true);
@@ -567,7 +569,9 @@ var Client = IgeClass.extend({
 
             };
 
-            instructions.addEventListener( 'click', this.requestPointerLock, false );
+            instructions.addEventListener( 'click', function() {
+                if (ige._player && ige._player.states.isSpawned) this.requestPointerLock();
+            }.bind(this), false );
 
         } else {
 

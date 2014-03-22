@@ -1073,7 +1073,7 @@ var Player = IgeEntity.extend({
                 this.addComponent(PlayerCommanderComponent);
                 this.addStreamData('playerSetComponent', {add: true, component: 'PlayerCommanderComponent'});
                 //promote commander change to players
-                ige.server.addStreamDataToAll('commanderChange', {val: this.values.name});
+                ige.server.addStreamDataToAll('commanderChange', this.values.name);
             }
         }
     },
@@ -1114,8 +1114,20 @@ var Player = IgeEntity.extend({
         return ige.$('mainBuilding' + (this.faction == 'lizards' ? 'Lizards' : 'Meerkats'));
     },
     sendChatMessage: function(data) {
-        data.playerName = this.values.name;
-        this.getMainBuilding().sendChatMessage(data);
+        if (data && typeof(data.text) == 'string') {
+            data.text = ige.securityTools.minimalizeInputString(data.text);
+            data.playerName = this.values.name;
+            this.getMainBuilding().sendChatMessage(data);
+        }
+    },
+    changeName: function(name) {
+        if (name && typeof(name) == 'string') {
+            name = ige.securityTools.minimalizeInputString(name);
+            if (name && name.length > 3) {
+                this.values.name = name;
+                this.addStreamData('updateName', name);
+            }
+        }
     },
     /**
      * Can be called for manually updating AND synchronizing health.
@@ -1150,7 +1162,10 @@ var Player = IgeEntity.extend({
 
             if (!ige.isServer) {
                 this.states.isDying = true;
-                if (ige._player.id() == this.id()) UI.spawn.dying(reviveSeconds);
+                if (ige._player.id() == this.id()) {
+                    UI.spawn.dying(reviveSeconds);
+                    UI.spawn.setInstructionsVisibility(false);
+                }
             }
 
             setTimeout(function() {
@@ -1173,6 +1188,7 @@ var Player = IgeEntity.extend({
                 this._setPlayerModel(unit);
                 ige.client.requestPointerLock();
                 UI.minimap.hide();
+                UI.spawn.setInstructionsVisibility(true);
             }
         } else {
             //Set model (faction + unit type) and displays an animation

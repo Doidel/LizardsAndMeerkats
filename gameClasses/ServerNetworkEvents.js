@@ -171,10 +171,7 @@ var ServerNetworkEvents = {
     },
 
     _onPlayerRequestNameChange: function(data, clientId) {
-        if (data.length > 3) {
-            ige.server.players[clientId].values.name = data;
-            ige.server.players[clientId].addStreamData('updateName', data);
-        }
+        ige.server.players[clientId].changeName(data);
     }
 };
 

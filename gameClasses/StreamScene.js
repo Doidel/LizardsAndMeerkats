@@ -8,8 +8,16 @@ var StreamScene = IgeScene2d.extend({
         //_streamActions['uH'] =  299 // identifier = 'updateHealth', value = 299
         this._streamActions = {};
 
-		// Define the data sections that will be included in the stream
-		this.streamSections(['commanderChange', 'playerList']);
+        // Define the data sections that will be included in the stream
+        this._streamActionSections = ['commanderChange','playerList'];
+        this.streamSections([].concat(this._streamActionSections));
+
+
+        if (ige.isServer) {
+            new IgeInterval(function() {
+                this.addStreamData('playerList', this.getPlayerOverview());
+            }.bind(this), 30000);
+        }
 	},
 
 	/**
@@ -24,18 +32,25 @@ var StreamScene = IgeScene2d.extend({
 	 */
 	streamSectionData: function (sectionId, data) {
 		// Check if the section is one that we are handling
-		if (sectionId == 'commanderChange') {
-            if (data) {
-                data = JSON.parse(data);
-				UI.notifications.commanderChange(data.val);
-            } else {
-                return this._getJSONStreamActionData('commanderChange');
+		if (this._streamActionSections.indexOf(sectionId) != -1) {
+            if (!data) {
+                if (ige.isServer) {
+                    return this._getJSONStreamActionData(sectionId);
+                } else {
+                    return;
+                }
             }
-        } else if (sectionId == 'playerList') {
-            if (data) {
-                UI.playerList.set(JSON.parse(data));
-            } else {
-                return this._getJSONStreamActionData('commanderChange');
+            var dataArr = JSON.parse(data);
+            for (var dataId in dataArr) {
+                data = dataArr[dataId];
+
+                //execute section handlers
+                if (sectionId == 'playerList') {
+                    UI.playerList.set(data);
+                }
+                else if (sectionId == 'commanderChange') {
+                    UI.notifications.commanderChange(data);
+                }
             }
         } else {
 			// The section was not one that we handle here, so pass this
@@ -44,7 +59,7 @@ var StreamScene = IgeScene2d.extend({
 			return IgeEntity.prototype.streamSectionData.call(this, sectionId, data);
 		}
 	},
-	
+
     _getJSONStreamActionData: function(property) {
         if (this._streamActions.hasOwnProperty(property) && this._streamActions[property] != undefined) {
             var data = this._streamActions[property];
@@ -53,8 +68,18 @@ var StreamScene = IgeScene2d.extend({
         }
     },
 
-    addStreamData: function(id, data) {
-        this._streamActions[id] = data;
+    addStreamData: function(id, data, keepOld) {
+        //console.log(keepOld, typeof(this._streamActions[id]));
+        if (keepOld === true && typeof(this._streamActions[id]) == 'object') {
+            this._streamActions[id].push(data);
+        } else {
+            this._streamActions[id] = [data];
+        }
+    },
+
+    tick: function(ctx) {
+        // Call the IgeEntity (super-class) tick() method
+        IgeScene2d.prototype.tick.call(this, ctx);
     },
 
     getPlayerOverview: function() {
