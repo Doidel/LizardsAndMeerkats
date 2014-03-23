@@ -731,7 +731,7 @@ var Player = IgeEntity.extend({
 
                     //if he's raising the block, start the raising animation. If not, do no animation.
                     if (this.states.currentBlockFrame < 230 + add) {
-                        console.log(this.states.currentBlockFrame, 230 + add);
+                        //console.log(this.states.currentBlockFrame, 230 + add);
                         if (this.states.currentBlockFrame == 200) this._checkResetAnimation('block1' + direction, 1);
                         this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, start, end + 10, 1, false, ige.client.legBones2);
                     } else {

@@ -28,12 +28,12 @@ var Gear = IgeEntity.extend({
     },
 
     // add gear elements to player
-    addGearElement: function(gearPartName, gearElement){
+    equipGear: function(gearPartName, gearElement){
         var bone = this.entity._threeObj.bones[Gear.boneNames[gearPartName]];
         this.removeOldGearElement(bone);
         bone.add(gearElement._threeObj);
     },
-    removeOldGearElement: function(boneMesh){
+    unequipGear: function(boneMesh){
         var count = 0;
         var l = boneMesh.children.length
         while(count < l){
