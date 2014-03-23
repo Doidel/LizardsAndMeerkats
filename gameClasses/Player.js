@@ -87,6 +87,8 @@ var Player = IgeEntity.extend({
         this._streamActionSections = ['playVoiceCommand', 'objectsTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent', 'playerSetControlLeft', 'syncGold', 'updateName'];
         this.streamSections(['transform', 'runDirection'].concat(this._streamActionSections));
 
+        this.gear = new Gear(this);
+
         if (!ige.isServer) {
 
             console.log('set model...');
@@ -1283,7 +1285,7 @@ var Player = IgeEntity.extend({
 
         /* adding tools or weapons */
         // initialize handhold
-        this._threeObj.gear = new Gear(this._threeObj);
+        this.gear.reattachMeshes();
 
         ige.client.scene1._threeObj.add( this._threeObj );
 

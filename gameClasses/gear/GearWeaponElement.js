@@ -1,10 +1,10 @@
 GearWeaponElement = GearElement.extend({
     classId: 'GearWeaponElement',
 
-    init: function (mesh) {
-        GearElement.prototype.init.call(this, mesh);
-        this.status.strength = 10;
-        this.status.hitRadius = 0.5;
+    init: function (name, mesh) {
+        GearElement.prototype.init.call(this, name, mesh);
+        this.states.strength = 10;
+        this.states.hitRadius = 0.5;
     }
 });
 

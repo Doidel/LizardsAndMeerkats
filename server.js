@@ -128,12 +128,9 @@ var Server = IgeClass.extend({
                         // load gear
 
                         // adding gear elements to the gear list
-                        var toolElement = new GearToolElement(new THREE.Mesh(new THREE.CubeGeometry(0.25,0.25,0.25), new THREE.MeshBasicMaterial({color: 0x00ff00})));
-                        var weaponElement = new GearWeaponElement(new THREE.Mesh(new THREE.CubeGeometry(0.25,0.25,0.25), new THREE.MeshBasicMaterial({color: 0xffff00})));
-                        var armorElement = new GearArmorElement(new THREE.Mesh(new THREE.CubeGeometry(0.25,0.25,0.25), new THREE.MeshBasicMaterial({color: 0x00ffff})));
-                        Gear.addGearElementToList(toolElement);
-                        Gear.addGearElementToList(weaponElement);
-                        Gear.addGearElementToList(armorElement);
+                        Gear.addGearElementToList(new GearToolElement('pickaxe'));
+                        Gear.addGearElementToList(new GearWeaponElement('spear'));
+                        Gear.addGearElementToList(new GearArmorElement('nutshellHelmet'));
 
 					}
 				});

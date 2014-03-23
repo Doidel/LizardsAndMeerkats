@@ -1,10 +1,10 @@
 GearArmorElement = GearElement.extend({
     classId: 'GearArmorElement',
 
-    init: function (mesh, bodyPart) {
-        GearElement.prototype.init.call(this, mesh);
-        this.status.bodyPart = bodyPart;
-        this.status.armor = 100;
+    init: function (name, mesh, bodyPart) {
+        GearElement.prototype.init.call(this, name, mesh);
+        this.states.bodyPart = bodyPart;
+        this.states.armor = 100;
     }
 
 });

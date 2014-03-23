@@ -1,9 +1,11 @@
 var GearToolElement = GearElement.extend({
     classId: 'GearToolElement',
 
-    init: function (mesh) {
-        GearElement.prototype.init.call(this, mesh);
-        this.status.miningModifier = 3;
+    init: function (name, mesh) {
+
+        GearElement.prototype.init.call(this, name, mesh);
+
+        this.states.miningModifier = 3;
     }
 });
 

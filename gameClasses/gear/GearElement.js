@@ -1,13 +1,16 @@
 var GearElement = IgeEntity.extend({
     classId: 'GearElement',
-    status: {
-        condition: 100,
-        weight: 10,
-        price: 1
-    },
 
-    init: function (mesh) {
+    init: function (name, mesh) {
         IgeEntity.prototype.init.call(this);
+
+        this.name = name;
+
+        this.states = {
+            condition: 100,
+                weight: 10,
+                price: 1
+        };
 
 		if (!ige.isServer) {
             this._threeObj = mesh.clone();

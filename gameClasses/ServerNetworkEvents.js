@@ -16,13 +16,16 @@ var ServerNetworkEvents = {
 	},
 
 	_onPlayerDisconnect: function (clientId) {
-		// Remove the player from the game
-        ige.server.gameStates.playerCounts[ige.server.players[clientId].faction]--;
-		ige.server.players[clientId].destroy();
+        console.warn('disconnected', clientId);
+        if (ige.server.players[clientId]) {
+            // Remove the player from the game
+            ige.server.gameStates.playerCounts[ige.server.players[clientId].faction]--;
+            ige.server.players[clientId].destroy();
 
-		// Remove the reference to the player entity
-		// so that we don't leak memory
-		delete ige.server.players[clientId];
+            // Remove the reference to the player entity
+            // so that we don't leak memory
+            delete ige.server.players[clientId];
+        }
 	},
 
 	_onPlayerEntity: function (data, clientId) {
