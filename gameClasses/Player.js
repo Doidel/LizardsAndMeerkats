@@ -79,6 +79,8 @@ var Player = IgeEntity.extend({
             woodOrStone: 0
         };
 
+        this._hitRadius = 1;
+
         //contains data and actions which have to be streamed to the client, e.g.
         //_streamActions['uH'] =  299 // identifier = 'updateHealth', value = 299
         this._streamActions = {};
@@ -593,6 +595,8 @@ var Player = IgeEntity.extend({
                         }
                     }
                 }
+
+                //TODO: Check all spawnable buildings whether the player's near it
             }
 
             if (!this.states.noAnimation) {
@@ -898,7 +902,7 @@ var Player = IgeEntity.extend({
             }
 
             //does he hit a building?
-            var buildingsHit = self.getBuildingsHit(1);
+            var buildingsHit = self.getBuildingsHit(this._hitRadius);
             //console.log('Hit buildings: ', buildingsHit.length);
             for (var x = 0; x < buildingsHit.length; x++) {
 				if (buildingsHit[x].faction == this.faction) {
@@ -983,10 +987,13 @@ var Player = IgeEntity.extend({
         }
         return players;
     },
-    getBuildingsHit: function(radius) {
-        var hitBuildings = [];
-        var buildingsLength = ige.server.levelObjects.buildings.length;
-        var sensingPoints = [];
+    _getBuildingSenseVars: function(radius) {
+        var vars = {
+            sensingPoints: [],
+            PI_2: Math.PI * 2,
+            rot: -(this._rotate.y % this.PI_2 + this.PI_2) % this.PI_2 - Math.PI/2,
+            blockHitAngle : Math.PI * 0.35
+        };
 
         //sensing points test
         var PI_2 = Math.PI * 2;
@@ -1000,55 +1007,72 @@ var Player = IgeEntity.extend({
             var sensingPoint = new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
             sensingPoint.x += this._translate.x;
             sensingPoint.z += this._translate.z;
-            sensingPoints.push(sensingPoint);
+            vars.sensingPoints.push(sensingPoint);
         }
 
+        return vars;
+    },
+    getBuildingsHit: function(radius) {
+        var hitBuildings = [];
+        var buildingsLength = ige.server.levelObjects.buildings.length;
+        var vars = this._getBuildingSenseVars(radius);
 
         for (var x = 0; x < buildingsLength; x++) {
             var building = ige.server.levelObjects.buildings[x];
-            var buildingMatrix = building._threeObj.matrixWorld;
 
-            if (building._threeObj.geometry.boundingSphere) {
-                var r = building._threeObj.geometry.boundingSphere.radius;
-                var pos = building._threeObj.position.clone();
-                pos.y = 0;
-                for (var sensingPointIndex = 0; sensingPointIndex <= 2; sensingPointIndex++) {
-                    if (this._distanceTo(sensingPoints[sensingPointIndex], pos) <= r) {
-                        //sensing point is within the sphere!
-                        if (hitBuildings.indexOf(building) == -1) {
-                            hitBuildings.push(building);
-                            break;
-                        }
-                    }
-                }
-
-            }
-            else if (building._threeObj.geometry.boundingBox) {
-                //Rectangle x1, x2, y1, y2
-                var buildingCorner1 = new THREE.Vector3(building._threeObj.geometry.boundingBox.min.x, 0, building._threeObj.geometry.boundingBox.min.z).applyMatrix4(buildingMatrix),
-                    buildingCorner2 = new THREE.Vector3(building._threeObj.geometry.boundingBox.max.x, 0, building._threeObj.geometry.boundingBox.max.z).applyMatrix4(buildingMatrix);
-
-                //Fast check: is the player within the rectangle + radius area?
-                if (this._translate.x >= buildingCorner1.x - radius && this._translate.x <= buildingCorner2.x + radius &&
-                    this._translate.z >= buildingCorner1.z - radius && this._translate.z <= buildingCorner2.z + radius) {
-
-                    //console.log(building._threeObj.geometry.boundingBox);
-                    //console.log(buildingCorner1.x, buildingCorner1.z, buildingCorner2.x, buildingCorner2.z);
-
-                    //is one of the points in the rectangle?
-                    for (var sensingPointIndex = 0; sensingPointIndex <= 2; sensingPointIndex++) {
-                        if (sensingPoints[sensingPointIndex].x >= buildingCorner1.x && sensingPoints[sensingPointIndex].x <= buildingCorner2.x && sensingPoints[sensingPointIndex].z >= buildingCorner1.z && sensingPoints[sensingPointIndex].z <= buildingCorner2.z) {
-                            //sensing point is within the rectangle!
-                            if (hitBuildings.indexOf(building) == -1) {
-                                hitBuildings.push(building);
-                                break;
-                            }
-                        }
-                    }
+            if (this.isNearBuilding(building, vars)) {
+                if (hitBuildings.indexOf(building) == -1) {
+                    hitBuildings.push(building);
+                    break;
                 }
             }
         }
         return hitBuildings;
+    },
+    isNearBuilding: function(building, vars) {
+        var buildingMatrix = building._threeObj.matrixWorld;
+        var radius = this._hitRadius;
+
+        if (typeof(vars) == "number") {
+            radius = vars;
+            vars = this._getBuildingSenseVars(radius);
+        }
+
+        if (building._threeObj.geometry.boundingSphere) {
+            var r = building._threeObj.geometry.boundingSphere.radius;
+            var pos = building._threeObj.position.clone();
+            pos.y = 0;
+            for (var sensingPointIndex = 0; sensingPointIndex <= 2; sensingPointIndex++) {
+                if (this._distanceTo(vars.sensingPoints[sensingPointIndex], pos) <= r) {
+                    //sensing point is within the sphere!
+                    return true;
+                }
+            }
+
+        }
+        else if (building._threeObj.geometry.boundingBox) {
+            //Rectangle x1, x2, y1, y2
+            var buildingCorner1 = new THREE.Vector3(building._threeObj.geometry.boundingBox.min.x, 0, building._threeObj.geometry.boundingBox.min.z).applyMatrix4(buildingMatrix),
+                buildingCorner2 = new THREE.Vector3(building._threeObj.geometry.boundingBox.max.x, 0, building._threeObj.geometry.boundingBox.max.z).applyMatrix4(buildingMatrix);
+
+            //Fast check: is the player within the rectangle + radius area?
+            if (this._translate.x >= buildingCorner1.x - radius && this._translate.x <= buildingCorner2.x + radius &&
+                this._translate.z >= buildingCorner1.z - radius && this._translate.z <= buildingCorner2.z + radius) {
+
+                //console.log(building._threeObj.geometry.boundingBox);
+                //console.log(buildingCorner1.x, buildingCorner1.z, buildingCorner2.x, buildingCorner2.z);
+
+                //is one of the points in the rectangle?
+                for (var sensingPointIndex = 0; sensingPointIndex <= 2; sensingPointIndex++) {
+                    if (vars.sensingPoints[sensingPointIndex].x >= buildingCorner1.x && vars.sensingPoints[sensingPointIndex].x <= buildingCorner2.x && vars.sensingPoints[sensingPointIndex].z >= buildingCorner1.z && vars.sensingPoints[sensingPointIndex].z <= buildingCorner2.z) {
+                        //sensing point is within the rectangle!
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     },
     takeDamage: function(damage) {
         if (!ige.isServer) {
