@@ -25,6 +25,12 @@
     body {
         font-family: 'Freckle Face', cursive;
         background-color: rgb(69,51,38);
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
 
     .yellowText {
@@ -496,7 +502,7 @@
 
     </script>
 </head>
-<body>
+<body oncontextmenu="return false;" onselect="return false;" onselectstart="return false;">
 
     <div id="backgroundimage"></div>
 
@@ -560,7 +566,7 @@
 
     </div>
 
-    <div id="interface" oncontextmenu="return false;">
+    <div id="interface">
 
         <div id="statusbar">
             <img id="resourceFactionSingle" src="" />
