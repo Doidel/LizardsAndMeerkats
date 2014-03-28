@@ -88,7 +88,7 @@ var LevelUtils = {
         this.positions = this._particleGeom.attributes.position.array;
         this.atlasIndexes = this._particleGeom.attributes.atlasIndex.array;
 
-        for (var x = 0; x < this.positions.length; x++) {
+        for (var x = 0; x < this.atlasIndexes.length; x++) {
             //this.atlasIndexes[x] = Math.round(Math.random() * 4);
             this.atlasIndexes[x] = Math.round(Math.random() * 3);
         }
@@ -143,7 +143,7 @@ var LevelUtils = {
         this.positions = this._particleGeom.attributes.position.array;
         this.atlasIndexes = this._particleGeom.attributes.atlasIndex.array;
 
-        for (var x = 0; x < this.positions.length; x++) {
+        for (var x = 0; x < this.atlasIndexes.length; x++) {
             //this.atlasIndexes[x] = Math.round(Math.random() * 4);
             this.atlasIndexes[x] = Math.round(Math.random() * 3);
         }

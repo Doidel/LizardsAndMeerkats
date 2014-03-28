@@ -118,7 +118,7 @@ var Level2 = IgeClass.extend({
                     //take a random vertice
                     var randomShapeVertice = shape.vertices[Math.floor(Math.random() * amountOfShapeVertices)]
                     grassPositions[x * 3] = randomShapeVertice.x;
-                    grassPositions[x * 3 + 1] = randomShapeVertice.z + 0.5;
+                    grassPositions[x * 3 + 1] = randomShapeVertice.z + 0.26;
                     grassPositions[x * 3 + 2] = -randomShapeVertice.y;
                 }
                 var grass = new LevelUtils.Grass(grassPositions, ground);
