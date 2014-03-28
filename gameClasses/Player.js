@@ -161,7 +161,7 @@ var Player = IgeEntity.extend({
             });
 
             setTimeout(function() {
-                //this._updateHealth(0, true);
+                this._updateHealth(0, true);
             }.bind(this), 10000);
         }
     },
@@ -604,8 +604,9 @@ var Player = IgeEntity.extend({
                 //legs animation
                 if (this.states.isDying) {
                     this._checkResetAnimation('dying', 0);
+                    var start = 770, end = 810, speedUp = 1.5;
                     //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 770, 810, 0, false, ige.client.armBones);
-                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 770, 810, 0, false, ige.client.armBones2);
+                    var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 0, false, ige.client.armBones2);
                 } else if (this.states.isJumping) {
                     this._checkResetAnimation('jumping', 0);
                     //var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 2, 300, 410, 0, false, ige.client.armBones);
@@ -659,12 +660,12 @@ var Player = IgeEntity.extend({
                 //arms animation
                 if (this.states.isDying) {
                     this._checkResetAnimation('dying', 1);
-                    var start = 760, end = 800, speedUp = 0.5;
+                    var start = 770, end = 810, speedUp = 1.5;
                     var frame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * speedUp, start, end, 1, false, ige.client.legBones2);
                     if (frame >= end) {
                         this.states.isDying = false;
                         if (this.states.isDead) this.states.noAnimation = true;
-                    }
+                    } 
                 } else if (this.states.isAttacking) {
                     var start = 440, end = 490, direction = 1, speedUp = 1.4, type=0;
                     //var start = 620, end = 690, direction = 0, add = 0, speedUp = 0.5, type=0;
@@ -1215,6 +1216,7 @@ var Player = IgeEntity.extend({
                 ige.client.requestPointerLock();
                 UI.minimap.hide();
                 UI.spawn.setInstructionsVisibility(true);
+                this.states.noAnimation = false;
             }
         } else {
             //Set model (faction + unit type) and displays an animation
