@@ -52,6 +52,7 @@ var GoldmineBuildingMeerkat = Building.extend({
             this._threeObj.position = position;
 
             this._threeObj.position.set(this._threeObj.position.x + 2.2,this._threeObj.position.y, this._threeObj.position.z -0.425);
+            this._threeObj.name = "GoldmineBuildingMeerkat";
 
             if (this._id.indexOf('Stream') == -1) this.activatePhysics();
 

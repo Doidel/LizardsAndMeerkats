@@ -55,6 +55,7 @@ var OutpostMeerkats = Building.extend({
 
             this._threeObj.receiveShadow = true;
             this._threeObj.castShadow = true;
+            this._threeObj.name = "OutpostMeerkats";
 
             //ige.client.scene1._threeObj.add(this._threeObj);
             this.mount(ige.client.scene1);

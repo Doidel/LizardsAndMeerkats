@@ -92,6 +92,7 @@ var OutpostLizards = Building.extend({
             for(var i=0; i<10; ++i){
                 this._threeObj.add(laterns[i]);
             }
+            this._threeObj.name = "OutpostLizards";
 
 
 
