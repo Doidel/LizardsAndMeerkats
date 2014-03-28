@@ -224,7 +224,7 @@ var Level2 = IgeClass.extend({
                     camelthornPositions[x * 3 + 1] = randomShapeVertice.y;
                     camelthornPositions[x * 3 + 2] = randomShapeVertice.z + 0.5;
                 }
-                var camelthorns = new LevelUtils.Camelthorn(camelthornPositions, ground);
+                //var camelthorns = new LevelUtils.Camelthorn(camelthornPositions, ground);
 
 
                  // Create the water effect
