@@ -45,13 +45,56 @@ var Building = IgeEntity.extend({
 		} else {
             ige.server.levelObjects.buildings.push(this);
 			this.streamSyncInterval(200);
-        }		
+            this.setStreamRooms(['ige']);
+        }
 
         //contains data and actions which have to be streamed to the client, e.g.
         //_streamActions['uH'] =  299 // identifier = 'updateHealth', value = 299
         this._streamActions = {};
-		
-        this.streamSections(['transform']);
+
+        // Define the data sections that will be included in the stream
+        this._streamActionSections = ['updateHealth'];
+        this.streamSections(['transform'].concat(this._streamActionSections));
+    },
+
+    /**
+     * Override the default IgeEntity class streamSectionData() method
+     * so that we can check for the custom1 section and handle how we deal
+     * with it.
+     * @param {String} sectionId A string identifying the section to
+     * handle data get / set for.
+     * @param {*=} data If present, this is the data that has been sent
+     * from the server to the client for this entity.
+     * @return {*}
+     */
+    //streamSectionData: function (sectionId, data) {
+    streamSectionData: function (sectionId, data, bypassTimeStream) {
+        // Check if the section is one that we are handling
+        if (this._streamActionSections.indexOf(sectionId) != -1) {
+            if (!data) {
+                if (ige.isServer) {
+                    return this._getJSONStreamActionData(sectionId);
+                } else {
+                    return;
+                }
+            }
+            var dataArr = JSON.parse(data);
+            for (var dataId in dataArr) {
+                data = dataArr[dataId];
+
+                //execute section handlers
+                if (sectionId == 'updateHealth') {
+                    this._updateHealth(parseInt(data.health));
+                }
+            }
+        } else {
+            // The section was not one that we handle here, so pass this
+            // to the super-class streamSectionData() method - it handles
+            // the "transform" section by itself
+            //return IgeEntity.prototype.streamSectionData.call(this, sectionId, data);
+            if (data != undefined) console.log(sectionId, data);
+            return IgeEntity.prototype.streamSectionData.call(this, sectionId, data, bypassTimeStream);
+        }
     },
 
     _getJSONStreamActionData: function(property) {
@@ -161,7 +204,6 @@ var Building = IgeEntity.extend({
             if (color == 0) {
                 //the building was finally built
                 this.states.isBuilt = true;
-                this.streamMode(0);
             }
         }
     },
@@ -183,7 +225,7 @@ var Building = IgeEntity.extend({
         else {
             if (synchronize) {
                 //send update to all clients
-                this.addStreamData('updateHealth', {unit: this._id, health: health});
+                this.addStreamData('updateHealth', health);
             }
         }
         /* CEXCLUDE */
@@ -211,7 +253,7 @@ var Building = IgeEntity.extend({
         var newId = ige.newId();
 
         //sent network command to finalPlaceBuildings on clients
-        ige.network.send('setStreamBuildingBuildable', {id: this._id, color: 0, newId: newId});
+        ige.network.send('setStreamBuildingBuildable', {id: this._id, color: 0}); //, newId: newId
 
         //set new id
         this.id(newId);
@@ -349,13 +391,6 @@ var Building = IgeEntity.extend({
 		if (ige.isServer) ige.server.levelObjects.buildings.splice(ige.server.levelObjects.buildings.indexOf(this), 1);
 		IgeEntity.prototype.destroy.call(this);
 	}
-    /*_forwardAttribute: function(group, name, value, includeSelf) {
-        //send values to all other players
-        for (var key in ige.server.players) {
-            if (key === 'length' || !ige.server.players.hasOwnProperty(key) || (includeSelf != true && key == this._id)) continue;
-            ige.network.send('playerAttributeUpdate', {player: this._id, group: group, name: name, value: value}, key);
-        }
-    }*/
     /* CEXCLUDE */
 });
 
