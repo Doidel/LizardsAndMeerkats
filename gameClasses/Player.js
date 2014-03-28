@@ -876,6 +876,10 @@ var Player = IgeEntity.extend({
         var objectsTakenHit = [];
         var enemyAround = self._isEnemyAround();
 
+        var damage = 40;
+        if (self.states.attackType == 2) { damage = 60; }
+        else if (self.states.attackType == 3) { damage = 80; }
+
         //check for the actual hit 300ms later
         setTimeout(function() {
             self._updateThreeTransform();
@@ -898,7 +902,7 @@ var Player = IgeEntity.extend({
                 if (self._angleDistance(angle, rot) < blockHitAngle && !isBlocked) {
                     //hit
                     objectsTakenHit.push(possibleEnemies[x]._id);
-                    possibleEnemies[x].takeDamage(40);
+                    possibleEnemies[x].takeDamage(damage);
                 }
             }
 
@@ -913,7 +917,7 @@ var Player = IgeEntity.extend({
 					|| buildingsHit[x].faction == 'neutralHostile') {
 					if (buildingsHit[x].values.health > 0) {
 						//the building is damaged
-						buildingsHit[x].takeDamage(40);
+						buildingsHit[x].takeDamage(damage);
 						objectsTakenHit.push(buildingsHit[x]._id);
 					}
 				}
@@ -921,7 +925,7 @@ var Player = IgeEntity.extend({
 
             if (objectsTakenHit.length > 0) {
                 //send the hit to all players
-                self.addStreamData('objectsTakeHit', {hit: objectsTakenHit, dmg: 20});
+                self.addStreamData('objectsTakeHit', {hit: objectsTakenHit, dmg: damage});
             }
         }, 300); //TODO: Deduct the latency from the hit delay?
 
