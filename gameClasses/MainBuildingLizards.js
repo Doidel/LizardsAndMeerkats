@@ -143,6 +143,7 @@ var MainBuildingLizards = Building.extend({
             );
             //this._threeObj.geometry.dynamic = false;
             this._threeObj.position = position;
+            this._threeObj.name = "MainBuildingLizards";
 
             if (this._id.indexOf('Stream') == -1) this.activatePhysics();
 

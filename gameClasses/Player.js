@@ -161,7 +161,7 @@ var Player = IgeEntity.extend({
             });
 
             setTimeout(function() {
-                this._updateHealth(0, true);
+                //this._updateHealth(0, true);
             }.bind(this), 10000);
         }
     },
