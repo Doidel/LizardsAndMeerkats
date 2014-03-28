@@ -90,6 +90,17 @@ var Client = IgeClass.extend({
 
                         UI.igeLoadedFunctions();
 
+                        window.addEventListener( 'resize', function () {
+
+                            ige.client.vp1.camera._threeObj.aspect = window.innerWidth / window.innerHeight;
+                            ige.client.vp1.camera._threeObj.updateProjectionMatrix();
+
+                            ige._threeRenderer.setSize( window.innerWidth, window.innerHeight );
+
+                        }, false );
+
+
+
                         /*self.vp1.camera._threeObj.near = 1;
                         self.vp1.camera._threeObj.far = 1000;
                         console.log(self.vp1.camera._threeObj.near, self.vp1.camera._threeObj.far);*/
