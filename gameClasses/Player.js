@@ -230,7 +230,7 @@ var Player = IgeEntity.extend({
                     this.spawn(undefined, data.unit);
                 } else if (sectionId == 'playVoiceCommand') {
                     data = parseInt(data);
-                    ige.client.playAttachedSound(this.faction + data + '.mp3', p._threeObj);
+                    ige.client.playAttachedSound(this.faction + data + '.mp3', this._threeObj);
                 } else if (sectionId == 'objectsTakeHit') {
                     for (var x = 0; x < data.hit.length; x++) {
                         if (ige.$(data.hit[x])) {
