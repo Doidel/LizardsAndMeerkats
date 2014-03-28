@@ -53,7 +53,7 @@ var GoldOre = Building.extend({
                 .1 // high restitution
             );
 
-            var geom = new THREE.SphereGeometry(3.5,3,3);
+            var geom = new THREE.SphereGeometry(4.4,3,3);
             geom.computeBoundingSphere();
             /*
             var halfHeight = (geom.boundingBox.max.y - geom.boundingBox.min.y) / 2;
@@ -69,13 +69,14 @@ var GoldOre = Building.extend({
             //this._threeObj.geometry.dynamic = false;
             this._threeObj.position = position;
 
-            this._threeObj.position.set(this._threeObj.position.x,this._threeObj.position.y - 1.1, this._threeObj.position.z);
+            this._threeObj.position.set(this._threeObj.position.x,this._threeObj.position.y - 3, this._threeObj.position.z);
 
             if (this._id.indexOf('Stream') == -1) this.activatePhysics();
 
             this.mount(ige.server.scene1);
 
             ige.server.levelObjects.buildings.push(this);
+            ige.server.levelObjects.goldRocks.push(this);
         }
 
         if (position) {

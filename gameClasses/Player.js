@@ -930,7 +930,7 @@ var Player = IgeEntity.extend({
             for (var r = 0; r < ige.server.levelObjects.goldRocks.length; r++) {
                 //is he near a gold rock?
                 var rock = ige.server.levelObjects.goldRocks[r];
-                if (self._distanceTo(self._translate, rock.position) <= rock.geometry.radius + 2 && (ige._currentTime - self.states.rockLastHarvested) >= 600) {
+                if (self._distanceTo(self._translate, rock._translate) <= rock._threeObj.geometry.radius + 2 && (ige._currentTime - self.states.rockLastHarvested) >= 600) {
                     self.states.rockLastHarvested = ige._currentTime;
                     //harvesting!
                     rockFound = true;
