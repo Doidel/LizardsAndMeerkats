@@ -43,8 +43,7 @@ var MainBuildingLizards = Building.extend({
                     geomStairs,
                     matStairs
                 ));
-                stairs[i].receiveShadow = true;
-                stairs[i].castShadow = true;
+                //stairs[i].receiveShadow = true;
             }
 
             stairs[0].position = new THREE.Vector3(0, 0, 4.65);

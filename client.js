@@ -120,7 +120,7 @@ var Client = IgeClass.extend({
                         backgroundSoundInit();
 
                         //remove ambient light
-                        self.scene1._threeObj.remove(self.scene1._threeObj.children[0]);
+                        //self.scene1._threeObj.remove(self.scene1._threeObj.children[0]);
 
                         console.log('create Sunlight');
                         var sunlight = new THREE.DirectionalLight(0xFFFFFF, 1);

@@ -42,6 +42,7 @@ var MainBuildingMeerkats = Building.extend({
                 geomRoof,
                 matRoof
             );
+            roof.castShadow = true;
 
             this._threeObj.add(roof);
 
@@ -58,15 +59,10 @@ var MainBuildingMeerkats = Building.extend({
                 geomFloor,
                 matFloor
             );
+            floor.castShadow = true;
+            floor.receiveShadow = true;
 
             this._threeObj.add(floor);
-
-            var roof = new THREE.Mesh(
-                geomRoof,
-                matRoof
-            );
-
-            this._threeObj.add(roof);
 
             // stone
             var stoneTexture = THREE.ImageUtils.loadTexture( './assets/textures/scenery/meerkatStoneTextureMap.jpg' );
@@ -84,6 +80,8 @@ var MainBuildingMeerkats = Building.extend({
                 geomStone,
                 matStone
             );
+            stone.castShadow = true;
+            stone.receiveShadow = true;
 
             this._threeObj.add(stone);
 
@@ -100,6 +98,7 @@ var MainBuildingMeerkats = Building.extend({
                 geomStairs,
                 matStairs
             );
+            stairs.castShadow = true;
 
             this._threeObj.add(stairs);
 
@@ -116,6 +115,7 @@ var MainBuildingMeerkats = Building.extend({
                 geomVoodoo,
                 matVoodoo
             );
+            voodoo.castShadow = true;
 
             // voodoomaskpillar
             var geomVoodooPillar = ige.three._loader.parse(modelBuildingMeerkatVoodooMaskPillar).geometry;
@@ -131,6 +131,7 @@ var MainBuildingMeerkats = Building.extend({
                 geomVoodooPillar,
                 matVoodooPillar
             );
+            voodooPillar.castShadow = true;
             voodooPillar.position.set(0,-1.7,0);
 
             voodoo.add(voodooPillar);
@@ -147,11 +148,13 @@ var MainBuildingMeerkats = Building.extend({
                 geomVoodoo,
                 matVoodoo
             );
+            voodoo2.castShadow = true;
 
             var voodooPillar2 = new THREE.Mesh(
                 geomVoodooPillar,
                 matVoodooPillar
             );
+            voodooPillar2.castShadow = true;
             voodooPillar2.position.set(0,-1.7,0);
 
             voodoo2.add(voodooPillar2);

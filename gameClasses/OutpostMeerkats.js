@@ -36,8 +36,9 @@ var OutpostMeerkats = Building.extend({
                 geomRoof,
                 matRoof
             );
+            meshRoof.castShadow = true;
 
-            this._threeObj.add(meshRoof)
+            this._threeObj.add(meshRoof);
 
             /*
              // physobj

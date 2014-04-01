@@ -37,7 +37,7 @@ var OutpostLizards = Building.extend({
                     matStairs
                 ));
                 stairs[i].receiveShadow = true;
-                stairs[i].castShadow = true;
+                //stairs[i].castShadow = true;
             }
 
             stairs[0].position = new THREE.Vector3(0, 0, 3.45);
@@ -67,8 +67,8 @@ var OutpostLizards = Building.extend({
                     geomLatern,
                     matLatern
                 ));
-                laterns[i].receiveShadow = true;
-                laterns[i].castShadow = true;
+                //laterns[i].receiveShadow = true;
+                //laterns[i].castShadow = true;
             }
 
             laterns[0].position = new THREE.Vector3(1.34, 2.36, 2.225);
