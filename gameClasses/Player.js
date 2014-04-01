@@ -1220,6 +1220,7 @@ var Player = IgeEntity.extend({
                 ige.client.requestPointerLock();
                 UI.minimap.hide();
                 UI.spawn.setInstructionsVisibility(true);
+                UI.spawn.canSpawn(false);
                 this.states.noAnimation = false;
             }
         } else {

@@ -155,6 +155,8 @@ var ClientNetworkEvents = {
                         }
                     });
 
+                    UI.spawn.canSpawn(true);
+
 					// Turn off the listener for this event now that we
 					// have found and started tracking our player entity
 					ige.network.stream.off('entityCreated', self._eventListener, function (result) {
