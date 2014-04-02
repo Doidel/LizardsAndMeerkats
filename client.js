@@ -57,7 +57,7 @@ var Client = IgeClass.extend({
 					// than before the scene etc are created... maybe you want
 					// a splash screen or a menu first? Then connect after you've
 					// got a username or something?
-					ige.network.start('http://localhost:2000', function () {
+					ige.network.start('http://socket.lizkats.com:2000', function () { //91.250.97.36
 						// Setup the network command listeners
 						ige.network.define('playerEntity', self._onPlayerEntity); // Defined in ./gameClasses/ClientNetworkEvents.js
                         ige.network.define('setStreamBuildingBuildable', self._onSetStreamedBuildingBuildable);
@@ -516,6 +516,8 @@ var Client = IgeClass.extend({
                     ige.client.controls.enabled = true;
 
                     ige.client.vp1.emit('pointerLockEntered');
+                    instructions.style.display = 'none';
+
 
                 } else {
 
@@ -543,8 +545,6 @@ var Client = IgeClass.extend({
 
             this.requestPointerLock = function () {
 
-                instructions.style.display = 'none';
-
                 // Ask the browser to lock the pointer
                 element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
 
@@ -567,7 +567,8 @@ var Client = IgeClass.extend({
 
                     element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
 
-                    element.requestFullscreen();
+                    //element.requestFullscreen();
+                    element.requestPointerLock();
 
                 } else {
 
@@ -578,6 +579,10 @@ var Client = IgeClass.extend({
             };
 
             instructions.addEventListener( 'click', function() {
+                if (ige._player && ige._player.states.isSpawned) this.requestPointerLock();
+            }.bind(this), false );
+
+            blocker.addEventListener( 'click', function() {
                 if (ige._player && ige._player.states.isSpawned) this.requestPointerLock();
             }.bind(this), false );
 

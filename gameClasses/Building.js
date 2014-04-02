@@ -353,6 +353,7 @@ var Building = IgeEntity.extend({
         ige.server.scene1._threeObj.add( this._threeObj );
         //console.log('physics values', this._threeObj._physijs.position, this._threeObj._physijs.rotation);
     },
+    /* CEXCLUDE */
     translateTo: function(x, y, z) {
         IgeEntity.prototype.translateTo.call(this, x, y, z);
         this._threeObj.position.set(x, y, z);
@@ -391,7 +392,6 @@ var Building = IgeEntity.extend({
 		if (ige.isServer) ige.server.levelObjects.buildings.splice(ige.server.levelObjects.buildings.indexOf(this), 1);
 		IgeEntity.prototype.destroy.call(this);
 	}
-    /* CEXCLUDE */
 });
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = Building; }

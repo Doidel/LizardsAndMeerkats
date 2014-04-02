@@ -210,6 +210,9 @@ var MainBuildingMeerkats = Building.extend({
 					return false;
 				}
 			});
+
+            this.streamMode(1);
+            this.streamSyncInterval(1000 / 3);
         }
 
         if (position) {
@@ -225,10 +228,6 @@ var MainBuildingMeerkats = Building.extend({
         this._streamActionSections = ['startVote','chatMessages'];
         //We need no transform for the main building
         this.streamSections(['goldResource', 'woodResource'].concat(this._streamActionSections));
-
-        this.streamMode(1);
-
-        this.streamSyncInterval(1000 / 3);
     },
 
     /**
