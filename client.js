@@ -696,7 +696,7 @@ var Client = IgeClass.extend({
     _shadowLightMovement: function() {
         if (ige.client._sunlightReferencePoint) {
             var p2 = new THREE.Vector3(0,45,0).applyMatrix4(ige.client._sunlightReferencePoint.matrixWorld);
-            ige.client._shadowLight.position.set(p2.x + 20, p2.y + 50, p2.z);
+            ige.client._shadowLight.position.set(p2.x + 20, p2.y + 45, p2.z - 20);
         }
     }
 });
