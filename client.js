@@ -582,10 +582,6 @@ var Client = IgeClass.extend({
                 if (ige._player && ige._player.states.isSpawned) this.requestPointerLock();
             }.bind(this), false );
 
-            blocker.addEventListener( 'click', function() {
-                if (ige._player && ige._player.states.isSpawned) this.requestPointerLock();
-            }.bind(this), false );
-
         } else {
 
             instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
