@@ -136,7 +136,7 @@
         z-index: 100;
     }
 
-    #blockbar {
+    #blockbar, #stambar {
         position: absolute;
         left: 50%;
         top: 50%;
@@ -145,10 +145,35 @@
         opacity: 0.6;
     }
 
+    #stambar {
+        margin-top: -84px;
+    }
+
     #blockbar > * {
         position: absolute;
         left: 0px;
         right: 0px;
+    }
+
+    #blockbarInner {
+        background-image: url(./assets/ui/blockbar_inner.png);
+        width: 118px;
+        height:31px;
+        background-size: 119px 31px;
+        background-repeat: no-repeat;
+        position: absolute;
+        left: 4px;
+    }
+
+    #stambarInner {
+        background-image: url(./assets/ui/stambar_inner.png);
+        width: 118px;
+        height:21px;
+        background-size: 119px 21px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top: 2px;
+        left: 4px;
     }
 
     #healthbar {
@@ -606,8 +631,14 @@
 
         <div id="blockbar" style="width: 126px; height: 40px;">
             <img src="./assets/ui/blockbar_outer.png" style="width: 100%; height: 100%;" />
-            <div id="blockbarInner" style="background-image: url(./assets/ui/blockbar_inner.png); width: 126px; height:100%; background-size: 126px 40px; background-repeat: no-repeat;"></div>
+            <div id="blockbarInner"></div>
         </div>
+
+        <div id="stambar" style="width: 126px; height: 28px;">
+            <img src="./assets/ui/stambar_outer.png" style="width: 100%; height: 100%;" />
+            <div id="stambarInner"></div>
+        </div>
+
         <div id="goldHarvestElement"></div>
 		<div id="commanderChangeNotificationElement"></div>
 
@@ -659,6 +690,23 @@
                 }
                 this.currentWidth = 126/100*percent;
                 $('#blockbarInner').css('width', this.currentWidth);
+            }
+        },
+        stamBar: {
+            el: $('#stambar'),
+            currentWidth: 126,
+            setPercent: function(percent) {
+                if (percent < 100) {
+                    this.el.css('opacity', 0.6);
+                    if (this.opacityCounter) clearTimeout(this.opacityCounter);
+                } else if(!this.opacityCounter && this.currentWidth != 126) {
+                    this.opacityCounter = setTimeout(function() {
+                        this.el.css('opacity', 0);
+                        this.opacityCounter = undefined;
+                    }.bind(this), 500);
+                }
+                this.currentWidth = 126/100*percent;
+                $('#stambarInner').css('width', this.currentWidth);
             }
         },
         notifications: {

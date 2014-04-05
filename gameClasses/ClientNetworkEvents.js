@@ -98,7 +98,7 @@ var ClientNetworkEvents = {
                                 }
                             } else if (event.which == 2) {
                                 //block
-                                if (!self.controls.block) {
+                                if (!self.controls.block && !self.states.dazed) {
                                     // Record the new state
                                     self.controls.block = true;
 
@@ -107,7 +107,7 @@ var ClientNetworkEvents = {
                                 }
                             } else if (event.which == 3) {
                                 //chargeLeap
-                                if (!self.controls.chargeLeap) {
+                                if (!self.controls.chargeLeap && !self.states.dazed) {
                                     // Record the new state
                                     self.controls.chargeLeap = true;
 

@@ -40,7 +40,8 @@ var Player = IgeEntity.extend({
             isRunning: false,
             isUsingVoice: false,
             runDirection: 0,
-            oldRunDir: -1
+            oldRunDir: -1,
+            dazed: false
         };
 
         this.controls = {
@@ -72,6 +73,9 @@ var Player = IgeEntity.extend({
             currentStamina: 100,
             maxStamina: 100,
             staminaregeneration: 0.01,
+            currentBlock: 100,
+            maxBlock: 100,
+            blockregeneration: 0.01,
             health: 300,
             maxhealth: 300,
             healthregeneration: 0.005,
@@ -86,7 +90,7 @@ var Player = IgeEntity.extend({
         this._streamActions = {};
 
         // Define the data sections that will be included in the stream
-        this._streamActionSections = ['playVoiceCommand', 'objectsTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent', 'playerSetControlLeft', 'syncGold', 'updateName'];
+        this._streamActionSections = ['playVoiceCommand', 'objectsTakeHit', 'playerHarvest', 'updateHealth', 'playerAttributeUpdate', 'playerSpawn', 'playerSetComponent', 'playerSetControlLeft', 'syncGold', 'updateName', 'drainStamina', 'drainBlock', 'setDazed'];
         this.streamSections(['transform', 'runDirection'].concat(this._streamActionSections));
 
         this.gear = new Gear(this);
@@ -251,9 +255,11 @@ var Player = IgeEntity.extend({
                         this.states.isScratching = false;
                     }
                 } else if (sectionId == 'updateHealth') {
-                    if (ige.$(data.unit)) {
-                        ige.$(data.unit)._updateHealth(data.health);
-                    }
+                    this._updateHealth(data.health);
+                } else if (sectionId == 'drainStamina') {
+                    this.values.currentStamina = Math.min( this.values.currentStamina - parseInt(data), this.values.maxStamina); //Math.max( Math.min( this.values.currentStamina - parseInt(data), this.values.maxStamina), 0);
+                } else if (sectionId == 'drainBlock') {
+                    this.values.currentBlock = Math.min( this.values.currentBlock - parseInt(data), this.values.maxBlock);
                 } else if (sectionId == 'playerAttributeUpdate') {
                     var p = ige.$(data.player);
                     p[data.group][data.name] = data.value;
@@ -264,6 +270,8 @@ var Player = IgeEntity.extend({
                 } else if (sectionId == 'updateName') {
                     this.values.name = data;
                     this._nametag.setName();
+                } else if (sectionId == 'setDazed') {
+                    this.states.dazed = parseInt(data) == 0 ? false : true;
                 }
             }
         } else {
@@ -314,10 +322,12 @@ var Player = IgeEntity.extend({
                 var velocity = new THREE.Vector3(0,0,0);
                 var velocityFactor = 0.2;
 
-                if (this.controls.jump && this.states.canJump) {
+                if (this.controls.jump && this.states.canJump && this.values.currentStamina >= 30) {
                     this.states.canJump = false;
                     this.controls.jump = false;
                     velocity.y = 16;
+                    this.values.currentStamina -= 30;
+                    this.addStreamData('drainStamina', 30, true);
                 }
 
 
@@ -349,6 +359,10 @@ var Player = IgeEntity.extend({
                 var wasCharging = this.states.isCharging;
                 this.states.isCharging = false;
 
+                if (this.controls.chargeLeap && (this.values.currentStamina <= 0 || this.states.dazed)) {
+                    this.controls.chargeLeap = false;
+                }
+
                 if (this.controls.chargeLeap) {
                     //switch between charge and leap mode
                     if (false && this.states.canJump) {
@@ -358,7 +372,7 @@ var Player = IgeEntity.extend({
                         this.controls.chargeLeap = false;
                         this.states.isLeaping = true;
                         velocity.y = 5;
-                        setTimeout(function() {
+                        setTimeout(function() { //TODO: Use ige timeout
                             self.states.isLeaping = false;
                         }, 200);
                     } else if (true) {
@@ -392,6 +406,8 @@ var Player = IgeEntity.extend({
                 //deprecated -- quat.setFromEuler({x:self._rotate.x, y:self._rotate.y, z:0},"XYZ");
                 quat.setFromEuler(new THREE.Euler( self._rotate.x, self._rotate.y, 0 ));
                 inputVelocity.applyQuaternion(quat);
+
+                if (this.states.dazed) inputVelocity.multiplyScalar(0.5);
 
                 var currentVelocity = this._threeObj.getLinearVelocity();
 
@@ -497,7 +513,7 @@ var Player = IgeEntity.extend({
                 }
 
                 if (ige.input.actionState('jump')) {
-                    if (!this.controls.jump) {
+                    if (!this.controls.jump && this.values.currentStamina >= 30 - 1) { //-1 to counter latency since you'll probably have more stamina on the server
                         // Record the new state
                         this.controls.jump = true;
                         this.states.isJumping = true;
@@ -614,7 +630,8 @@ var Player = IgeEntity.extend({
                     if (frame >= 400) this.states.isJumping = false;
                 } else if (this.states.isRunning != false) {
                     this._checkResetAnimation('running' + this.states.isRunning[0], 0);
-                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, this.states.isRunning[1], this.states.isRunning[2], 0, true, ige.client.armBones2);
+                    var speedModifiers = 1.0 * (this.states.dazed ? 0.5 : 1) * (this.controls.chargeLeap ? 2.0 : 1); //2.5
+                    this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3 * speedModifiers, this.states.isRunning[1], this.states.isRunning[2], 0, true, ige.client.armBones2);
                     //this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, start, end, 0, true, ige.client.armBones2);
                 } else {
                     //if (this._previousAnimation[0].indexOf('standing') == -1) this.states.nextStandingAnim = 0;
@@ -837,20 +854,39 @@ var Player = IgeEntity.extend({
             //start block - right: 2070 - 2100
             //block - right: 2100 - 2110
             //end block - right: 2110 - 2140
+
+
+            //stop chargeleap when there's no stamina
+            if (this.controls.chargeLeap && this.values.currentStamina <= 0) {
+                this.controls.chargeLeap = false;
+            }
         }
 
 
         //// STAMINA
-        if (!this.states.isDead && (this.values.currentStamina < this.values.maxStamina || this.controls.block)) {
-            var diff = (this.values.staminaregeneration*ige._tickDelta);
+        if (!this.states.isDead && (this.values.currentStamina < this.values.maxStamina || this.controls.chargeLeap)) {
+            var diff = (this.values.staminaregeneration * ige._tickDelta);
 
-            if (this.controls.block) {
-                this.values.currentStamina = Math.max(this.values.currentStamina - diff*2, 0);
+            if (this.controls.chargeLeap) {
+                this.values.currentStamina = Math.max(this.values.currentStamina - diff*4, 0);
             } else if (this.values.currentStamina < this.values.maxStamina) {
                 this.values.currentStamina = Math.min(this.values.currentStamina + diff, this.values.maxStamina);
             }
 
-            if (!ige.isServer) UI.blockBar.setPercent(100 / this.values.maxStamina * this.values.currentStamina);
+            if (!ige.isServer) UI.stamBar.setPercent(100 / this.values.maxStamina * this.values.currentStamina);
+        }
+
+        //// BLOCKBAR
+        if (!this.states.isDead && (this.values.currentBlock < this.values.maxBlock || this.controls.block)) {
+            var diff = (this.values.blockregeneration * ige._tickDelta);
+
+            if (this.controls.block) {
+                this.drainBlock(diff*2);
+            } else if (this.values.currentBlock < this.values.maxBlock) {
+                this.values.currentBlock = Math.min(this.values.currentBlock + diff, this.values.maxBlock);
+            }
+
+            if (!ige.isServer) UI.blockBar.setPercent(100 / this.values.maxBlock * this.values.currentBlock);
         }
 
         //// HEALTH REGEN
@@ -880,54 +916,6 @@ var Player = IgeEntity.extend({
         if (self.states.attackType == 2) { damage = 60; }
         else if (self.states.attackType == 3) { damage = 80; }
 
-        //check for the actual hit 300ms later
-        setTimeout(function() {
-            self._updateThreeTransform();
-            self._threeObj.updateMatrixWorld();
-            var possibleEnemies = self.getPlayersWithinRadius(1.4);
-            for (var x = 0; x < possibleEnemies.length; x++) {
-                if (possibleEnemies[x]._id == self._id) continue;
-                isBlocked = false;
-                if (possibleEnemies[x].controls.block) {
-                    //enemyrot = (possibleEnemies[x]._rotate.y % PI_2 + PI_2 + Math.PI) % PI_2; //+Math.PI because we want the enemy to face you in order to block
-                    enemyrot = possibleEnemies[x]._rotate.y + Math.PI;
-                    isBlocked = self._angleDistance(enemyrot - rot) < blockHitAngle;
-                }
-
-                angle = Math.atan2(
-                    possibleEnemies[x]._translate.x - self._translate.x,
-                    possibleEnemies[x]._translate.z - self._translate.z
-                ) + Math.PI; //Math.atan2 goes from -Math.PI to +Math.PI, we want everything to be positive though
-
-                if (self._angleDistance(angle, rot) < blockHitAngle && !isBlocked) {
-                    //hit
-                    objectsTakenHit.push(possibleEnemies[x]._id);
-                    possibleEnemies[x].takeDamage(damage);
-                }
-            }
-
-            //does he hit a building?
-            var buildingsHit = self.getBuildingsHit(this._hitRadius);
-            //console.log('Hit buildings: ', buildingsHit.length);
-            for (var x = 0; x < buildingsHit.length; x++) {
-				if (buildingsHit[x].faction == this.faction) {
-					// the building is repaired / built
-					//TODO: Repair/build
-				} else if (buildingsHit[x].faction == (this.faction == 'lizards' ? 'lizards' : 'meerkats')
-					|| buildingsHit[x].faction == 'neutralHostile') {
-					if (buildingsHit[x].values.health > 0) {
-						//the building is damaged
-						buildingsHit[x].takeDamage(damage);
-						objectsTakenHit.push(buildingsHit[x]._id);
-					}
-				}
-            }
-
-            if (objectsTakenHit.length > 0) {
-                //send the hit to all players
-                self.addStreamData('objectsTakeHit', {hit: objectsTakenHit, dmg: damage});
-            }
-        }, 300); //TODO: Deduct the latency from the hit delay?
 
         var rockFound = false;
         if (!enemyAround) {
@@ -952,7 +940,7 @@ var Player = IgeEntity.extend({
         }
 
         //if it was a normal attack i.e. he wasn't just scratching...
-        if (!rockFound && !self.states.isScratching) {
+        if (!rockFound && !self.states.isScratching && !self.states.dazed) {
             //...add a timeout for the next attack, change the attack type and forward the values to the players
             self._forwardAttribute('states', 'attackType', self.states.attackType);
             self._forwardAttribute('states', 'isAttacking', true);
@@ -963,6 +951,89 @@ var Player = IgeEntity.extend({
             self.states.nextPossibleAttack = ige._currentTime + attackPause;
             //next attack type
             self.states.attackType = (self.states.attackType + 1) % 3;
+
+            if (this.values.currentStamina >= 20) {
+                this.values.currentStamina -= 20;
+                this.addStreamData('drainStamina', 20, true);
+
+                //check for the actual hit 300ms later
+                setTimeout(function() {
+                    self._updateThreeTransform();
+                    self._threeObj.updateMatrixWorld();
+                    var possibleEnemies = self.getPlayersWithinRadius(1.4);
+                    for (var x = 0; x < possibleEnemies.length; x++) {
+                        if (possibleEnemies[x]._id == self._id) continue;
+                        isBlocked = false;
+                        if (possibleEnemies[x].controls.block && !possibleEnemies[x].states.dazed) {
+                            //enemyrot = (possibleEnemies[x]._rotate.y % PI_2 + PI_2 + Math.PI) % PI_2; //+Math.PI because we want the enemy to face you in order to block
+                            enemyrot = possibleEnemies[x]._rotate.y + Math.PI;
+                            isBlocked = self._angleDistance(enemyrot - rot) < blockHitAngle;
+                        }
+
+                        angle = Math.atan2(
+                            possibleEnemies[x]._translate.x - self._translate.x,
+                            possibleEnemies[x]._translate.z - self._translate.z
+                        ) + Math.PI; //Math.atan2 goes from -Math.PI to +Math.PI, we want everything to be positive though
+
+                        if (self._angleDistance(angle, rot) < blockHitAngle) {
+                            if (!isBlocked) {
+                                //hit
+                                objectsTakenHit.push(possibleEnemies[x]._id);
+                                possibleEnemies[x].takeDamage(damage);
+
+                                //gain some stamina and block for every enemy hit
+                                this.values.currentStamina += Math.min( this.values.currentStamina + 15, this.values.maxStamina );
+                                this.addStreamData('drainStamina', -15, true);
+                                this.values.currentBlock += Math.min( this.values.currentBlock + 10, this.values.maxBlock );
+                                this.addStreamData('drainBlock', -10, true);
+                            } else {
+                                // do part of the damage towards the enemy's block
+                                possibleEnemies[x].drainBlock(damage / 2);
+                            }
+                        }
+                    }
+
+                    //does he hit a building?
+                    var buildingsHit = self.getBuildingsHit(this._hitRadius);
+                    //console.log('Hit buildings: ', buildingsHit.length);
+                    for (var x = 0; x < buildingsHit.length; x++) {
+                        if (buildingsHit[x].faction == this.faction) {
+                            // the building is repaired / built
+                            //TODO: Repair/build
+                        } else if (buildingsHit[x].faction == (this.faction == 'lizards' ? 'lizards' : 'meerkats')
+                            || buildingsHit[x].faction == 'neutralHostile') {
+                            if (buildingsHit[x].values.health > 0) {
+                                //the building is damaged
+                                buildingsHit[x].takeDamage(damage);
+                                objectsTakenHit.push(buildingsHit[x]._id);
+                            }
+                        }
+                    }
+
+                    if (objectsTakenHit.length > 0) {
+                        //send the hit to all players
+                        self.addStreamData('objectsTakeHit', {hit: objectsTakenHit, dmg: damage});
+                    }
+                }, 300); //TODO: Deduct the latency from the hit delay?
+
+            }
+        }
+    },
+    drainBlock: function(amount) {
+        this.values.currentBlock = Math.max( this.values.currentBlock - amount, 0 );
+        if (this.values.currentBlock == 0) {
+            this.states.dazed = true;
+            this.addStreamData('setDazed', 1);
+            if (this._dazedTimeout) {
+                this._dazedTimeout.reset();
+            }
+            else
+            {
+                this._dazedTimeout = new IgeTimeout(function() {
+                    this.addStreamData('setDazed', 0);
+                    this.states.dazed = false;
+                }.bind(this), 2000);
+            }
         }
     },
     _isEnemyAround: function() {
@@ -1178,7 +1249,7 @@ var Player = IgeEntity.extend({
         else {
             if (synchronize) {
                 //send update to all clients
-                this.addStreamData('updateHealth', {unit: this._id, health: health});
+                this.addStreamData('updateHealth', health);
             }
         }
         /* CEXCLUDE */
