@@ -31,7 +31,7 @@ var Gear = IgeEntity.extend({
     equipGear: function(gearPartName, gearElement){
         var bone = this.entity._threeObj.bones[Gear.boneNames[gearPartName]];
         this.removeOldGearElement(bone);
-        bone.add(gearElement._threeObj);
+        bone.add(gearElement._threeObj.clone());
     },
     unequipGear: function(boneMesh){
         var count = 0;
@@ -57,26 +57,10 @@ var Gear = IgeEntity.extend({
 // Static functions
 
 Gear.addGearElementToList = function(gearElement){
-    Gear.gearList.push(gearElement);
-    /*var category = 'tools';
-    if (gearElement instanceof GearWeaponElement) {
-        category = 'weapons';
-    } else if (gearElement instanceof GearArmorElement) {
-        category = 'armor';
-    }
-    Gear.list[category].push(gearElement);*/
+    Gear.gearList[gearElement.name] = gearElement;
 }
 
-Gear.gearList = [];
-
-/*Gear.gearList = {
-    tools: [
-    ],
-    weapons: [
-    ],
-    armor: [
-    ]
-}*/
+Gear.gearList = {};
 
 Gear.boneNames = {
     torso: 1,
