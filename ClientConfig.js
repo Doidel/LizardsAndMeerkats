@@ -63,6 +63,10 @@ var igeClientConfig = {
         /* Tools */
         './models/tools/modelToolHammer.js',
         './models/tools/modelToolPick.js',
+        /* Armor */
+        './models/armor/LizardStoneArmorBracelet.js',
+        './models/armor/LizardStoneArmorBraceletSmall.js',
+        './models/armor/LizardStoneArmorStone.js',
 
 		/* 3d filters */
 		/*'../ige/engine/components/three/EffectComposer.js',
