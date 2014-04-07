@@ -30,6 +30,9 @@ var IgeTimeout = IgeInterval.extend({
      */
     reset: function() {
         this._time = 0;
+        if (ige.time._timers.indexOf(this) == -1) {
+            ige.time.addTimer(this);
+        }
     },
 	
 	/**

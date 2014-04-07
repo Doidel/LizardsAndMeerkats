@@ -238,7 +238,6 @@ var Player = IgeEntity.extend({
                 } else if (sectionId == 'objectsTakeHit') {
                     for (var x = 0; x < data.hit.length; x++) {
                         if (ige.$(data.hit[x])) {
-                            console.log('take hit', x);
                             ige.$(data.hit[x]).takeDamage(data.dmg);
                         }
                     }
@@ -787,7 +786,6 @@ var Player = IgeEntity.extend({
 
                     if (this.states.currentBlockFrame < 240 + add) this._checkResetAnimation('block2', 1);
                     //lower-block animation
-                    console.log(start, end);
                     this.states.currentBlockFrame = this._threeObj.animation.rangeUpdate(ige._tickDelta / 1000 * 3, start, end, 1, false, ige.client.legBones2);
                     if (this.states.currentBlockFrame >= 270 + add) {
                         //reset animation
