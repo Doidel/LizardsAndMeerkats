@@ -173,7 +173,9 @@ var ClientNetworkEvents = {
 	},
     _onSetStreamedBuildingBuildable: function(data) {
         var streamBuilding = ige.$(data.id);
-        if (streamBuilding) streamBuilding.isBuildable(data.color);
+        if (streamBuilding) {
+            streamBuilding.isBuildable(data.color);
+        }
     }
 };
 

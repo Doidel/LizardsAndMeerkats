@@ -144,7 +144,7 @@ var MainBuildingLizards = Building.extend({
             this._threeObj.position = position;
             this._threeObj.name = "MainBuildingLizards";
 
-            if (this._id.indexOf('Stream') == -1) this.activatePhysics();
+            this.activatePhysics();
 
             this.mount(ige.server.scene1);
 

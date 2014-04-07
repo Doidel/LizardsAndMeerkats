@@ -250,13 +250,15 @@ var Building = IgeEntity.extend({
         //this.streamMode(0);
 
         //create new id
-        var newId = ige.newId();
+        //var newId = ige.newId();
 
         //sent network command to finalPlaceBuildings on clients
         ige.network.send('setStreamBuildingBuildable', {id: this._id, color: 0}); //, newId: newId
 
         //set new id
-        this.id(newId);
+        //this.id(newId);
+
+        ige.$(this.values.builderId).commander.streamedBuilding = undefined;
 
         //activate physics
         this.translateTo(this._translate.x, this._translate.y, this._translate.z);
@@ -264,6 +266,10 @@ var Building = IgeEntity.extend({
         this.activatePhysics();
 
         //activate abilities and functions
+    },
+    activatePhysics: function() {
+        ige.server.scene1._threeObj.add( this._threeObj );
+        //console.log('physics values', this._threeObj._physijs.position, this._threeObj._physijs.rotation);
     },
     _isFlatTerrain: function() {
         //TODO: Take rotation into account
@@ -339,19 +345,12 @@ var Building = IgeEntity.extend({
 			}
 		}
 
-        console.log(minGroundHeight, maxGroundHeight);
-
-
         //is the building height difference within the threshold?
         return {
             buildable: (maxGroundHeight - minGroundHeight) <= this.values.groundHeightDifferenceThreshold,
             minGroundHeight: minGroundHeight,
             maxGroundHeight: maxGroundHeight
         };
-    },
-    activatePhysics: function() {
-        ige.server.scene1._threeObj.add( this._threeObj );
-        //console.log('physics values', this._threeObj._physijs.position, this._threeObj._physijs.rotation);
     },
     /* CEXCLUDE */
     translateTo: function(x, y, z) {

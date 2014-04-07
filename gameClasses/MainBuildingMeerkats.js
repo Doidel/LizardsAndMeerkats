@@ -196,7 +196,7 @@ var MainBuildingMeerkats = Building.extend({
             //this._threeObj.geometry.dynamic = false;
             this._threeObj.position = position;
 
-            if (this._id.indexOf('Stream') == -1) this.activatePhysics();
+            this.activatePhysics();
 
             this.mount(ige.server.scene1);
 

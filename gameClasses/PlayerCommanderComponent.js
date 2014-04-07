@@ -39,27 +39,36 @@ var PlayerCommanderComponent = IgeClass.extend({
                 //UI.buildingMenu.displayPressed(this._player.states.buildingNr, false);
 			}
 			this._player.states.buildingNr = -1;
-		} else if (true) { //enough resources?
-			this._player.states.buildingNr = buildingNr;
+		}
+        else if (true) //enough resources?
+        {
+
 			if (ige.isServer) {
+
+                //If a building is already streamed destroy it, and create the new one afterwards.
+                if (this.streamedBuilding) this.streamedBuilding.destroy();
+
 				//Select the building according to buildingNr
 				//Create a streamed building entity in front of the player
 				//the newly initialized Building.js calls isBuildable each tick on the server while it's not built
                 if (this._player.faction == 'lizards') {
-				    this.streamedBuilding = new OutpostLizards(this._player.faction + 'StreamBuilding', new THREE.Vector3(0, 10, 0));
+				    this.streamedBuilding = new OutpostLizards(undefined, new THREE.Vector3(0, 10, 0), true);
                 } else {
-                    this.streamedBuilding = new OutpostMeerkats(this._player.faction + 'StreamBuilding', new THREE.Vector3(0, 10, 0));
+                    this.streamedBuilding = new OutpostMeerkats(undefined, new THREE.Vector3(0, 10, 0), true);
                 }
+
                 this.streamedBuilding
                     .streamMode(1)
 					.mount(ige.server.scene1);
 				this.streamedBuilding.values.builderId = this._player._id;
                 this.streamedBuilding.states.isBuilt = false;
 				this._player.levelRoom.attachEntity(this.streamedBuilding);
-			} else {
-                //display " not enough resources "
 			}
-		}
+            this._player.states.buildingNr = buildingNr;
+
+		} else if (!ige.isServer) {
+            //display " not enough resources "
+        }
     },
 	finalPlaceBuilding: function() {
         //method is called by player.js left click
@@ -90,7 +99,7 @@ var PlayerCommanderComponent = IgeClass.extend({
 
 		if (isUp) {
             console.log('call placeBuilding');
-		    this.placeBuilding(1);
+		    this.placeBuilding(keyNr);
 		}
 	},
 	destroy: function () {

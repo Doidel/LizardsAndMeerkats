@@ -1,7 +1,7 @@
 var OutpostMeerkats = Building.extend({
     classId: 'OutpostMeerkats',
 
-    init: function (id, position) {
+    init: function (id, position, beingBuilt) {
         Building.prototype.init.call(this, id);
 		
 		this.faction = 'meerkats';
@@ -85,7 +85,7 @@ var OutpostMeerkats = Building.extend({
             //this._threeObj.geometry.dynamic = false;
             this._threeObj.position = position;
 
-            if (this._id.indexOf('Stream') == -1) this.activatePhysics();
+            if (!beingBuilt) this.activatePhysics();
 
             this.mount(ige.server.scene1);
 
