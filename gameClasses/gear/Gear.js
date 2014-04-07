@@ -1,9 +1,7 @@
-var Gear = IgeEntity.extend({
+var Gear = IgeClass.extend({
     classId: 'Gear',
 
     init: function (entity) {
-        IgeEntity.prototype.init.call(this);
-
         this.entity = entity;
 		
 		if (!ige.isServer) {

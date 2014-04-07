@@ -182,9 +182,10 @@ var Client = IgeClass.extend({
                         // load gear
 
                         // adding gear elements to the gear list
-                        Gear.addGearElementToList(new GearToolElement('pickaxe', new THREE.Mesh(new THREE.CubeGeometry(0.25,0.25,0.25), new THREE.MeshBasicMaterial({color: 0x00ff00}))));
-                        Gear.addGearElementToList(new GearWeaponElement('spear', new THREE.Mesh(new THREE.CubeGeometry(0.25,0.25,0.25), new THREE.MeshBasicMaterial({color: 0xffff00}))));
-                        Gear.addGearElementToList(new GearArmorElement('nutshellHelmet', new THREE.Mesh(new THREE.CubeGeometry(0.25,0.25,0.25), new THREE.MeshBasicMaterial({color: 0x00ffff}))));
+                        var geom = new THREE.CubeGeometry(0.25,0.25,0.25);
+                        Gear.addGearElementToList(new GearToolElement('pickaxe', new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: 0x00ff00}))));
+                        Gear.addGearElementToList(new GearWeaponElement('spear', new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: 0xffff00}))));
+                        Gear.addGearElementToList(new GearArmorElement('nutshellHelmet', new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: 0x00ffff}))));
 
 
                         // Add boxes
