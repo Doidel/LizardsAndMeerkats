@@ -190,7 +190,7 @@ var Client = IgeClass.extend({
                         ige.resourcesLoader = new ResourceLoader();
 
                         // load TOOL pickaxe
-                        var pickaxeMesh = ige.resourcesLoader.getResource('pickaxeMesh').clone();
+                        var pickaxeMesh = ige.resourcesLoader.getMesh('pickaxeMesh').clone();
                         pickaxeMesh.rotation.y = Math.PI;
                         pickaxeMesh.position.set(0,0.2,0);
                         var pickaxe = new GearToolElement('pickaxe', pickaxeMesh);
@@ -198,38 +198,38 @@ var Client = IgeClass.extend({
 
                         // load ARMOR lizard stone
                         // arm lower - left
-                        var armLowerLeftLizardStoneMesh = ige.resourcesLoader.getResource('lizardStoneArmorBracelet').clone();
+                        var armLowerLeftLizardStoneMesh = ige.resourcesLoader.getMesh('lizardStoneArmorBracelet').clone();
                         armLowerLeftLizardStoneMesh.rotation.z = 0;
                         armLowerLeftLizardStoneMesh.position.set(-0.125,-0.0075,0.025);
                         var armLowerLeftLizardStone = new GearToolElement('armLowerLeftLizardStone', armLowerLeftLizardStoneMesh);
                         Gear.addGearElementToList(armLowerLeftLizardStone);
                         // arm - left
-                        var armLeftLizardStoneMesh = ige.resourcesLoader.getResource('lizardStoneArmorBraceletSmall').clone();
+                        var armLeftLizardStoneMesh = ige.resourcesLoader.getMesh('lizardStoneArmorBraceletSmall').clone();
                         armLeftLizardStoneMesh.rotation.z = 0;
                         armLeftLizardStoneMesh.position.set(-0.075,-0.01,0.025);
                         var armLeftLizardStone = new GearToolElement('armLeftLizardStone', armLeftLizardStoneMesh);
                         Gear.addGearElementToList(armLeftLizardStone);
                         // shoulder - left
-                        var shoulderLeftLizardStoneMesh = ige.resourcesLoader.getResource('lizardStoneArmorStone').clone();
+                        var shoulderLeftLizardStoneMesh = ige.resourcesLoader.getMesh('lizardStoneArmorStone').clone();
                         shoulderLeftLizardStoneMesh.rotation.x = -Math.PI/2;
                         shoulderLeftLizardStoneMesh.rotation.z = -Math.PI/2;
                         shoulderLeftLizardStoneMesh.position.set(-0.17,0.03,0.01);
                         var shoulderLeftLizardStone = new GearToolElement('shoulderLeftLizardStone', shoulderLeftLizardStoneMesh);
                         Gear.addGearElementToList(shoulderLeftLizardStone);
                         // arm lower - right
-                        var armLowerRightLizardStoneMesh = ige.resourcesLoader.getResource('lizardStoneArmorBracelet').clone();
+                        var armLowerRightLizardStoneMesh = ige.resourcesLoader.getMesh('lizardStoneArmorBracelet').clone();
                         armLowerRightLizardStoneMesh.rotation.z = Math.PI;
                         armLowerRightLizardStoneMesh.position.set(0.125,-0.0075,0.025);
                         var armLowerRightLizardStone = new GearToolElement('armLowerRightLizardStone', armLowerRightLizardStoneMesh);
                         Gear.addGearElementToList(armLowerRightLizardStone);
                         // arm - right
-                        var armRightLizardStoneMesh = ige.resourcesLoader.getResource('lizardStoneArmorBraceletSmall').clone();
+                        var armRightLizardStoneMesh = ige.resourcesLoader.getMesh('lizardStoneArmorBraceletSmall').clone();
                         armRightLizardStoneMesh.rotation.z = Math.PI;
                         armRightLizardStoneMesh.position.set(0.075,-0.01,0.025);
                         var armRightLizardStone = new GearToolElement('armRightLizardStone', armRightLizardStoneMesh);
                         Gear.addGearElementToList(armRightLizardStone);
                         // shoulder - right
-                        var shoulderRightLizardStoneMesh = ige.resourcesLoader.getResource('lizardStoneArmorStone').clone();
+                        var shoulderRightLizardStoneMesh = ige.resourcesLoader.getMesh('lizardStoneArmorStone').clone();
                         shoulderRightLizardStoneMesh.rotation.x = Math.PI/2;
                         shoulderRightLizardStoneMesh.rotation.z = Math.PI/2;
                         shoulderRightLizardStoneMesh.position.set(0.17,0.03,0.01);

@@ -9,27 +9,27 @@ var ResourceLoader = IgeClass.extend({
         this.resourceGenerators = {
             'pickaxeMesh': function() {
                 var geom = ige.three._loader.parse(modelToolPick).geometry;
-                var material = this.getResourceMaterials('miningToolMaterial');
+                var material = this.getMaterial('miningToolMaterial');
                 return new THREE.Mesh(geom, material);
             },
             'modelToolHammer': function() {
                 var geom = ige.three._loader.parse(modelToolHammer).geometry;
-                var material = this.getResourceMaterials('miningToolMaterial');
+                var material = this.getMaterial('miningToolMaterial');
                 return new THREE.Mesh(geom, material);
             },
             'lizardStoneArmorBracelet': function() {
                 var geom = ige.three._loader.parse(LizardStoneArmorBracelet).geometry;
-                var material = this.getResourceMaterials('lizardOutpostMaterial');
+                var material = this.getMaterial('lizardOutpostMaterial');
                 return new THREE.Mesh(geom, material);
             },
             'lizardStoneArmorBraceletSmall': function() {
                 var geom = ige.three._loader.parse(LizardStoneArmorBraceletSmall).geometry;
-                var material = this.getResourceMaterials('lizardOutpostMaterial');
+                var material = this.getMaterial('lizardOutpostMaterial');
                 return new THREE.Mesh(geom, material);
             },
             'lizardStoneArmorStone': function() {
                 var geom = ige.three._loader.parse(LizardStoneArmorStone).geometry;
-                var material = this.getResourceMaterials('lizardStonePlateMaterial');
+                var material = this.getMaterial('lizardStonePlateMaterial');
                 return new THREE.Mesh(geom, material);
             }
         };
@@ -48,17 +48,17 @@ var ResourceLoader = IgeClass.extend({
 
         this.materialGenerators = {
             'miningToolMaterial': function() {
-                var texture = this.getResourceTextures('ToolsTexture512');
+                var texture = this.getTexture('ToolsTexture512');
                 var material = new THREE.MeshLambertMaterial({map: texture});
                 return material;
             },
             'lizardOutpostMaterial': function() {
-                var texture = this.getResourceTextures('TextureOutpost1024');
+                var texture = this.getTexture('TextureOutpost1024');
                 var material = new THREE.MeshLambertMaterial({map: texture});
                 return material;
             },
             'lizardStonePlateMaterial': function() {
-                var texture = this.getResourceTextures('StoneTextureArmor');
+                var texture = this.getTexture('StoneTextureArmor');
                 var material = new THREE.MeshLambertMaterial({map: texture});
                 return material;
             }
@@ -71,7 +71,7 @@ var ResourceLoader = IgeClass.extend({
      * @param id
      * @returns {*}
      */
-    getResource: function(id) {
+    getMesh: function(id) {
         var resource = this.resourcesLoaded[id];
         if (!resource) {
             // if the resource has not yet been loaded, load from generator
@@ -88,7 +88,7 @@ var ResourceLoader = IgeClass.extend({
      * @param id
      * @returns {*}
      */
-    getResourceTextures: function(id) {
+    getTexture: function(id) {
         var resource = this.resourcesLoadedTextures[id];
         if (!resource) {
             // if the resource has not yet been loaded, load from generator
@@ -105,7 +105,7 @@ var ResourceLoader = IgeClass.extend({
      * @param id
      * @returns {*}
      */
-    getResourceMaterials: function(id) {
+    getMaterial: function(id) {
         var resource = this.resourcesLoadedMaterials[id];
         if (!resource) {
             // if the resource has not yet been loaded, load from generator
