@@ -13,6 +13,7 @@ var config = {
         {name: 'OutpostMeerkats', path: './gameClasses/OutpostMeerkats'},
         {name: 'GoldmineBuildingLizard', path: './gameClasses/GoldmineBuildingLizard'},
         {name: 'GoldmineBuildingMeerkat', path: './gameClasses/GoldmineBuildingMeerkat'},
+        {name: 'ResourceLoader', path: './gameClasses/ResourceLoader'},
         {name: 'Gear', path: './gameClasses/gear/Gear'},
         {name: 'GearElement', path: './gameClasses/gear/GearElement'},
         {name: 'GearToolElement', path: './gameClasses/gear/GearToolElement'},

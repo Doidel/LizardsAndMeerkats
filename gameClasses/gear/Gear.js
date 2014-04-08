@@ -28,7 +28,7 @@ var Gear = IgeClass.extend({
     // add gear elements to player
     equipGear: function(gearPartName, gearElement){
         var bone = this.entity._threeObj.bones[Gear.boneNames[gearPartName]];
-        this.removeOldGearElement(bone);
+        this.unequipGear(bone);
         bone.add(gearElement._threeObj.clone());
     },
     unequipGear: function(boneMesh){
@@ -63,23 +63,23 @@ Gear.gearList = {};
 Gear.boneNames = {
     torso: 1,
     head: 4,
-    shoulderRight: 4,
-    upperArmRight: 4,
-    lowerArmRight: 4,
-    handRight: 4,
+    shoulderLeft: 9,
+    upperArmLeft: 10,
+    lowerArmLeft: 11,
+    handLeft: 12,
 
-    shoulderLeft: 4,
-    upperArmLeft: 4,
-    lowerArmLeft: 4,
-    handLeft: 4,
+    shoulderRight: 5,
+    upperArmRight: 6,
+    lowerArmRight: 7,
+    handRight: 8,
 
-    upperLegRight: 4,
-    lowerLegRight: 4,
-    footRight: 4,
+    upperLegLeft: 18,
+    lowerLegLeft: 19,
+    footLeft: 20,
 
-    upperLegLeft: 4,
-    lowerLegLeft: 4,
-    footLeft: 4
+    upperLegRight: 14,
+    lowerLegRight: 15,
+    footRight: 16
 };
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = Gear; }

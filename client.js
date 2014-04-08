@@ -182,10 +182,65 @@ var Client = IgeClass.extend({
                         // load gear
 
                         // adding gear elements to the gear list
-                        var geom = new THREE.CubeGeometry(0.25,0.25,0.25);
+                        /*
                         Gear.addGearElementToList(new GearToolElement('pickaxe', new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: 0x00ff00}))));
                         Gear.addGearElementToList(new GearWeaponElement('spear', new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: 0xffff00}))));
+                        Gear.addGearElementToList(new GearArmorElement('nutshellHelmet', new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: 0x00ffff}))));*/
+
+                        ige.resourcesLoader = new ResourceLoader();
+
+                        // load TOOL pickaxe
+                        var pickaxeMesh = ige.resourcesLoader.getResource('pickaxeMesh').clone();
+                        pickaxeMesh.rotation.y = Math.PI;
+                        pickaxeMesh.position.set(0,0.2,0);
+                        var pickaxe = new GearToolElement('pickaxe', pickaxeMesh);
+                        Gear.addGearElementToList(pickaxe);
+
+                        // load ARMOR lizard stone
+                        // arm lower - left
+                        var armLowerLeftLizardStoneMesh = ige.resourcesLoader.getResource('lizardStoneArmorBracelet').clone();
+                        armLowerLeftLizardStoneMesh.rotation.z = 0;
+                        armLowerLeftLizardStoneMesh.position.set(-0.125,-0.0075,0.025);
+                        var armLowerLeftLizardStone = new GearToolElement('armLowerLeftLizardStone', armLowerLeftLizardStoneMesh);
+                        Gear.addGearElementToList(armLowerLeftLizardStone);
+                        // arm - left
+                        var armLeftLizardStoneMesh = ige.resourcesLoader.getResource('lizardStoneArmorBraceletSmall').clone();
+                        armLeftLizardStoneMesh.rotation.z = 0;
+                        armLeftLizardStoneMesh.position.set(-0.075,-0.01,0.025);
+                        var armLeftLizardStone = new GearToolElement('armLeftLizardStone', armLeftLizardStoneMesh);
+                        Gear.addGearElementToList(armLeftLizardStone);
+                        // shoulder - left
+                        var shoulderLeftLizardStoneMesh = ige.resourcesLoader.getResource('lizardStoneArmorStone').clone();
+                        shoulderLeftLizardStoneMesh.rotation.x = -Math.PI/2;
+                        shoulderLeftLizardStoneMesh.rotation.z = -Math.PI/2;
+                        shoulderLeftLizardStoneMesh.position.set(-0.17,0.03,0.01);
+                        var shoulderLeftLizardStone = new GearToolElement('shoulderLeftLizardStone', shoulderLeftLizardStoneMesh);
+                        Gear.addGearElementToList(shoulderLeftLizardStone);
+                        // arm lower - right
+                        var armLowerRightLizardStoneMesh = ige.resourcesLoader.getResource('lizardStoneArmorBracelet').clone();
+                        armLowerRightLizardStoneMesh.rotation.z = Math.PI;
+                        armLowerRightLizardStoneMesh.position.set(0.125,-0.0075,0.025);
+                        var armLowerRightLizardStone = new GearToolElement('armLowerRightLizardStone', armLowerRightLizardStoneMesh);
+                        Gear.addGearElementToList(armLowerRightLizardStone);
+                        // arm - right
+                        var armRightLizardStoneMesh = ige.resourcesLoader.getResource('lizardStoneArmorBraceletSmall').clone();
+                        armRightLizardStoneMesh.rotation.z = Math.PI;
+                        armRightLizardStoneMesh.position.set(0.075,-0.01,0.025);
+                        var armRightLizardStone = new GearToolElement('armRightLizardStone', armRightLizardStoneMesh);
+                        Gear.addGearElementToList(armRightLizardStone);
+                        // shoulder - right
+                        var shoulderRightLizardStoneMesh = ige.resourcesLoader.getResource('lizardStoneArmorStone').clone();
+                        shoulderRightLizardStoneMesh.rotation.x = Math.PI/2;
+                        shoulderRightLizardStoneMesh.rotation.z = Math.PI/2;
+                        shoulderRightLizardStoneMesh.position.set(0.17,0.03,0.01);
+                        var shoulderRightLizardStone = new GearToolElement('shoulderRightLizardStone', shoulderRightLizardStoneMesh);
+                        Gear.addGearElementToList(shoulderRightLizardStone);
+
+
+                        /*Gear.addGearElementToList(new GearToolElement('pickaxe', new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: 0x00ff00}))));
+                        Gear.addGearElementToList(new GearWeaponElement('spear', new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: 0xffff00}))));
                         Gear.addGearElementToList(new GearArmorElement('nutshellHelmet', new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: 0x00ffff}))));
+                        */
 
 
                         // Add boxes
