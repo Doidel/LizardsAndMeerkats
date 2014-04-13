@@ -1368,12 +1368,15 @@ var Player = IgeEntity.extend({
         } else {
             var mat = new THREE.MeshPhongMaterial({
                 //color: new THREE.Color('#FF0000'),
-                map: THREE.ImageUtils.loadTexture( './assets/textures/lizard/LizardTexture410V6.png' ),
-                normalMap: THREE.ImageUtils.loadTexture( './assets/textures/lizard/LizardTexture410V6_NRM.png' ),
+                //map: THREE.ImageUtils.loadTexture( './assets/textures/lizard/LizardTexture410V6.png' ),
+                map: THREE.ImageUtils.loadTexture( './assets/textures/lizard/LizardTextureV2_512.png' ),
+                normalMap: THREE.ImageUtils.loadTexture( './assets/textures/lizard/LizardTextureV2_512NRM.png' ),
+                //normalMap: THREE.ImageUtils.loadTexture( './assets/textures/lizard/LizardTexture410V6_NRM.png' ),
                 skinning: true
             });
 
-            parsedModel = ige.three._loader.parse(modelLizard);
+            //parsedModel = ige.three._loader.parse(modelLizard);
+            parsedModel = ige.three._loader.parse(modelLizardV2);
         }
 
         this._threeObj = new THREE.SkinnedMesh(

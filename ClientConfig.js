@@ -34,6 +34,7 @@ var igeClientConfig = {
 		//'./models/modelSpaceFrigate6.js',
 		//'./models/modelTurret.js',
         './models/modelLizard.js',
+        './models/modelLizardV2.js',
         './models/modelMeerkat.js',
         /* Buildings */
         './models/buildings/modelBuildingLizard.js',
