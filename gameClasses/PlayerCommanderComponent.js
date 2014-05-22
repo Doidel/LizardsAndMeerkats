@@ -76,7 +76,7 @@ var PlayerCommanderComponent = IgeClass.extend({
 		if (!ige.isServer) {
 		    //send network event to the server to call Building.js: finalPlaceBuilding
             ige.network.send('playerFinalBuild');
-		} else {
+		} else if (this.streamedBuilding != undefined) {
 			this.streamedBuilding.finalPlaceBuilding();
 		}
 	},

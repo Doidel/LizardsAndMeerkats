@@ -70,18 +70,70 @@ var Level2 = IgeClass.extend({
             LevelUtils.loadImage(hMap, hMapUrl, count, function(){
                 var imagedata = LevelUtils.getImageData(hMap);
                 var shape = new THREE.PlaneGeometry(size, size, faces, faces);
-                var grass = THREE.ImageUtils.loadTexture( './assets/textures/SoilSand0216_5_S.jpg' );
+                var grass = THREE.ImageUtils.loadTexture( './assets/textures/SoilSand0216_5_S.jpg', new THREE.UVMapping(), function() {
+                    cover.uniforms.map.value.needsUpdate = true;
+                });
                 //var grassNormal = THREE.ImageUtils.loadTexture( './assets/textures/SoilSand0216_5_S_NRM.png' );
                 grass.wrapS = grass.wrapT = THREE.RepeatWrapping;
                 grass.repeat.set(64, 64);
                 //grassNormal.wrapS = grassNormal.wrapT = THREE.RepeatWrapping;
                 //grassNormal.repeat.set(64, 64);
-                //var cover = new THREE.MeshLambertMaterial({map: grass, side: 2});
-                var cover = new THREE.MeshPhongMaterial({
+
+                /*var cover = new THREE.MeshPhongMaterial({
                     map: grass
                     //normalmap: grassNormal,
                     //side: 2
+                });*/
+
+                // add textures
+                var oceanTexture = new THREE.ImageUtils.loadTexture( './assets/textures/dirt-512.jpg', new THREE.UVMapping(), function() {
+                    cover.uniforms.oceanTexture.value.needsUpdate = true;
                 });
+                oceanTexture.wrapS = oceanTexture.wrapT = THREE.RepeatWrapping;
+
+                var sandyTexture = new THREE.ImageUtils.loadTexture( './assets/textures/sand-512.jpg', new THREE.UVMapping(), function() {
+                    cover.uniforms.sandyTexture.value.needsUpdate = true;
+                });
+                sandyTexture.wrapS = sandyTexture.wrapT = THREE.RepeatWrapping;
+
+                var grassTexture = new THREE.ImageUtils.loadTexture( './assets/textures/grass-512.jpg', new THREE.UVMapping(), function() {
+                    cover.uniforms.grassTexture.value.needsUpdate = true;
+                });
+                grassTexture.wrapS = grassTexture.wrapT = THREE.RepeatWrapping;
+
+                var rockyTexture = new THREE.ImageUtils.loadTexture( './assets/textures/rock-512.jpg', new THREE.UVMapping(), function() {
+                    cover.uniforms.rockyTexture.value.needsUpdate = true;
+                });
+                rockyTexture.wrapS = rockyTexture.wrapT = THREE.RepeatWrapping;
+
+                var defines = {};
+
+                defines[ "USE_MAP" ] = "";
+
+                var cover = new THREE.ShaderMaterial({
+                    name: "TerrainShader",
+                    defines: defines,
+                    uniforms: THREE.UniformsUtils.merge([
+                        /*THREE.UniformsLib.common['offsetRepeat'],
+                        THREE.UniformsLib['lights'],
+                        THREE.UniformsLib['shadowmap'],*/
+                        THREE.ShaderLib.phong.uniforms,
+                        {
+                            map: { type: "t", value: grass },
+                            oceanTexture:	{ type: "t", value: oceanTexture },
+                            sandyTexture:	{ type: "t", value: sandyTexture },
+                            grassTexture:	{ type: "t", value: grassTexture },
+                            rockyTexture:	{ type: "t", value: rockyTexture }
+                        }
+                    ]),
+                    vertexShader: THREE.ShaderLib.terrain.vertexShader,//document.getElementById( 'terrainvertexshader' ).textContent,
+                    fragmentShader: THREE.ShaderLib.terrain.fragmentShader,//document.getElementById( 'terrainfragmentshader' ).textContent,
+                    lights: true
+                });
+
+                cover.uniforms[ "offsetRepeat" ].value.set( 0, 0, 64, 64 );
+                c = cover;
+
 
                 var vAmountX = faces+1;
                 var vAmountY = faces+1;

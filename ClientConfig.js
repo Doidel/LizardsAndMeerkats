@@ -29,6 +29,8 @@ var igeClientConfig = {
         //'./CanvasShaders.js',
         //'./tween.min.js',
 
+        './ige2912/engine/components/three/three.js',
+
 		/* Models */
         /* Characters */
 		//'./models/modelSpaceFrigate6.js',
@@ -82,6 +84,7 @@ var igeClientConfig = {
 		'../ige/engine/components/three/MaskPass.js',*/
 
         './gameClasses/SecurityTools.js',
+        './shaders/terrainShader.js',
 
 		/* Standard game scripts */
 		'./client.js',
