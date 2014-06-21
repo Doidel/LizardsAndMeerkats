@@ -1,6 +1,7 @@
 var config = {
 	include: [
 		{name: 'ServerNetworkEvents', path: './gameClasses/ServerNetworkEvents'},
+        {name: 'Recast', path: './recast/lib/recast.withworker'},
 		{name: 'Player', path: './gameClasses/Player'},
         {name: 'PlayerCommanderComponent', path: './gameClasses/PlayerCommanderComponent'},
 		//{name: 'LevelRoomComponent', path: './gameClasses/LevelRoomComponent'},

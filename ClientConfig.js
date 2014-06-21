@@ -88,6 +88,7 @@ var igeClientConfig = {
 
 		/* Standard game scripts */
 		'./client.js',
+        './THREEextensions.js',
 		'./index.js'
 	]
 };

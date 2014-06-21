@@ -56,20 +56,24 @@ var Level2 = IgeClass.extend({
                 ige.server.scene1._threeObj.add(pGround);
                 ige.server.scene1._terrain = pGround;
             });
+
+            LevelUtils.testRecast();
         } else {
             // FLOOR
-            var hMapUrl = "./assets/heightmaps/Botswana.png";
+            var hMapUrl = "./assets/heightmaps/heightmap.png";
             //var hMapUrl = "./assets/heightmaps/NullHeight.png";
             // count of image borderlines - only used for lod
             var count = 1;
             var size = 1024;
-            var faces = 128;
+            var faces = 512;
             UI.minimap.levelDimensions = size;
 
             var hMap = new Image();
             LevelUtils.loadImage(hMap, hMapUrl, count, function(){
                 var imagedata = LevelUtils.getImageData(hMap);
-                var shape = new THREE.PlaneGeometry(size, size, faces, faces);
+                var shape = new THREE.PlaneTypedGeometry(size, size, faces, faces);
+                var vertices = shape.attributes.position.array;
+                console.log(shape);
                 var grass = THREE.ImageUtils.loadTexture( './assets/textures/SoilSand0216_5_S.jpg', new THREE.UVMapping(), function() {
                     cover.uniforms.map.value.needsUpdate = true;
                 });
@@ -132,46 +136,105 @@ var Level2 = IgeClass.extend({
                 });
 
                 cover.uniforms[ "offsetRepeat" ].value.set( 0, 0, 64, 64 );
-                c = cover;
 
 
-                var vAmountX = faces+1;
-                var vAmountY = faces+1;
+
+
+                var vAmountX = vAmountY = faces; //Math.sqrt( geometry.vertices.length );
                 var multX = hMap.width / vAmountX;
                 var multY = hMap.height / vAmountY;
                 var scale = 50;
 
-                count = 0;
                 //shape.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
-                for (var i = 0; i < vAmountY; ++i) {
+                /*for (var i = 0; i < vAmountY; ++i) {
                     for (var j = 0; j < vAmountX; ++j) {
+                        var color = LevelUtils.getPixel( imagedata, parseInt(j*multX), parseInt(i*multY) ) * scale;
+                        vertices[(i*vAmountX + j) * 3 + 2] = color;
+                    }
+                }*/
+
+                var normalACB = new THREE.Vector3(),
+                    normalBCE = new THREE.Vector3(),
+                    normalECD = new THREE.Vector3(),
+                    normalDCA = new THREE.Vector3(),
+                    averageNormal = new THREE.Vector3();
+
+                var va = new THREE.Vector3(0, 1, 9);
+                var vb = new THREE.Vector3(1, 0, 9);
+                var vc = new THREE.Vector3(0, -1, 9);
+                var vd = new THREE.Vector3(-1, 0, 9);
+                var calcNormals2 = function(h_A, h_B, h_C, h_D, h_N) {
+                    va.z = h_A - h_N;
+                    vb.z = h_B - h_N;
+                    vc.z = h_C - h_N;
+                    vd.z = h_D - h_N;
+
+                    normalACB.crossVectors( va, vb );
+                    normalBCE.crossVectors( vb, vc );
+                    normalECD.crossVectors( vc, vd );
+                    normalDCA.crossVectors( vd, va );
+
+                    averageNormal.set(0,0,0);
+                    averageNormal.add( normalACB );
+                    averageNormal.add( normalBCE );
+                    averageNormal.add( normalECD );
+                    averageNormal.add( normalDCA );
+                    averageNormal.divideScalar( -4 );
+                    averageNormal.normalize();
+                }
+
+
+                //fix normals
+                var normals = shape.attributes.normal.array;
+                var defaultNormal = new THREE.Vector3(0, 0, 1);
+                var maxAmount = (vAmountY - 1) * (vAmountX - 1);
+
+                /*for (var i = 0; i < vAmountY; ++i) {
+                    for (var j = 0; j < vAmountX; ++j) {
+
+                        var currentPos = i * vAmountX + j;
+
                         var color = LevelUtils.getPixel( imagedata, parseInt(j*multX), parseInt(i*multY) );
-                        shape.vertices[i*vAmountX + j].z = ((color.r/255 + color.g/255 + color.b/255)/3)*scale;
+                        vertices[ currentPos * 3 + 2 ] = color;
+
+                        //get the 8 heights around and interpolate
+
+                        calcNormals2( currentPos - vAmountX >= 0 ? vertices[ (currentPos - vAmountX) * 3 + 2 ] : defaultNormal.z,
+                            currentPos + 1 <= maxAmount ? vertices[ currentPos * 3 + 5 ] : defaultNormal.z,
+                            currentPos + vAmountX <= maxAmount ? vertices[ (currentPos + vAmountX) * 3 + 2 ] : defaultNormal.z,
+                            currentPos - 1 >= 0 ? vertices[ currentPos * 3 - 1 ] : defaultNormal.z,
+                            vertices[ currentPos * 3 ].y );
+
+                        normals[ currentPos * 3 ] = averageNormal.x;
+                        normals[ currentPos * 3 + 1 ] = averageNormal.y;
+                        normals[ currentPos * 3 + 2 ] = averageNormal.z;
                     }
                 }
-                //shape.vertices[0].y = 51;
 
-                shape.computeFaceNormals();
-                shape.computeVertexNormals();
-                var ground = new THREE.Mesh(shape, cover);
+                shape.verticesNeedUpdate = true;
+                shape.normalsNeedUpdate = true;*/
+
+
+                var ground = new THREE.Mesh(shape, new THREE.MeshBasicMaterial({ color: 0xFF0000 })); //cover
                 ground.rotation.x = -Math.PI / 2;
                 ground.receiveShadow = true;
                 //ground.castShadow = true;
-                ground.position.set(0,0,0);
+                ground.position.set(0,20,0);
                 ground.name = "level";
+                g = ground;
 
                 // create scenery
                 var savannahGrassLODMeshes = [];
 
                 //Create grass
                 var grassPositions = new Float32Array( 30000 );
-                var amountOfShapeVertices = shape.vertices.length;
+                var amountOfShapeVertices = vertices.length / 3;
                 for (var x = 0; x < grassPositions.length / 3; x++) {
                     //take a random vertice
-                    var randomShapeVertice = shape.vertices[Math.floor(Math.random() * amountOfShapeVertices)]
-                    grassPositions[x * 3] = randomShapeVertice.x;
-                    grassPositions[x * 3 + 1] = randomShapeVertice.z + 0.26;
-                    grassPositions[x * 3 + 2] = -randomShapeVertice.y;
+                    var pos = Math.floor(Math.random() * amountOfShapeVertices);
+                    grassPositions[x * 3] = vertices[pos * 3];
+                    grassPositions[x * 3 + 1] = vertices[pos * 3 + 1] + 0.26;
+                    grassPositions[x * 3 + 2] = -vertices[pos * 3 + 2];
                 }
                 var grass = new LevelUtils.Grass(grassPositions, ground);
 
@@ -207,7 +270,7 @@ var Level2 = IgeClass.extend({
                 //camelthorn.castShadow = true;
                 //camelthorn.position.set(0,200,0);
                 //camelthorn.rotation.x = Math.PI /2;
-                camelthorn.position.set(0,0,ground.geometry.vertices[parseInt(8320)].z);
+                camelthorn.position.set(0,0,vertices[parseInt(8320) * 3]);
                 //camelthorn.scale.set(10, 10, 10);
                 camelthorn.name = 'Camelthorn';
 
@@ -271,10 +334,10 @@ var Level2 = IgeClass.extend({
                 //var amountOfShapeVertices = shape.vertices.length;
                 for (var x = 0; x < camelthornPositions.length / 3; x++) {
                     //take a random vertice
-                    var randomShapeVertice = shape.vertices[Math.floor(Math.random() * amountOfShapeVertices)]
-                    camelthornPositions[x * 3] = randomShapeVertice.x;
-                    camelthornPositions[x * 3 + 1] = randomShapeVertice.y;
-                    camelthornPositions[x * 3 + 2] = randomShapeVertice.z + 0.5;
+                    var pos = Math.floor(Math.random() * amountOfShapeVertices);
+                    grassPositions[x * 3] = vertices[pos * 3];
+                    grassPositions[x * 3 + 1] = vertices[pos * 3 + 1];
+                    grassPositions[x * 3 + 2] = vertices[pos * 3 + 2] + 0.5;
                 }
                 //var camelthorns = new LevelUtils.Camelthorn(camelthornPositions, ground);
 
@@ -319,7 +382,7 @@ var Level2 = IgeClass.extend({
                 aMeshMirror.rotation.x = - Math.PI * 0.5;
                 //aMeshMirror.position.y += 50;
                 aMeshMirror.name = 'watershader';
-                ige.client.scene1._threeObj.add(aMeshMirror);
+                //ige.client.scene1._threeObj.add(aMeshMirror);
                 //ground.add(aMeshMirror);
 
 

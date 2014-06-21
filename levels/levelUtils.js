@@ -17,7 +17,8 @@ var LevelUtils = {
     getPixel: function(imagedata, x, y){
         var position = ( x + imagedata.width * y ) * 4;
         var data = imagedata.data;
-        return {r: data[ position ], g: data[ position + 1 ], b: data[ position + 2 ], a: data[ position + 3 ]};
+        //return {r: data[ position ], g: data[ position + 1 ], b: data[ position + 2 ], a: data[ position + 3 ]};
+        return (data[position] * 256 + data[position + 1]) / 256 / 256;
     },
     // get the canvas data of an image
     getImageData: function(image){
@@ -155,6 +156,15 @@ var LevelUtils = {
 
         mesh.add(this.particles);
         //ige.client.scene1._threeObj.add(this.particles);
+    },
+
+    testRecast: function() {
+
+        var ENVIRONMENT_IS_WEB = ige.isClient;
+
+        recast = new Recast('../lib/recast');
+
+        console.log('hello recast!', recast != undefined);
     }
 };
 

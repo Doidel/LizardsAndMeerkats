@@ -330,7 +330,7 @@ var Client = IgeClass.extend({
                         var skybox = new THREE.Mesh(skyboxGeom, skyboxMaterial);
                         skybox.flipSided = true;
 
-                        self.scene1._threeObj.add(skybox);
+                        //self.scene1._threeObj.add(skybox);
 					});
 
                     //custom animation update
