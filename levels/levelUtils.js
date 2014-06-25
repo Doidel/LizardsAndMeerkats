@@ -203,6 +203,7 @@ var LevelUtils = {
             recast.getNavMeshVertices(recast.cb(function (vertices) {
 
                 this.navigationMesh = vertices;
+				console.log(vertices);
 
                 // scene.add(navigationMesh);
 
