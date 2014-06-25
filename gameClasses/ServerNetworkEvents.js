@@ -175,6 +175,10 @@ var ServerNetworkEvents = {
 
     _onPlayerRequestNameChange: function(data, clientId) {
         ige.server.players[clientId].changeName(data);
+    },
+
+    _onRequestNavMeshDebug: function(data, clientId) {
+        ige.network.send('sendNavMeshDebug', LevelUtils.navigationMesh, clientId);
     }
 };
 

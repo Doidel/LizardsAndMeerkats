@@ -1,7 +1,6 @@
 var config = {
 	include: [
 		{name: 'ServerNetworkEvents', path: './gameClasses/ServerNetworkEvents'},
-        {name: 'Recast', path: './recast/lib/recast.withworker'},
 		{name: 'Player', path: './gameClasses/Player'},
         {name: 'PlayerCommanderComponent', path: './gameClasses/PlayerCommanderComponent'},
 		//{name: 'LevelRoomComponent', path: './gameClasses/LevelRoomComponent'},
@@ -30,6 +29,8 @@ var config = {
         {name: 'Ammo', path: './ammo'},
         {name: 'physijs_worker_functions', path: './physijs_worker'},
         {name: 'Physijs', path: './physi'},
+        {name: 'Recast', path: './recast/lib/recast.withworker'},
+        {name: 'ObjExporter', path: './recast/lib/OBJExporter'},
         {name: 'SecurityTools', path: './gameClasses/SecurityTools'}
 	]
 };

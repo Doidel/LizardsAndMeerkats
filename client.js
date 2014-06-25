@@ -61,6 +61,7 @@ var Client = IgeClass.extend({
 						// Setup the network command listeners
 						ige.network.define('playerEntity', self._onPlayerEntity); // Defined in ./gameClasses/ClientNetworkEvents.js
                         ige.network.define('setStreamBuildingBuildable', self._onSetStreamedBuildingBuildable);
+                        ige.network.define('sendNavMeshDebug', self._onSendNavMeshDebug);
 
 						// Setup the network stream handler
 						ige.network.addComponent(IgeStreamComponent)
@@ -755,6 +756,9 @@ var Client = IgeClass.extend({
             var p2 = new THREE.Vector3(0,45,0).applyMatrix4(ige.client._sunlightReferencePoint.matrixWorld);
             ige.client._shadowLight.position.set(p2.x + 20, p2.y + 45, p2.z - 20);
         }
+    },
+    _debugNavMesh: function() {
+        ige.network.send('sendNavMeshDebug');
     }
 });
 

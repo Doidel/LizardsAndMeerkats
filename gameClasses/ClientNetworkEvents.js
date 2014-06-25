@@ -176,6 +176,27 @@ var ClientNetworkEvents = {
         if (streamBuilding) {
             streamBuilding.isBuildable(data.color);
         }
+    },
+    _onSendNavMeshDebug: function(vertices) {
+        console.log(vertices);
+
+        new THREE.Object3D();
+        var materials = [ new THREE.MeshNormalMaterial() ];
+
+        for (var i = 0; i < vertices.length; i++) {
+            if (!vertices[i+2]) { break; }
+
+            var geometry = new THREE.ConvexGeometry([
+                new THREE.Vector3(   vertices[i].x,   vertices[i].y,   vertices[i].z ),
+                new THREE.Vector3( vertices[i+1].x, vertices[i+1].y, vertices[i+1].z ),
+                new THREE.Vector3( vertices[i+2].x, vertices[i+2].y, vertices[i+2].z )
+            ]);
+
+            var child = THREE.SceneUtils.createMultiMaterialObject(geometry, materials);
+            this.navigationMesh.add(child);
+
+            i += 2;
+        }
     }
 };
 

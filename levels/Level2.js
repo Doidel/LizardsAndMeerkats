@@ -56,8 +56,6 @@ var Level2 = IgeClass.extend({
                 ige.server.scene1._threeObj.add(pGround);
                 ige.server.scene1._terrain = pGround;
             });
-
-            LevelUtils.testRecast();
         } else {
             // FLOOR
             var hMapUrl = "./assets/heightmaps/heightmap.png";
@@ -428,6 +426,8 @@ var Level2 = IgeClass.extend({
         //new GoldmineBuildingLizard('goldmineBuildingLizard1', new THREE.Vector3(275, 29.6, -285));
 
         //new GoldmineBuildingMeerkat('goldmineBuildingMeerkat1', new THREE.Vector3(275, 29.6, -285));
+
+        if (ige.isServer) LevelUtils.buildRecast();
     }
 });
 

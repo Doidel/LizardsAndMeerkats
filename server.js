@@ -80,9 +80,11 @@ var Server = IgeClass.extend({
                         ige.network.define('playerDonateGold', self._onPlayerDonateGold);
                         ige.network.define('playerSendChatMessage', self._onPlayerSendChatMessage);
                         ige.network.define('playerRequestNameChange', self._onPlayerRequestNameChange);
+                        ige.network.define('requestNavMeshDebug', self._onRequestNavMeshDebug);
 						
                         ige.network.define('changeBuildingColor');
                         ige.network.define('setStreamBuildingBuildable');
+                        ige.network.define('sendNavMeshDebug');
 
 						ige.network.on('connect', self._onPlayerConnect); // Defined in ./gameClasses/ServerNetworkEvents.js
 						ige.network.on('disconnect', self._onPlayerDisconnect); // Defined in ./gameClasses/ServerNetworkEvents.js

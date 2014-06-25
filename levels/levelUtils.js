@@ -158,11 +158,62 @@ var LevelUtils = {
         //ige.client.scene1._threeObj.add(this.particles);
     },
 
+    //export Level
+    buildRecast: function() {
+
+        recast = new Recast('./recast/lib/recast');
+
+        //export level with OBJExporter and save to path we can indicate to recast.js
+        var objExporter = new THREE.OBJExporter();
+        var obj = '';
+        ige.server.scene1._threeObj.traverse(function( el ) {
+
+            if ( el.geometry ) {
+                obj += objExporter.parse( el.geometry );
+            }
+
+        });
+
+        console.log(obj);
+        recast.OBJDataLoader( obj, recast.cb(function(one, two){
+
+            console.log('data loaded');
+
+            /**
+             * Find a random navigable point on this mesh
+             */
+            recast.getRandomPoint(recast.cb(function(pt1x, pt1y, pt1z){
+
+                recast.getRandomPoint(recast.cb(function(pt2x, pt2y, pt2z){
+
+                    /**
+                     * Find the shortest possible path from pt1 to pt2
+                     */
+                    recast.findPath(pt1x, pt1y, pt1z, pt2x, pt2y, pt2z, 1000, recast.cb(function(path){
+                        if (path && typeof path.length !== 'undefined') {
+                            console.log('found path has ' + path.length + ' segments', path);
+                        }
+                    }));
+
+                }));
+
+            }));
+
+
+            recast.getNavMeshVertices(recast.cb(function (vertices) {
+
+                this.navigationMesh = vertices;
+
+                // scene.add(navigationMesh);
+
+                // renderer.render(scene, camera);
+            }.bind(this)));
+        }));
+    },
+
     testRecast: function() {
 
-        var ENVIRONMENT_IS_WEB = ige.isClient;
-
-        recast = new Recast('../lib/recast');
+        recast = new Recast('./recast/lib/recast');
 
         console.log('hello recast!', recast != undefined);
     }
