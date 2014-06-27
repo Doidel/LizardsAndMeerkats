@@ -758,7 +758,7 @@ var Client = IgeClass.extend({
         }
     },
     _debugNavMesh: function() {
-        ige.network.send('sendNavMeshDebug');
+        ige.network.send('requestNavMeshDebug');
     }
 });
 
