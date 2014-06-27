@@ -9,3 +9,6 @@ Deploy:
 - change localhost to 91.250.97.36 in client.js
 - make client: cd .....\ige2912>node ./server/ige.js -deploy ../ -clear true
 - on the server: /LizardsAndMeerkats# forever start ./ige2912/server/ige.js -g .
+
+Run on laptop:
+- node ige2912/server/ige.js -g .
