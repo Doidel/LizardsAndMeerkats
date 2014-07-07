@@ -20,13 +20,14 @@ var Level2 = IgeClass.extend({
             var pixels = [];
             PNG.decode(hMapUrl, function(pixels){
                 var size = 1024;
-                var faces = 128;
-                var shape = new THREE.PlaneGeometry(size, size, faces, faces);
+                var faces = 256;
+                var shape = new THREE.PlaneGeometry(size, size, faces - 1, faces - 1);
 
-                var vAmountX = faces+1;
-                var vAmountY = faces+1;
-                var multX = 1024 / vAmountX;
-                var mult = (pixels.length / 4)/ ((vAmountX)*(vAmountY));
+                var vAmountX = faces;
+                var vAmountY = faces;
+                var multX = size / vAmountX;
+                var multY = (pixels.length / 4)/ ((vAmountX)*(vAmountY));
+
                 var scale = 50;
 
 
@@ -34,10 +35,10 @@ var Level2 = IgeClass.extend({
                 for (var i = 0; i < vAmountY; ++i) {
                     for (var j = 0; j < vAmountX; ++j) {
                         var pixelIndex = (parseInt(j*multX) + 1024 * parseInt(i*multX)) * 4;
-                        //console.log(pixelIndex, pixels.length, pixels.length - pixelIndex);
-                        //var color = LevelUtils.getPixel( imagedata, parseInt(j*multX), parseInt(i*multY) );
-                        //var position = ( x + imagedata.width * y ) * 4;
-                        shape.vertices[i*vAmountX + j].z = ((pixels[pixelIndex]/255 + pixels[pixelIndex + 1]/255 + pixels[pixelIndex + 2]/255)/3)*scale;
+                        var color = LevelUtils.getHeightFromImage( pixels, parseInt(j*multX), parseInt(i*multY) ) * scale;
+                        //for buffer: vertices[(i*vAmountX + j) * 3 + 2] = color;
+                        shape.vertices[i * vAmountX + j].z = color;
+                        //shape.vertices[i*vAmountX + j].z = ((pixels[pixelIndex]/255 + pixels[pixelIndex + 1]/255 + pixels[pixelIndex + 2]/255)/3)*scale;
                     }
                 }
                 //shape.vertices[8320].z = -10;
@@ -63,15 +64,15 @@ var Level2 = IgeClass.extend({
             // count of image borderlines - only used for lod
             var count = 1;
             var size = 1024;
-            var faces = 512;
+            var faces = 256;
             UI.minimap.levelDimensions = size;
 
             var hMap = new Image();
             LevelUtils.loadImage(hMap, hMapUrl, count, function(){
                 var imagedata = LevelUtils.getImageData(hMap);
-                var shape = new THREE.PlaneTypedGeometry(size, size, faces, faces);
-                var vertices = shape.attributes.position.array;
-                console.log(shape);
+                var shape = new THREE.PlaneGeometry(size, size, faces, faces);
+                //var vertices = shape.attributes.position.array;
+                var vertices = shape.vertices;
                 var grass = THREE.ImageUtils.loadTexture( './assets/textures/SoilSand0216_5_S.jpg', new THREE.UVMapping(), function() {
                     cover.uniforms.map.value.needsUpdate = true;
                 });
@@ -138,18 +139,22 @@ var Level2 = IgeClass.extend({
 
 
 
-                var vAmountX = vAmountY = faces; //Math.sqrt( geometry.vertices.length );
+                var vAmountX = faces;
+                var vAmountY = faces; //Math.sqrt( geometry.vertices.length );
                 var multX = hMap.width / vAmountX;
                 var multY = hMap.height / vAmountY;
                 var scale = 50;
 
                 //shape.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
-                /*for (var i = 0; i < vAmountY; ++i) {
+                for (var i = 0; i < vAmountY; ++i) {
                     for (var j = 0; j < vAmountX; ++j) {
-                        var color = LevelUtils.getPixel( imagedata, parseInt(j*multX), parseInt(i*multY) ) * scale;
-                        vertices[(i*vAmountX + j) * 3 + 2] = color;
+                        var color = LevelUtils.getHeightFromImage( imagedata, parseInt(j*multX), parseInt(i*multY) ) * scale;
+                        //for buffer: vertices[(i*vAmountX + j) * 3 + 2] = color;
+                        vertices[i * vAmountX + j].z = color;
                     }
-                }*/
+                }
+                shape.computeFaceNormals();
+                shape.computeVertexNormals();
 
                 var normalACB = new THREE.Vector3(),
                     normalBCE = new THREE.Vector3(),
@@ -183,16 +188,16 @@ var Level2 = IgeClass.extend({
 
 
                 //fix normals
-                var normals = shape.attributes.normal.array;
+                /*var normals = shape.attributes.normal.array;
                 var defaultNormal = new THREE.Vector3(0, 0, 1);
-                var maxAmount = (vAmountY - 1) * (vAmountX - 1);
+                var maxAmount = (vAmountY - 1) * (vAmountX - 1);*/
 
                 /*for (var i = 0; i < vAmountY; ++i) {
                     for (var j = 0; j < vAmountX; ++j) {
 
                         var currentPos = i * vAmountX + j;
 
-                        var color = LevelUtils.getPixel( imagedata, parseInt(j*multX), parseInt(i*multY) );
+                        var color = LevelUtils.getHeightFromImage( imagedata, parseInt(j*multX), parseInt(i*multY) );
                         vertices[ currentPos * 3 + 2 ] = color;
 
                         //get the 8 heights around and interpolate
@@ -213,7 +218,7 @@ var Level2 = IgeClass.extend({
                 shape.normalsNeedUpdate = true;*/
 
 
-                var ground = new THREE.Mesh(shape, new THREE.MeshBasicMaterial({ color: 0xFF0000 })); //cover
+                var ground = new THREE.Mesh(shape, cover); //cover
                 ground.rotation.x = -Math.PI / 2;
                 ground.receiveShadow = true;
                 //ground.castShadow = true;
@@ -391,8 +396,8 @@ var Level2 = IgeClass.extend({
                 // update content
                 ige.addBehaviour('updateContent', function(){
 
-                    watershader.material.uniforms.time.value = ige.currentTime() / 3000;
-                    watershader.render();
+                    //watershader.material.uniforms.time.value = ige.currentTime() / 3000;
+                    //watershader.render();
 
                     for(var i=0; i<savannahGrassLODMeshes.length; ++i){
                         savannahGrassLODMeshes[i].update(ige._currentCamera._threeObj);

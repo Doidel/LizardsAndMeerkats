@@ -89,6 +89,7 @@ var igeClientConfig = {
 		/* Standard game scripts */
 		'./client.js',
         './THREEextensions.js',
+        './recast/lib/ConvexGeometry.js',
 		'./index.js'
 	]
 };

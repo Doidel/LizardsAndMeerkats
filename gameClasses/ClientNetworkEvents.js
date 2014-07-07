@@ -180,7 +180,7 @@ var ClientNetworkEvents = {
     _onSendNavMeshDebug: function(vertices) {
         console.log(vertices);
 
-        new THREE.Object3D();
+        var navigationMesh = new THREE.Object3D();
         var materials = [ new THREE.MeshNormalMaterial() ];
 
         for (var i = 0; i < vertices.length; i++) {
@@ -193,10 +193,12 @@ var ClientNetworkEvents = {
             ]);
 
             var child = THREE.SceneUtils.createMultiMaterialObject(geometry, materials);
-            this.navigationMesh.add(child);
+            navigationMesh.add(child);
 
             i += 2;
         }
+
+        ige.client.scene1._threeObj.add(navigationMesh);
     }
 };
 
