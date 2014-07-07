@@ -10,7 +10,7 @@ var Level2 = IgeClass.extend({
          */
         if (ige.isServer) {
             //var hMapUrl = "./assets/heightmaps/NullHeight.png";
-            var hMapUrl = "./assets/heightmaps/Botswana.png";
+            var hMapUrl = "./assets/heightmaps/heightmap.png";
             //var hMapUrl = "./assets/heightmaps/hMapV3.png";
             // count of image borderlines - only used for lod
             var count = 1;
@@ -19,25 +19,30 @@ var Level2 = IgeClass.extend({
 
             var pixels = [];
             PNG.decode(hMapUrl, function(pixels){
+
+                var width = Math.sqrt(pixels.length / 4);
                 var size = 1024;
                 var faces = 256;
                 var shape = new THREE.PlaneGeometry(size, size, faces - 1, faces - 1);
 
                 var vAmountX = faces;
                 var vAmountY = faces;
-                var multX = size / vAmountX;
-                var multY = (pixels.length / 4)/ ((vAmountX)*(vAmountY));
+                var multX = width / vAmountX;
+                var multY = width / vAmountY;
 
                 var scale = 50;
 
-
-                var count = 0;
                 for (var i = 0; i < vAmountY; ++i) {
                     for (var j = 0; j < vAmountX; ++j) {
-                        var pixelIndex = (parseInt(j*multX) + 1024 * parseInt(i*multX)) * 4;
-                        var color = LevelUtils.getHeightFromImage( pixels, parseInt(j*multX), parseInt(i*multY) ) * scale;
+                        var position = ( parseInt(j*multX) + parseInt(i*multY) ) * 4;
+                        var color = (pixels[position] * 256 + pixels[position + 1]) / 256 / 256;
+                        color *= scale;
+                        if (isNaN(color)) console.log(i, j, position);
                         //for buffer: vertices[(i*vAmountX + j) * 3 + 2] = color;
-                        shape.vertices[i * vAmountX + j].z = color;
+                        var v = shape.vertices[i * vAmountX + j];
+                        v.x = Math.round(v.x * 10000) / 10000;
+                        v.y = Math.round(v.y * 10000) / 10000;
+                        v.z = Math.round(color * 10000) / 10000;
                         //shape.vertices[i*vAmountX + j].z = ((pixels[pixelIndex]/255 + pixels[pixelIndex + 1]/255 + pixels[pixelIndex + 2]/255)/3)*scale;
                     }
                 }
@@ -56,6 +61,9 @@ var Level2 = IgeClass.extend({
                 pGround.position.set(0,0,0);
                 ige.server.scene1._threeObj.add(pGround);
                 ige.server.scene1._terrain = pGround;
+
+                console.log('amount of level vertices', shape.vertices.length);
+                LevelUtils.buildRecast();
             });
         } else {
             // FLOOR
@@ -431,8 +439,6 @@ var Level2 = IgeClass.extend({
         //new GoldmineBuildingLizard('goldmineBuildingLizard1', new THREE.Vector3(275, 29.6, -285));
 
         //new GoldmineBuildingMeerkat('goldmineBuildingMeerkat1', new THREE.Vector3(275, 29.6, -285));
-
-        if (ige.isServer) LevelUtils.buildRecast();
     }
 });
 

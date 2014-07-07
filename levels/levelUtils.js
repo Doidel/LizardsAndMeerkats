@@ -166,12 +166,23 @@ var LevelUtils = {
         //export level with OBJExporter and save to path we can indicate to recast.js
         var objExporter = new THREE.OBJExporter();
         var obj = '';
-        ige.server.scene1._threeObj.traverse(function( el ) {
+        /*ige.server.scene1._threeObj.traverse(function( el ) {
 
             if ( el.geometry ) {
+                console.log('vc', el.geometry.vertices.length);
                 obj += objExporter.parse( el.geometry );
             }
 
+        });*/
+        obj = objExporter.parse( ige.server.scene1._terrain.geometry );
+
+        var fs = require('fs');
+        fs.writeFile("/temp/test", obj, function(err) {
+            if(err) {
+                console.log(err);
+            } else {
+                console.log("The file was saved!");
+            }
         });
 
         //console.log(obj);
@@ -205,19 +216,13 @@ var LevelUtils = {
 
                 this.navigationMesh = vertices;
 				console.log('recast vertices:', vertices);
+                console.log('amount: ', vertices.length);
 
                 // scene.add(navigationMesh);
 
                 // renderer.render(scene, camera);
             }.bind(this)));
         }.bind(this)));
-    },
-
-    testRecast: function() {
-
-        recast = new Recast('./recast/lib/recast');
-
-        console.log('hello recast!', recast != undefined);
     }
 };
 

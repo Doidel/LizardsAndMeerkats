@@ -26,26 +26,20 @@
       <file leaf-file-name="Level2.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/levels/Level2.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="429" column="42" selection-start="21213" selection-end="21213" vertical-scroll-proportion="0.0" vertical-offset="6588" max-vertical-offset="7463">
+            <state line="62" column="48" selection-start="2787" selection-end="2787" vertical-scroll-proportion="0.0" vertical-offset="544" max-vertical-offset="7650">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="levelUtils.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="levelUtils.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/levels/levelUtils.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="204" column="47" selection-start="7028" selection-end="7028" vertical-scroll-proportion="0.0" vertical-offset="3198" max-vertical-offset="3859">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ServerNetworkEvents.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/gameClasses/ServerNetworkEvents.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="170" column="0" selection-start="5447" selection-end="5447" vertical-scroll-proportion="0.0" vertical-offset="2569" max-vertical-offset="3230">
-              <folding />
+            <state line="197" column="0" selection-start="14984" selection-end="14984" vertical-scroll-proportion="0.41568047" vertical-offset="1266" max-vertical-offset="2176">
+              <folding>
+                <element signature="e#1593#3575#0" expanded="false" />
+                <element signature="e#3620#5617#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -53,7 +47,7 @@
       <file leaf-file-name="server.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="82" column="93" selection-start="3999" selection-end="3999" vertical-scroll-proportion="0.0" vertical-offset="1003" max-vertical-offset="3706">
+            <state line="82" column="63" selection-start="3950" selection-end="3969" vertical-scroll-proportion="0.0" vertical-offset="1003" max-vertical-offset="3706">
               <folding />
             </state>
           </provider>
@@ -62,7 +56,7 @@
       <file leaf-file-name="recast.withworker.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/recast/lib/recast.withworker.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="0" selection-start="773" selection-end="773" vertical-scroll-proportion="-13.6" vertical-offset="0" max-vertical-offset="5032">
+            <state line="24" column="0" selection-start="937" selection-end="937" vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="5100">
               <folding />
             </state>
           </provider>
@@ -71,7 +65,7 @@
       <file leaf-file-name="Player.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gameClasses/Player.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1193" column="28" selection-start="53847" selection-end="53863" vertical-scroll-proportion="-8.28" vertical-offset="20074" max-vertical-offset="26044">
+            <state line="1193" column="28" selection-start="53847" selection-end="53863" vertical-scroll-proportion="0.0" vertical-offset="20074" max-vertical-offset="26044">
               <folding />
             </state>
           </provider>
@@ -80,20 +74,26 @@
       <file leaf-file-name="client.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="760" column="45" selection-start="35624" selection-end="35624" vertical-scroll-proportion="0.0" vertical-offset="12391" max-vertical-offset="13090">
+            <state line="752" column="6" selection-start="35248" selection-end="35248" vertical-scroll-proportion="0.0" vertical-offset="12391" max-vertical-offset="13090">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ClientNetworkEvents.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ClientNetworkEvents.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gameClasses/ClientNetworkEvents.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="172" column="6" selection-start="7803" selection-end="7803" vertical-scroll-proportion="0.23146747" vertical-offset="0" max-vertical-offset="680">
-              <folding>
-                <element signature="e#395#7802#0" expanded="false" />
-                <element signature="e#7856#8000#0" expanded="false" />
-              </folding>
+            <state line="182" column="23" selection-start="8103" selection-end="8103" vertical-scroll-proportion="0.0" vertical-offset="2807" max-vertical-offset="3570">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ClientConfig.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ClientConfig.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="91" column="36" selection-start="3826" selection-end="3826" vertical-scroll-proportion="0.0" vertical-offset="1073" max-vertical-offset="1734">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -108,22 +108,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/gameClasses/ResourceLoader.js" />
         <option value="$PROJECT_DIR$/gameClasses/PlayerCommanderComponent.js" />
         <option value="$PROJECT_DIR$/shaders/terrain.frag" />
         <option value="$PROJECT_DIR$/shaders/terrain.vert" />
         <option value="$PROJECT_DIR$/shaders/terrainShader.js" />
-        <option value="$PROJECT_DIR$/ClientConfig.js" />
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/THREEextensions.js" />
         <option value="$PROJECT_DIR$/ServerConfig.js" />
         <option value="$PROJECT_DIR$/recast/lib/OBJExporter.js" />
-        <option value="$PROJECT_DIR$/levels/Level2.js" />
         <option value="$PROJECT_DIR$/gameClasses/ServerNetworkEvents.js" />
         <option value="$PROJECT_DIR$/server.js" />
         <option value="$PROJECT_DIR$/client.js" />
-        <option value="$PROJECT_DIR$/levels/levelUtils.js" />
+        <option value="$PROJECT_DIR$/recast/lib/ConvexGeometry.js" />
+        <option value="$PROJECT_DIR$/ClientConfig.js" />
         <option value="$PROJECT_DIR$/gameClasses/ClientNetworkEvents.js" />
+        <option value="$PROJECT_DIR$/levels/Level2.js" />
+        <option value="$PROJECT_DIR$/levels/levelUtils.js" />
       </list>
     </option>
   </component>
@@ -210,6 +210,52 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="lib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lizardsAndMeerkat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="LizardsAndMeerkats" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="levels" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lizardsAndMeerkat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="LizardsAndMeerkats" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lizardsAndMeerkat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="LizardsAndMeerkats" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="heightmaps" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -345,18 +391,18 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22383073" sideWeight="0.4939378" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33741647" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962137" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1402214" sideWeight="0.7650334" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.12756985" sideWeight="0.7962138" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.41517857" sideWeight="0.52836305" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298217" sideWeight="0.76428574" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23496659" sideWeight="0.4960464" order="11" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23496659" sideWeight="0.50395364" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2037862" sideWeight="0.4960464" order="11" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2037862" sideWeight="0.50395364" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -389,46 +435,9 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/shaders/terrainShader.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="115" column="29" selection-start="4122" selection-end="4122" vertical-scroll-proportion="0.0" vertical-offset="1092" max-vertical-offset="2448">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ClientConfig.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="81" column="47" selection-start="3519" selection-end="3519" vertical-scroll-proportion="0.0" vertical-offset="1039" max-vertical-offset="1717">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="470" column="49" selection-start="11004" selection-end="11004" vertical-scroll-proportion="0.0" vertical-offset="8109" max-vertical-offset="31246">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/THREEextensions.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="23" selection-start="364" selection-end="364" vertical-scroll-proportion="0.0" vertical-offset="102" max-vertical-offset="3740">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/recast/lib/recast.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9084" column="75" selection-start="812273" selection-end="812275" vertical-scroll-proportion="0.33226323" vertical-offset="154221" max-vertical-offset="2988770">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/recast/lib/OBJExporter.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="0" selection-start="579" selection-end="579" vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="1275">
-          <folding />
-        </state>
+        <state line="28" column="0" selection-start="579" selection-end="579" vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="1275" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ige2912/engine/components/three/three.js">
@@ -445,61 +454,90 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server.js">
+    <entry file="file://$PROJECT_DIR$/gameClasses/ServerNetworkEvents.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="93" selection-start="3999" selection-end="3999" vertical-scroll-proportion="0.0" vertical-offset="1003" max-vertical-offset="3706">
+        <state line="179" column="26" selection-start="5699" selection-end="5721" vertical-scroll-proportion="0.0" vertical-offset="2569" max-vertical-offset="3230">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="760" column="45" selection-start="35624" selection-end="35624" vertical-scroll-proportion="0.0" vertical-offset="12391" max-vertical-offset="13090">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/recast/lib/recast.withworker.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="0" selection-start="773" selection-end="773" vertical-scroll-proportion="-13.6" vertical-offset="0" max-vertical-offset="5032">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gameClasses/ServerNetworkEvents.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="170" column="0" selection-start="5447" selection-end="5447" vertical-scroll-proportion="0.0" vertical-offset="2569" max-vertical-offset="3230">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/levels/Level2.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="429" column="42" selection-start="21213" selection-end="21213" vertical-scroll-proportion="0.0" vertical-offset="6792" max-vertical-offset="7463">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/levels/levelUtils.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="204" column="47" selection-start="7028" selection-end="7028" vertical-scroll-proportion="0.0" vertical-offset="3198" max-vertical-offset="3859">
+        <state line="752" column="6" selection-start="35248" selection-end="35248" vertical-scroll-proportion="0.0" vertical-offset="12391" max-vertical-offset="13090">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gameClasses/Player.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1193" column="28" selection-start="53847" selection-end="53863" vertical-scroll-proportion="-8.28" vertical-offset="20074" max-vertical-offset="26044">
+        <state line="1193" column="28" selection-start="53847" selection-end="53863" vertical-scroll-proportion="0.0" vertical-offset="20074" max-vertical-offset="26044">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/recast/lib/recast.withworker.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="0" selection-start="937" selection-end="937" vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="5100">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="82" column="63" selection-start="3950" selection-end="3969" vertical-scroll-proportion="0.0" vertical-offset="1003" max-vertical-offset="3706">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/recast/lib/ConvexGeometry.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="220" column="75" selection-start="4992" selection-end="4992" vertical-scroll-proportion="0.9485628" vertical-offset="3113" max-vertical-offset="3842" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ClientConfig.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="91" column="36" selection-start="3826" selection-end="3826" vertical-scroll-proportion="0.0" vertical-offset="1073" max-vertical-offset="1734">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gameClasses/ClientNetworkEvents.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="172" column="6" selection-start="7803" selection-end="7803" vertical-scroll-proportion="0.23146747" vertical-offset="0" max-vertical-offset="680">
+        <state line="182" column="23" selection-start="8103" selection-end="8103" vertical-scroll-proportion="0.0" vertical-offset="2807" max-vertical-offset="3570">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/heightmaps/Botswana.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/heightmaps/heightmap.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/levels/Level2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="62" column="48" selection-start="2787" selection-end="2787" vertical-scroll-proportion="0.0" vertical-offset="544" max-vertical-offset="7650">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/recast/lib/recast.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42317" column="17" selection-start="2109392" selection-end="2109392" vertical-scroll-proportion="0.5284178" vertical-offset="719045" max-vertical-offset="2988940">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/levels/levelUtils.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="197" column="0" selection-start="14984" selection-end="14984" vertical-scroll-proportion="0.41568047" vertical-offset="1266" max-vertical-offset="2176">
           <folding>
-            <element signature="e#395#7802#0" expanded="false" />
-            <element signature="e#7856#8000#0" expanded="false" />
+            <element signature="e#1593#3575#0" expanded="false" />
+            <element signature="e#3620#5617#0" expanded="false" />
           </folding>
         </state>
       </provider>
