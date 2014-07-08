@@ -1,10 +1,16 @@
 /*jshint onevar: false, indent:4, strict:false */
-/*global setImmediate: false, setTimeout: false, console: false, module: true, process: true, define: true */
+/*global setImmediate: false, setTimeout: false, console: false, module: true, process: true, define: true, require: true */
 
 var ENVIRONMENT_IS_NODE = typeof process === 'object' && typeof require === 'function';
 var ENVIRONMENT_IS_WEB = typeof window === 'object';
-var ENVIRONMENT_IS_WORKER = typeof importScripts === 'function';
-var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
+
+var ENVIRONMENT = 'unkonwn';
+if (ENVIRONMENT_IS_WEB) {
+    ENVIRONMENT = 'web';
+}
+if (ENVIRONMENT_IS_NODE) {
+    ENVIRONMENT = 'node';
+}
 
 /**
  * Tiny event emitter for Node.js and the browser
@@ -39,6 +45,7 @@ EventEmitter.prototype.listeners = function () {
 };
 
 EventEmitter.prototype.on = function (type, listener) {
+  // console.log('in context', ENVIRONMENT, 'add a listener on', type, listener);
   return this._addListenner(type, listener, 0);
 };
 
@@ -58,8 +65,9 @@ EventEmitter.prototype.remove = function (type) {
 };
 
 EventEmitter.prototype.emit = function (type) {
+  // console.log('in context', ENVIRONMENT, 'emit a event on', type, this._listeners[type] ? this._listeners[type].length : 0, 'listeners');
   if (!this._listeners[type])
-    throw new Error('Event "' + type + '" don\'t exists');
+    return;
 
   var args = Array.prototype.slice.call(arguments, 1);
 
@@ -197,81 +205,117 @@ Recast.prototype.set_agentMaxSlope = function (data) {
 };
 
 Recast.prototype.settings = function (data, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'settings', data: data, callback: callback_id });
 };
 
 Recast.prototype.build = function (data, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'build', data: data, callback: callback_id });
 };
 
 Recast.prototype.initCrowd = function (data, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'initCrowd', data: data, callback: callback_id });
 };
 
 Recast.prototype.initWithFileContent = function (data, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'initWithFileContent', data: data, callback: callback_id });
 };
 
+Recast.prototype.findNearest = function (position, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
+    this.worker.postMessage({type: 'findNearestPoint', data: { position: position, extend:{x:3,y:3,z:3} }, callback: callback_id });
+};
+
 Recast.prototype.findNearestPoint = function (sx, sy, sz, dx, dy, dz, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'findNearestPoint', data: { position: {x:sx,y:sy,z:sz}, extend:{x:dx,y:dy,z:dz} }, callback: callback_id });
 };
 
 Recast.prototype.findNearestPoly = function (sx, sy, sz, dx, dy, dz, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'findNearestPoly', data: { position: {x:sx,y:sy,z:sz}, extend:{x:dx,y:dy,z:dz} }, callback: callback_id });
-};    
+};
+
+Recast.prototype.queryPolygons = function (sx, sy, sz, dx, dy, dz, maxPolys, callback_id) {
+    if (typeof callback_id === 'undefined') {
+        callback_id = maxPolys;
+        maxPolys    = 1000; 
+    }
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
+    this.worker.postMessage({type: 'queryPolygons', data: { position: {x:sx,y:sy,z:sz}, extend:{x:dx,y:dy,z:dz}, maxPolys:maxPolys }, callback: callback_id });
+};
+
+Recast.prototype.setPolyFlags = function (position, radius, flags, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
+    this.worker.postMessage({type: 'setPolyFlags', data: { sx:position.x, sy:position.x, sz:position.x, dx:radius, dy:radius, dz:radius, flags:flags}, callback: callback_id });
+};
 
 Recast.prototype.findPath = function (sx, sy, sz, dx, dy, dz, max, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'findPath', data: { sx:sx, sy:sy, sz:sz, dx:dx, dy:dy, dz:dz, max:max }, callback: callback_id });
 };
 
 Recast.prototype.getRandomPoint = function (callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'getRandomPoint', data: null, callback: callback_id });
 };
 
 Recast.prototype.addCrowdAgent = function (data, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'addCrowdAgent', data: data, callback: callback_id });
 };
 
 Recast.prototype.updateCrowdAgentParameters = function (agent, options, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'updateCrowdAgentParameters', data: { agent: agent, options: options }, callback: callback_id });
 };
 
 Recast.prototype.requestMoveVelocity = function (agent, velocity, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'requestMoveVelocity', data: { agent: agent, velocity: velocity }, callback: callback_id });
 };
 
 Recast.prototype.removeCrowdAgent = function (agent, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'removeCrowdAgent', data: agent, callback: callback_id });
 };
 
 Recast.prototype.crowdRequestMoveTarget = function (agent, position, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'crowdRequestMoveTarget', data: { agent:agent, x:position.x, y:position.y, z:position.z }, callback: callback_id });
 };
 
 Recast.prototype.crowdUpdate = function (data, callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'crowdUpdate', data: data, callback: callback_id });
 };
 
 Recast.prototype.crowdGetActiveAgents = function (callback_id) {
+    callback_id = typeof callback_id === 'number' ? callback_id : this.cb(callback_id);
     this.worker.postMessage({type: 'crowdGetActiveAgents', data: null, callback: callback_id });
 };
 
 Recast.prototype.addAgent = function (data, callback_id) {
-  return this.worker.postMessage({ type: 'addCrowdAgent', data: data, callback: callback_id });
+    this.worker.postMessage({ type: 'addCrowdAgent', data: data, callback: callback_id });
 };
 
-Recast.prototype.cb = function (callback) {
-  var last = (++ this.__RECAST_CALLBACKS.size) - 1;
-  this.__RECAST_CALLBACKS[last] = callback;
-  return last;
+Recast.prototype.cb = function (func) {
+    if (!func) return null;
+    this.__RECAST_CALLBACKS.size = this.__RECAST_CALLBACKS.size % 10;
+    var last = (++this.__RECAST_CALLBACKS.size) - 1;
+    this.__RECAST_CALLBACKS[last] = func;
+    return last;
 };
 
 Recast.prototype.OBJLoader = function(path, callback_id) {
     this.worker.postMessage({type: 'OBJLoader', data: path, callback: callback_id });
 };
 
-Recast.prototype.OBJDataLoader = function(path, callback_id) {
-    this.worker.postMessage({type: 'OBJDataLoader', data: path, callback: callback_id });
+Recast.prototype.OBJDataLoader = function(objdata, callback_id) {
+    this.worker.postMessage({type: 'OBJDataLoader', data: objdata, callback: callback_id });
 };
 
 Recast.prototype.getNavMeshVertices = function(callback_id) {
