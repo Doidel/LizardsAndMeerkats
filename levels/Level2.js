@@ -8,6 +8,8 @@ var Level2 = IgeClass.extend({
          - Depth will be applied at the Y -  axis
          - --> Y and Z are switched!
          */
+        var scale = 80;
+
         if (ige.isServer) {
             //var hMapUrl = "./assets/heightmaps/NullHeight.png";
             var hMapUrl = "./assets/heightmaps/heightmap.png";
@@ -30,25 +32,29 @@ var Level2 = IgeClass.extend({
                 var multX = width / vAmountX;
                 var multY = width / vAmountY;
 
-                var scale = 50;
 
-                for (var i = 0; i < vAmountY; ++i) {
-                    for (var j = 0; j < vAmountX; ++j) {
-                        var position = ( parseInt(j*multX) + parseInt(i*multY) ) * 4;
-                        var color = (pixels[position] * 256 + pixels[position + 1]) / 256 / 256;
+
+                for (var i = 0; i < vAmountY; i++) {
+                    for (var j = 0; j < vAmountX; j++) {
+                        var position = ( j*multX + i*multY ) * 4;
+                        var color = (pixels[position] * 256 + pixels[position + 1]) / 256;
+                        //if (color > 0) console.log( color );
                         color *= scale;
-                        if (isNaN(color)) console.log(i, j, position);
+                        if (isNaN(color)) console.log('NaN', i, j, position);
                         //for buffer: vertices[(i*vAmountX + j) * 3 + 2] = color;
                         var v = shape.vertices[i * vAmountX + j];
                         v.x = Math.round(v.x * 10000) / 10000;
                         v.y = Math.round(v.y * 10000) / 10000;
                         v.z = Math.round(color * 10000) / 10000;
-                        //shape.vertices[i*vAmountX + j].z = ((pixels[pixelIndex]/255 + pixels[pixelIndex + 1]/255 + pixels[pixelIndex + 2]/255)/3)*scale;
                     }
                 }
                 //shape.vertices[8320].z = -10;
-                shape.computeFaceNormals();
                 shape.computeVertexNormals();
+                shape.computeFaceNormals();
+
+                /*shape.verticesNeedUpdate = true;
+                shape.normalsNeedUpdate = true;*/
+
                 var groundmat = Physijs.createMaterial(
                     new THREE.MeshBasicMaterial(),
                     0.99, // high friction
@@ -63,20 +69,19 @@ var Level2 = IgeClass.extend({
                 ige.server.scene1._terrain = pGround;
 
                 console.log('amount of level vertices', shape.vertices.length);
-                LevelUtils.buildRecast();
+                //LevelUtils.buildRecast();
             });
         } else {
             // FLOOR
             var hMapUrl = "./assets/heightmaps/heightmap.png";
             //var hMapUrl = "./assets/heightmaps/NullHeight.png";
             // count of image borderlines - only used for lod
-            var count = 1;
             var size = 1024;
             var faces = 256;
             UI.minimap.levelDimensions = size;
 
             var hMap = new Image();
-            LevelUtils.loadImage(hMap, hMapUrl, count, function(){
+            LevelUtils.loadImage(hMap, hMapUrl, function(){
                 var imagedata = LevelUtils.getImageData(hMap);
                 var shape = new THREE.PlaneGeometry(size, size, faces, faces);
                 //var vertices = shape.attributes.position.array;
@@ -149,20 +154,17 @@ var Level2 = IgeClass.extend({
 
                 var vAmountX = faces;
                 var vAmountY = faces; //Math.sqrt( geometry.vertices.length );
-                var multX = hMap.width / vAmountX;
-                var multY = hMap.height / vAmountY;
-                var scale = 50;
+                var multX = imagedata.width / vAmountX;
+                var multY = imagedata.height / vAmountY;
 
                 //shape.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
-                for (var i = 0; i < vAmountY; ++i) {
-                    for (var j = 0; j < vAmountX; ++j) {
-                        var color = LevelUtils.getHeightFromImage( imagedata, parseInt(j*multX), parseInt(i*multY) ) * scale;
+                /*for (var i = 0; i < vAmountY; i++) {
+                    for (var j = 0; j < vAmountX; j++) {
+                        var color = LevelUtils.getHeightFromImage( imagedata, (j*multX), (i*multY) ) * scale;
                         //for buffer: vertices[(i*vAmountX + j) * 3 + 2] = color;
                         vertices[i * vAmountX + j].z = color;
                     }
-                }
-                shape.computeFaceNormals();
-                shape.computeVertexNormals();
+                }*/
 
                 var normalACB = new THREE.Vector3(),
                     normalBCE = new THREE.Vector3(),
@@ -196,41 +198,52 @@ var Level2 = IgeClass.extend({
 
 
                 //fix normals
-                /*var normals = shape.attributes.normal.array;
-                var defaultNormal = new THREE.Vector3(0, 0, 1);
-                var maxAmount = (vAmountY - 1) * (vAmountX - 1);*/
+                //var normals = shape.attributes.normal.array;
+                //var defaultNormal = new THREE.Vector3(0, 0, 1);
+                //var maxAmount = (vAmountY - 1) * (vAmountX - 1);
+                var lastPosition = 0;
 
-                /*for (var i = 0; i < vAmountY; ++i) {
-                    for (var j = 0; j < vAmountX; ++j) {
+                for (var i = 0; i < vAmountY; i++) {
+                    for (var j = 0; j < vAmountX; j++) {
+
+                        //var color = LevelUtils.getHeightFromImage( imagedata, j*multX, i*multY ) * scale;
+
+                        var position = ( j*multX + imagedata.width * i*multY ) * 4;
+
+                        if (position - lastPosition != 8) console.log('error', j, i, 'diff', position, lastPosition);
+                        lastPosition = position;
+
+                        var color = (imagedata.data[position] * 256 + imagedata.data[position + 1]) / 65536 * scale;
 
                         var currentPos = i * vAmountX + j;
-
-                        var color = LevelUtils.getHeightFromImage( imagedata, parseInt(j*multX), parseInt(i*multY) );
-                        vertices[ currentPos * 3 + 2 ] = color;
+                        //for buffer: vertices[(i*vAmountX + j) * 3 + 2] = color;
+                        vertices[currentPos].z = color;
 
                         //get the 8 heights around and interpolate
 
-                        calcNormals2( currentPos - vAmountX >= 0 ? vertices[ (currentPos - vAmountX) * 3 + 2 ] : defaultNormal.z,
-                            currentPos + 1 <= maxAmount ? vertices[ currentPos * 3 + 5 ] : defaultNormal.z,
-                            currentPos + vAmountX <= maxAmount ? vertices[ (currentPos + vAmountX) * 3 + 2 ] : defaultNormal.z,
-                            currentPos - 1 >= 0 ? vertices[ currentPos * 3 - 1 ] : defaultNormal.z,
-                            vertices[ currentPos * 3 ].y );
+                        /*calcNormals2( currentPos - vAmountX >= 0 ? vertices[ currentPos - vAmountX ].z : defaultNormal.z,
+                            currentPos + 1 <= maxAmount ? vertices[ currentPos + 1 ].z : defaultNormal.z,
+                            currentPos + vAmountX <= maxAmount ? vertices[ currentPos + vAmountX ].z : defaultNormal.z,
+                            currentPos - 1 >= 0 ? vertices[ currentPos - 1 ] : defaultNormal.z,
+                            vertices[ currentPos ].z );
 
                         normals[ currentPos * 3 ] = averageNormal.x;
                         normals[ currentPos * 3 + 1 ] = averageNormal.y;
-                        normals[ currentPos * 3 + 2 ] = averageNormal.z;
+                        normals[ currentPos * 3 + 2 ] = averageNormal.z;*/
                     }
                 }
+                shape.computeVertexNormals();
+                shape.computeFaceNormals();
 
                 shape.verticesNeedUpdate = true;
-                shape.normalsNeedUpdate = true;*/
+                shape.normalsNeedUpdate = true;
 
 
                 var ground = new THREE.Mesh(shape, cover); //cover
                 ground.rotation.x = -Math.PI / 2;
                 ground.receiveShadow = true;
                 //ground.castShadow = true;
-                ground.position.set(0,20,0);
+                ground.position.set(0,0,0);
                 ground.name = "level";
                 g = ground;
 

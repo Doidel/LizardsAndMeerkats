@@ -118,7 +118,7 @@ var Client = IgeClass.extend({
                                 //self._setVolume(sound, 0.1);
                             }
                         };
-                        backgroundSoundInit();
+                        //backgroundSoundInit();
 
                         //remove ambient light
                         //self.scene1._threeObj.remove(self.scene1._threeObj.children[0]);

@@ -18,7 +18,7 @@ var LevelUtils = {
         var position = ( x + imagedata.width * y ) * 4;
         var data = imagedata.data;
         //return {r: data[ position ], g: data[ position + 1 ], b: data[ position + 2 ], a: data[ position + 3 ]};
-        return (data[position] * 256 + data[position + 1]) / 256 / 256;
+        return (data[position] * 256 + data[position + 1]) / 65536;
     },
     // get the canvas data of an image
     getImageData: function(image){
@@ -32,7 +32,7 @@ var LevelUtils = {
         return context.getImageData( 0, 0, image.width, image.height );
     },
     // load the image and give a callback as soon as it's loaded
-    loadImage: function(hMap, src, count, callback){
+    loadImage: function(hMap, src, callback){
         hMap.src = src;
         hMap.onload = callback;
     },
@@ -162,6 +162,7 @@ var LevelUtils = {
     buildRecast: function() {
 
         recast = new Recast('./recast/lib/recast');
+
 
         //export level with OBJExporter and save to path we can indicate to recast.js
         var objExporter = new THREE.OBJExporter();
